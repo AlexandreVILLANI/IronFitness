@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar v-if="!route.meta.hideNavBar" />
+    <Navbar v-if="!route.meta.hideNavbar" />
     <RouterView />
     <Footer v-if="!route.meta.hideFooter" />
   </div>
