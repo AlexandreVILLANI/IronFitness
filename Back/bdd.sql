@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS Role CASCADE;
 DROP TABLE IF EXISTS Activite CASCADE;
 DROP TABLE IF EXISTS Formule CASCADE;
 
-
 CREATE TYPE type_activite AS ENUM ('Culture', 'Loisir', 'Concert', 'Sport', 'Restauration');
 
 
@@ -21,9 +20,11 @@ CREATE TABLE Activite (
 
 CREATE TABLE Formule (
     id_formule SERIAL PRIMARY KEY,
+    id_activite INT NOT NULL,
     nom_formule VARCHAR(255) NOT NULL,
     prix_formule DECIMAL(5,2) NOT NULL,
-    unite VARCHAR(20) NOT NULL -- ex : 'mois', 'séance', 'heure'
+    unite VARCHAR(20) NOT NULL, -- ex : 'mois', 'séance', 'heure'
+    FOREIGN KEY (id_activite) REFERENCES Activite(id_activite) ON DELETE CASCADE
 );
 
 
@@ -40,7 +41,9 @@ CREATE TABLE Utilisateur (
     adresse_mail VARCHAR(50) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(250) NOT NULL,
     id_role INT NOT NULL,
-    FOREIGN KEY (id_role) REFERENCES Role(id_role) ON DELETE RESTRICT
+    id_formule INT,
+    FOREIGN KEY (id_role) REFERENCES Role(id_role) ON DELETE RESTRICT,
+    FOREIGN KEY (id_formule) REFERENCES Formule(id_formule) ON DELETE RESTRICT
 );
 
 
@@ -63,15 +66,10 @@ CREATE TABLE Reservation (
 );
 
 
-
 INSERT INTO Role (nom_role) VALUES
     ('Administrateur'),
     ('Client');
 
-
-INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role) VALUES
-    ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2),
-    ('Martin', 'Lucas', 'lucas.martin@example.com', 'mdp456', 2);
 
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite) VALUES
@@ -80,11 +78,17 @@ INSERT INTO Activite (nom_activite, image_activite, description_activite, type_a
     ('Concert Jazz', 'jazz.jpg', 'Soirée de jazz en plein air.', 'Concert');
 
 
-INSERT INTO Formule (nom_formule, prix_formule, unite) VALUES
-    ('Abonnement mensuel', 29.99, 'mois'),
-    ('Séance unique', 9.99, 'séance'),
-    ('Forfait 10 séances', 79.90, 'séance'),
-    ('Coaching personnalisé',70.00,'heure');
+INSERT INTO Formule (id_activite,nom_formule, prix_formule, unite) VALUES
+    (2,'Abonnement mensuel', 29.99, 'mois'),
+    (2,'Séance unique', 9.99, 'séance'),
+    (2,'Forfait 10 séances', 79.90, 'séance'),
+    (2,'Coaching personnalisé',70.00,'heure');
+
+INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role,id_formule) VALUES
+    ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2,2),
+    ('Martin', 'Lucas', 'lucas.martin@example.com', 'mdp456', 2,2),
+    ('Admin','Admin','admin@domain.com','test',1,NULL);
+
 
 
 INSERT INTO Creneau (id_activite, date_activite, heure_debut, heure_fin, places_disponibles) VALUES
