@@ -10,3 +10,16 @@ exports.getAllActivite = (req, res) => {
         }
     })
 }
+
+exports.getActiviteByID = (req, res) => {
+    console.log('controller id:', id);
+
+    activiteService.getActiviteByID(id, (error, data) => {
+        if (error) {
+            return res.status(500).send("Internal error");
+        } else {
+            return res.status(200).send(data);
+        }
+    });
+}
+

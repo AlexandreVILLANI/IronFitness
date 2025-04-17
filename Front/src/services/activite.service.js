@@ -4,7 +4,7 @@ async function getAllActiviteFromAPI() {
     return getRequest('/activite', 'GETALLACTIVITE')
 }
 
-async function getAllActivite(type) {
+async function getAllActivite() {
     let answer = await getAllActiviteFromAPI()
     return answer
 }

@@ -1,15 +1,20 @@
 <template>
   <nav class="navbar">
-    <div class="logo">💪Iron Fitness</div>
+    <div class="logo">
+      <img class="logo-site" src="https://static.cdnlogo.com/logos/s/59/sports.svg">
+      Iron Fitness
+    </div>
     <ul class="nav-links">
       <li><router-link to="/">Accueil</router-link></li>
-      <li><router-link to="/about">À propos</router-link></li>
-      <li><router-link to="/contact">Contact</router-link></li>
     </ul>
   </nav>
 </template>
-💪
+
 <style scoped>
+.logo-site {
+  width: 40px;
+  height: 40px;
+}
 .navbar {
   display: flex;
   justify-content: space-between;

@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS Role CASCADE;
 DROP TABLE IF EXISTS Activite CASCADE;
 DROP TABLE IF EXISTS Formule CASCADE;
 
-CREATE TYPE type_activite AS ENUM ('Culture', 'Loisir', 'Concert', 'Sport', 'Restauration');
+CREATE TYPE type_activite AS ENUM ('Groupe', 'Perso');
 
 
 CREATE TABLE Activite (
@@ -73,9 +73,13 @@ INSERT INTO Role (nom_role) VALUES
 
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite) VALUES
-    ('Atelier Peinture', 'peinture.jpg', 'Atelier créatif pour apprendre la peinture.', 'Culture'),
-    ('Match de Foot', 'foot.jpg', 'Rencontre amicale au stade municipal.', 'Sport'),
-    ('Concert Jazz', 'jazz.jpg', 'Soirée de jazz en plein air.', 'Concert');
+    ('Coaching personnel', 'coachingperso.jpg', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Perso'),
+    ('Remise en forme', 'remiseforme.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.', 'Groupe'),
+    ('Sport santé', 'sportsanté.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.', 'Groupe'),
+    ('Cross-training','crosstraining.jpg','Un entraînement complet et intense pour repousser vos limites ! Le cross training combine renforcement musculaire, cardio et mobilité pour améliorer votre condition physique globale. Accessible à tous niveaux, chaque séance est variée, dynamique et ultra motivante.','Groupe'),
+    ('Cardio-boxing','cardioboxing','Défoulez-vous tout en brûlant un max de calories ! Le cardio boxing mêle mouvements de boxe et exercices de cardio pour renforcer le corps, améliorer l’endurance et libérer le stress. Une séance rythmée, sans contact, accessible à tous.','Groupe'),
+    ('Réathlétisation','reathletisation.jpg','Retrouvez vos capacités physiques en toute sécurité après une blessure ou un arrêt prolongé. La réathlétisation vous aide à reconstruire force, mobilité et confiance grâce à un programme progressif, adapté à vos besoins et encadré par un professionnel.','Perso'),
+    ('Biking','biking.jpg','Un entraînement cardio ultra dynamique sur vélo indoor ! Enchaînez les phases d’intensité sur fond de musique motivante pour brûler des calories, renforcer les jambes et booster votre endurance. Accessible à tous, ambiance garantie !','Groupe');
 
 
 INSERT INTO Formule (id_activite,nom_formule, prix_formule, unite) VALUES

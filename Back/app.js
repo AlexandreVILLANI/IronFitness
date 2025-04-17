@@ -60,7 +60,7 @@ app.use(express.json());
 
 // === Routes spécifiques ===
 const activiteRouter = require('./routes/activite.router');
-app.use('/api', activiteRouter);
+app.use('/', activiteRouter);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;
