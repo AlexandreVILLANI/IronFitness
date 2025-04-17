@@ -1,46 +1,77 @@
 <template>
   <nav class="navbar">
     <div class="logo">
-      <img class="logo-site" src="https://static.cdnlogo.com/logos/s/59/sports.svg">
-      Iron Fitness
+      <img class="logo-site" src="@/assets/logoSite.png" alt="Logo Iron Fitness">
     </div>
     <ul class="nav-links">
       <li><router-link to="/">Accueil</router-link></li>
+      <li><router-link to="/activite">Activité</router-link></li>
+      <li><router-link to="/cours">Cours</router-link></li>
+      <li><router-link to="/planning">Planning</router-link></li>
     </ul>
   </nav>
 </template>
 
+
 <style scoped>
-.logo-site {
-  width: 40px;
-  height: 40px;
-}
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #2c3e50;
+  background: linear-gradient(90deg, #283e97, #7e2a2a);/*#2c3e50, #34495e*/
   padding: 1rem 2rem;
-  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.logo {
-  font-weight: bold;
-  font-size: 1.5rem;
+.logo-site {
+  height: 50px;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-site:hover {
+  transform: scale(1.1);
 }
 
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links a {
   color: white;
   text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background: #00d8ff;
+  left: 0;
+  bottom: -4px;
+  transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
-  text-decoration: underline;
+  color: #00d8ff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
 }
 </style>
+
+<script setup lang="ts">
+</script>
