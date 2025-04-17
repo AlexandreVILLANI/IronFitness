@@ -24,21 +24,19 @@ const swaggerOptions = {
     apis: ['./routes/*.js'],
 };
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Middleware CORS
 app.use(cors({
-    origin: 'https://ironfitness-front.onrender.com',
+    origin: ['https://ironfitness-front.onrender.com', 'http://localhost:5173'],
+    servers: [{ url: "http://localhost:3000" }],
     //    origin: 'http://localhost:5173',
     credentials: true,
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
 }));
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+
 
 // Sessions & cookies
 app.use(cookieParser());
@@ -49,7 +47,7 @@ app.use(session({
     cookie: {
         maxAge: 2 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production', // Assurez-vous d'utiliser HTTPS en prod
         sameSite: 'lax',
     },
 }));
