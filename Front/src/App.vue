@@ -20,12 +20,14 @@ const activites = ref([])
 
 onMounted(async () => {
   try {
-    const res = await axios.get(`${apiUrl}/api/activites`)
+    const res = await axios.get('https://ironfitness.onrender.com')
     activites.value = res.data
   } catch (error) {
     console.error('Erreur lors du chargement des activités :', error)
   }
 })
+//    const res = await axios.get(`${apiUrl}/api/activites`)
+
 
 const route = useRoute()
 </script>
