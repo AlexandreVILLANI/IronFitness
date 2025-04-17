@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS Utilisateur CASCADE;
 DROP TABLE IF EXISTS Role CASCADE;
 DROP TABLE IF EXISTS Activite CASCADE;
 DROP TABLE IF EXISTS Formule CASCADE;
+DROP TABLE IF EXISTS Formule_Activite CASCADE;
 
 CREATE TYPE type_activite AS ENUM ('Groupe', 'Perso');
 
@@ -20,10 +21,17 @@ CREATE TABLE Activite (
 
 CREATE TABLE Formule (
     id_formule SERIAL PRIMARY KEY,
-    id_activite INT NOT NULL,
     nom_formule VARCHAR(255) NOT NULL,
     prix_formule DECIMAL(5,2) NOT NULL,
-    unite VARCHAR(20) NOT NULL, -- ex : 'mois', 'séance', 'heure'
+    unite VARCHAR(20) NOT NULL -- ex : 'mois', 'séance', 'heure'
+);
+
+-- table de liaison, une formule à plusieurs activite inclus
+CREATE TABLE Formule_Activite (
+    id_formule INT NOT NULL,
+    id_activite INT NOT NULL,
+    PRIMARY KEY (id_formule, id_activite),
+    FOREIGN KEY (id_formule) REFERENCES Formule(id_formule) ON DELETE CASCADE,
     FOREIGN KEY (id_activite) REFERENCES Activite(id_activite) ON DELETE CASCADE
 );
 
@@ -73,20 +81,24 @@ INSERT INTO Role (nom_role) VALUES
 
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite) VALUES
-    ('Coaching personnel', 'coachingperso.jpg', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Perso'),
-    ('Remise en forme', 'remiseforme.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.', 'Groupe'),
-    ('Sport santé', 'sportsanté.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.', 'Groupe'),
-    ('Cross-training','crosstraining.jpg','Un entraînement complet et intense pour repousser vos limites ! Le cross training combine renforcement musculaire, cardio et mobilité pour améliorer votre condition physique globale. Accessible à tous niveaux, chaque séance est variée, dynamique et ultra motivante.','Groupe'),
+    ('Coaching personnel', 'coachingperso', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Perso'),
+    ('Remise en forme', 'remiseforme', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.', 'Groupe'),
+    ('Sport santé', 'sportsante', 'Bougez mieux, vivez mieux ! Nos séances de coaching sport santé visent à améliorer votre forme physique en douceur, tout en prévenant les douleurs et les déséquilibres. Un accompagnement personnalisé, adapté à vos capacités, pour retrouver bien-être, énergie et mobilité au quotidien.', 'Groupe'),
+    ('Cross-training','crosstraining','Un entraînement complet et intense pour repousser vos limites ! Le cross training combine renforcement musculaire, cardio et mobilité pour améliorer votre condition physique globale. Accessible à tous niveaux, chaque séance est variée, dynamique et ultra motivante.','Groupe'),
     ('Cardio-boxing','cardioboxing','Défoulez-vous tout en brûlant un max de calories ! Le cardio boxing mêle mouvements de boxe et exercices de cardio pour renforcer le corps, améliorer l’endurance et libérer le stress. Une séance rythmée, sans contact, accessible à tous.','Groupe'),
-    ('Réathlétisation','reathletisation.jpg','Retrouvez vos capacités physiques en toute sécurité après une blessure ou un arrêt prolongé. La réathlétisation vous aide à reconstruire force, mobilité et confiance grâce à un programme progressif, adapté à vos besoins et encadré par un professionnel.','Perso'),
-    ('Biking','biking.jpg','Un entraînement cardio ultra dynamique sur vélo indoor ! Enchaînez les phases d’intensité sur fond de musique motivante pour brûler des calories, renforcer les jambes et booster votre endurance. Accessible à tous, ambiance garantie !','Groupe');
+    ('Réathlétisation','reathletisation','Retrouvez vos capacités physiques en toute sécurité après une blessure ou un arrêt prolongé. La réathlétisation vous aide à reconstruire force, mobilité et confiance grâce à un programme progressif, adapté à vos besoins et encadré par un professionnel.','Perso'),
+    ('Biking','biking','Un entraînement cardio ultra dynamique sur vélo indoor ! Enchaînez les phases d’intensité sur fond de musique motivante pour brûler des calories, renforcer les jambes et booster votre endurance. Accessible à tous, ambiance garantie !','Groupe'),
+    ('Musculation','musculation','A faire','Groupe'),
+    ('Boxe Anglaise','boxeanglaise','A faire','Groupe'),
+    ('Kick Boxing','kickboxing','A faire','Groupe'),
+    ('MMA','mma','A faire','Groupe');
 
 
-INSERT INTO Formule (id_activite,nom_formule, prix_formule, unite) VALUES
-    (2,'Abonnement mensuel', 29.99, 'mois'),
-    (2,'Séance unique', 9.99, 'séance'),
-    (2,'Forfait 10 séances', 79.90, 'séance'),
-    (2,'Coaching personnalisé',70.00,'heure');
+INSERT INTO Formule (nom_formule, prix_formule, unite) VALUES
+    ('Abonnement mensuel', 29.99, 'mois'),
+    ('Séance unique', 9.99, 'séance'),
+    ('Forfait 10 séances', 79.90, 'séance'),
+    ('Coaching personnalisé',70.00,'heure');
 
 INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role,id_formule) VALUES
     ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2,2),
@@ -106,4 +118,19 @@ INSERT INTO Reservation (id_creneau, id_utilisateur) VALUES
     (2, 2),
     (3, 1),
     (2,2);
+
+INSERT INTO Formule_Activite(id_formule, id_activite) VALUES
+    --Cours collectif
+    (1,7),--biking
+    (1,4),--cross-training
+    (1,5),--cardio-boxing
+    (1,8),--musculation
+
+    --Boxing
+    (2,9),--boxe anglaise
+    (2,10),--kick boxing
+    (2,11),--mma
+    (2,8);--musculation
+
+
 
