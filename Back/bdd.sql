@@ -1,4 +1,4 @@
-DROP TYPE IF EXISTS type_activite CASCADE;
+DROP TYPE IF EXISTS type_activite, unite CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Creneau CASCADE;
 DROP TABLE IF EXISTS Utilisateur CASCADE;
@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS Formule CASCADE;
 DROP TABLE IF EXISTS Formule_Activite CASCADE;
 
 CREATE TYPE type_activite AS ENUM ('Groupe', 'Perso');
-
+CREATE TYPE unite AS ENUM ('mois','séance','heure');
 
 CREATE TABLE Activite (
     id_activite SERIAL PRIMARY KEY,
@@ -23,7 +23,7 @@ CREATE TABLE Formule (
     id_formule SERIAL PRIMARY KEY,
     nom_formule VARCHAR(255) NOT NULL,
     prix_formule DECIMAL(5,2) NOT NULL,
-    unite VARCHAR(20) NOT NULL -- ex : 'mois', 'séance', 'heure'
+    unite unite NOT NULL -- ex : 'mois', 'séance', 'heure'
 );
 
 -- table de liaison, une formule à plusieurs activite inclus
@@ -97,8 +97,32 @@ INSERT INTO Activite (nom_activite, image_activite, description_activite, type_a
 INSERT INTO Formule (nom_formule, prix_formule, unite) VALUES
     ('Cours collectif', 30.90, 'mois'),
     ('Boxing', 59.90, 'mois'),
-    ('Forfait 10 séances', 79.90, 'séance'),
-    ('Coaching personnalisé',70.00,'heure');
+    ('Sport santé', 19.90, 'séance'),
+    ('Réathlétisation',34.90,'séance'),
+    ('Coaching personnalisé',69.90,'heure');
+
+INSERT INTO Formule_Activite(id_formule, id_activite) VALUES
+    --Cours collectif
+    (1,7),--biking
+    (1,4),--cross-training
+    (1,5),--cardio-boxing
+    (1,8),--musculation
+
+    --Boxing
+    (2,9),--boxe anglaise
+    (2,10),--kick boxing
+    (2,11),--mma
+    (2,8),--musculation
+
+    --Sport santé
+    (3,3),--sport santé
+
+    --Réathlétisation
+    (4,6),--réathlétisation
+
+    --Coaching personnalisé
+    (5,1);--coaching personnalisé
+
 
 INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role,id_formule) VALUES
     ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2,2),
@@ -119,18 +143,7 @@ INSERT INTO Reservation (id_creneau, id_utilisateur) VALUES
     (3, 1),
     (2,2);
 
-INSERT INTO Formule_Activite(id_formule, id_activite) VALUES
-    --Cours collectif
-    (1,7),--biking
-    (1,4),--cross-training
-    (1,5),--cardio-boxing
-    (1,8),--musculation
 
-    --Boxing
-    (2,9),--boxe anglaise
-    (2,10),--kick boxing
-    (2,11),--mma
-    (2,8);--musculation
 
 
 
