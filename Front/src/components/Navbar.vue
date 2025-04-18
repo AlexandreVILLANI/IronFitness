@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="logo">
-      <img class="logo-site" src="@/assets/logoSite.png" alt="Logo Iron Fitness">
+      <img class="logo-site" src="@/assets/logoSite.png" alt="Logo Iron Fitness" />
     </div>
     <ul class="nav-links">
       <li><router-link to="/">Accueil</router-link></li>
@@ -9,11 +9,37 @@
       <li><router-link to="/cours">Cours</router-link></li>
       <li><router-link to="/planning">Planning</router-link></li>
     </ul>
+    <div class="auth-buttons">
+      <router-link to="/login" class="login-btn">Connexion</router-link>
+    </div>
   </nav>
 </template>
 
 
+
 <style scoped>
+.auth-buttons {
+  margin-left: 2rem;
+}
+
+.login-btn {
+  background-color: transparent;
+  color: white;
+  border: 2px solid #ffffff;
+  padding: 0.4rem 1rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.login-btn:hover {
+  background-color: #ffffff;
+  color: #2c3e50;
+}
+
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -58,15 +84,13 @@
   position: absolute;
   width: 0%;
   height: 2px;
-  background: #00d8ff;
+  background: #ffffff;
   left: 0;
   bottom: -4px;
   transition: width 0.3s ease;
 }
 
-.nav-links a:hover {
-  color: #00d8ff;
-}
+
 
 .nav-links a:hover::after {
   width: 100%;

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS Session CASCADE;
 DROP TYPE IF EXISTS type_activite, unite CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Creneau CASCADE;
@@ -6,6 +7,8 @@ DROP TABLE IF EXISTS Role CASCADE;
 DROP TABLE IF EXISTS Activite CASCADE;
 DROP TABLE IF EXISTS Formule CASCADE;
 DROP TABLE IF EXISTS Formule_Activite CASCADE;
+DROP TABLE IF EXISTS Formule_Utilisateur CASCADE;
+
 
 CREATE TYPE type_activite AS ENUM ('Groupe', 'Perso');
 CREATE TYPE unite AS ENUM ('mois','séance','heure');
@@ -36,6 +39,7 @@ CREATE TABLE Formule_Activite (
 );
 
 
+
 CREATE TABLE Role (
     id_role SERIAL PRIMARY KEY,
     nom_role VARCHAR(50) NOT NULL
@@ -49,10 +53,18 @@ CREATE TABLE Utilisateur (
     adresse_mail VARCHAR(50) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(250) NOT NULL,
     id_role INT NOT NULL,
-    id_formule INT,
-    FOREIGN KEY (id_role) REFERENCES Role(id_role) ON DELETE RESTRICT,
-    FOREIGN KEY (id_formule) REFERENCES Formule(id_formule) ON DELETE RESTRICT
+    FOREIGN KEY (id_role) REFERENCES Role(id_role) ON DELETE RESTRICT
 );
+
+-- table de liaison, un utilisateur peut avoir plusieurs formule
+CREATE TABLE Formule_Utilisateur (
+    id_formule INT NOT NULL,
+    id_utilisateur INT NOT NULL,
+    PRIMARY KEY (id_formule, id_utilisateur),
+    FOREIGN KEY (id_formule) REFERENCES Formule(id_formule) ON DELETE CASCADE,
+    FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE
+);
+
 
 
 CREATE TABLE Creneau (
@@ -78,6 +90,13 @@ INSERT INTO Role (nom_role) VALUES
     ('Administrateur'),
     ('Client');
 
+
+CREATE TABLE Session(
+    id_session VARCHAR(255),
+    id_utilisateur INT PRIMARY KEY ,
+    timeLimit TIMESTAMP,
+    FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE
+);
 
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite) VALUES
@@ -124,10 +143,10 @@ INSERT INTO Formule_Activite(id_formule, id_activite) VALUES
     (5,1);--coaching personnalisé
 
 
-INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role,id_formule) VALUES
-    ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2,2),
-    ('Martin', 'Lucas', 'lucas.martin@example.com', 'mdp456', 2,2),
-    ('Admin','Admin','admin@domain.com','test',1,NULL);
+INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role) VALUES
+    ('Durand', 'Alice', 'alice.durand@example.com', 'mdp123', 2),
+    ('Martin', 'Lucas', 'lucas.martin@example.com', 'mdp456', 2),
+    ('Admin','Admin','admin@domain.com','test',1);
 
 
 
@@ -143,6 +162,13 @@ INSERT INTO Reservation (id_creneau, id_utilisateur) VALUES
     (3, 1),
     (2,2);
 
+INSERT INTO Formule_Utilisateur (id_formule, id_utilisateur) VALUES
+    --Utilisateur 1
+     (1,1), --Cours co
+     (3,1), --sport santé
+
+     --Utilisateur 2
+     (2,2); --boxing
 
 
 

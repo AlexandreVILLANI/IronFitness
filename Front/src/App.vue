@@ -26,8 +26,6 @@ onMounted(async () => {
     console.error('Erreur lors du chargement des activités :', error)
   }
 })
-//    const res = await axios.get(`${apiUrl}/api/activites`)
-
 
 const route = useRoute()
 </script>
