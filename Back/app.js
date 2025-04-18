@@ -56,11 +56,12 @@ app.use(session({
 // Body parser
 app.use(express.json());
 
-
-
-// === Routes spécifiques ===
+// === Routes ===
 const activiteRouter = require('./routes/activite.router');
-app.use('/', activiteRouter);
+const formuleRouter = require('./routes/formule.router');
+
+app.use('/activite', activiteRouter);
+app.use('/formule', formuleRouter);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;

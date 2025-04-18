@@ -2,6 +2,7 @@
 import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import AccueilActivite from "@/components/Accueil/AccueilActivite.vue";
+import FormuleAccueil from "@/components/Accueil/FormuleAccueil.vue";
 
 const store = useStore()
 const activites = ref([])
@@ -46,10 +47,12 @@ onBeforeUnmount(() => {
   <div ref="activiteViewSection">
     <AccueilActivite />
   </div>
-
   <button v-if="showScrollTop" class="scroll-top-btn" @click="scrollToTop">
     ↑
   </button>
+  <div ref="formuleViewSection">
+    <FormuleAccueil/>
+  </div>
 </template>
 
 

@@ -12,8 +12,7 @@ exports.getAllActivite = (req, res) => {
 }
 
 exports.getActiviteByID = (req, res) => {
-    console.log('controller id:', id);
-
+    let id = req.params.id
     activiteService.getActiviteByID(id, (error, data) => {
         if (error) {
             return res.status(500).send("Internal error");

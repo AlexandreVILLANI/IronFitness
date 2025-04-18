@@ -39,7 +39,7 @@ const {get} = require("axios");
  *       500:
  *         description: Erreur interne du serveur
  */
-router.get('/activite', activiteController.getAllActivite);
+router.get('/', activiteController.getAllActivite);
 
 
 /**
@@ -86,6 +86,6 @@ router.get('/activite', activiteController.getAllActivite);
  *       500:
  *         description: Erreur interne du serveur
  */
-router.get('/activite/:id', activiteController.getActiviteByID);
+router.get('/:id', activiteController.getActiviteByID);
 
 module.exports = router;

@@ -52,7 +52,3 @@ module.exports = {
     getActiviteByID: getActiviteByID
 }
 
-module.exports = {
-    getAllActivite : getAllActivite,
-    getActiviteByID : getActiviteByID
-}

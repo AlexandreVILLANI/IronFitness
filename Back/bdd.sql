@@ -95,8 +95,8 @@ INSERT INTO Activite (nom_activite, image_activite, description_activite, type_a
 
 
 INSERT INTO Formule (nom_formule, prix_formule, unite) VALUES
-    ('Abonnement mensuel', 29.99, 'mois'),
-    ('Séance unique', 9.99, 'séance'),
+    ('Cours collectif', 30.90, 'mois'),
+    ('Boxing', 59.90, 'mois'),
     ('Forfait 10 séances', 79.90, 'séance'),
     ('Coaching personnalisé',70.00,'heure');
 
