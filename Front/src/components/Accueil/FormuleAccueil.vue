@@ -25,13 +25,11 @@ function getFormuleImage(nom_image) {
 }
 </script>
 
+
 <template>
-  <!-- Bande de séparation -->
-  <div class="svg-divider">
-    <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-      <path d="M0,0 C480,100 960,0 1440,100 L1440,0 L0,0 Z" fill="#eef2f5"></path>
-    </svg>
-  </div>
+
+  <section class="spikes"></section>
+
 
   <div class="formule-page">
     <h1>Formules</h1>
@@ -49,29 +47,40 @@ function getFormuleImage(nom_image) {
 
 <style scoped>
 
-.svg-divider {
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-  margin-top: 4rem;
+.spikes {
+  position: relative;
+  background: #445f77;
+  height: 1vh;
+  z-index: 1;
 }
 
-.svg-divider svg {
+.spikes::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: -98%;
+  bottom: 100%;
+  z-index: 2;
   display: block;
-  width: 100%;
-  height: 100px;
+  height: 10px;
+  background-size: 10px 100%;
+  background-image:
+      linear-gradient(135deg, #445f77 25%, transparent 25%),
+      linear-gradient(225deg, #445f77 25%, transparent 25%);
+  background-position: 0 0;
+  transform: rotate(180deg);
 }
 
 .formule-page {
   padding: 2rem;
   text-align: center;
-  background-color: #eef2f5;
+  background-color: #445f77; /* <-- ton nouveau fond */
 }
 
 .formule-page h1 {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: #34495e;
+  color: white;
 }
 
 .formules {
@@ -104,7 +113,7 @@ function getFormuleImage(nom_image) {
 
 .formule-card h2 {
   font-size: 1.4rem;
-  color: #2c3e50;
+  color: #527091;
   margin-bottom: 0.5rem;
 }
 
@@ -120,3 +129,4 @@ function getFormuleImage(nom_image) {
   color: #7f8c8d;
 }
 </style>
+
