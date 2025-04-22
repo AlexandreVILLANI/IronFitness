@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000'; // ou l'URL de ton serveur backend
+const API_URL = 'https://ironfitness.onrender.com';
 
 
 const axiosInstance = axios.create({

@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+console.log('URL de connexion à la DB :', process.env.DATABASE_URL);
 
 // Config .env
 dotenv.config();
