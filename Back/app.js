@@ -30,9 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Middleware CORS
 app.use(cors({
-    origin: ['https://ironfitness-front.onrender.com', 'http://localhost:5173'],
-    servers: [{ url: "http://localhost:3000" }],
-    //    origin: 'http://localhost:5173',
+    origin: ['https://ironfitness-front.onrender.com'],
     credentials: true,
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
