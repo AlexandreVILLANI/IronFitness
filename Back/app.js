@@ -66,7 +66,9 @@ app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
 app.use('/login',loginRoutes);
 app.use('/users', usersRoutes);
-
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Le backend fonctionne 🔥' });
+});
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;
