@@ -114,8 +114,8 @@ async function deleteUserAsync(id) {
     }
 }
 
-const getUserBySessionId = (session_id, callback) => {
-    getUserBySessionIdAsync(session_id)
+const getUserBySessionId = (id_session, callback) => {
+    getUserBySessionIdAsync(id_session)
         .then(res => {
             callback(null, res);
         })
@@ -125,10 +125,10 @@ const getUserBySessionId = (session_id, callback) => {
         })
 }
 
-async function getUserBySessionIdAsync(session_id) {
+async function getUserBySessionIdAsync(id_session) {
     try {
         const client = await pool.connect();
-        const res = await client.query("SELECT utilisateur.id_utilisateur, adresse_mail, prenom_utilisateur, nom_utilisateur, id_session, timeLimit FROM Session LEFT JOIN utilisateur ON Session.id_utilisateur = utilisateur.id_utilisateur WHERE id_session = $1;", [session_id]);
+        const res = await client.query("SELECT utilisateur.id_utilisateur, adresse_mail, prenom_utilisateur, nom_utilisateur,id_role, id_session, timeLimit FROM Session LEFT JOIN utilisateur ON Session.id_utilisateur = utilisateur.id_utilisateur WHERE id_session = $1;", [id_session]);
         client.release();
         return res.rows[0];
     } catch (error) {

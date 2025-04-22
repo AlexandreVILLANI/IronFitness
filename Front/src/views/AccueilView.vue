@@ -1,3 +1,25 @@
+<template>
+  <div class="accueil-container">
+    <div class="overlay">
+      <div class="greetings">
+        <h1 class="titre-principal">Iron Fitness</h1>
+        <a @click.prevent="scrollToActivite" class="scroll-link">Nos activités ↓</a>
+      </div>
+    </div>
+  </div>
+
+  <div ref="activiteViewSection">
+    <AccueilActivite />
+  </div>
+  <button v-if="showScrollTop" class="scroll-top-btn" @click="scrollToTop">
+    ↑
+  </button>
+  <div ref="formuleViewSection">
+    <FormuleAccueil/>
+  </div>
+</template>
+
+
 <script setup>
 import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
@@ -31,32 +53,6 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
 })
 </script>
-
-
-
-<template>
-  <div class="accueil-container">
-    <div class="overlay">
-      <div class="greetings">
-        <h1 class="titre-principal">Iron Fitness</h1>
-        <a @click.prevent="scrollToActivite" class="scroll-link">Nos activités ↓</a>
-      </div>
-    </div>
-  </div>
-
-  <div ref="activiteViewSection">
-    <AccueilActivite />
-  </div>
-  <button v-if="showScrollTop" class="scroll-top-btn" @click="scrollToTop">
-    ↑
-  </button>
-  <div ref="formuleViewSection">
-    <FormuleAccueil/>
-  </div>
-</template>
-
-
-
 
 <<style scoped>
 

@@ -36,7 +36,6 @@ async function createSessionAsync(userId){
 }
 
 async function deleteSessionAsync(userId){
-    console.log('caca')
     const conn = await pool.connect();
     await conn.query('DELETE FROM Session WHERE id_utilisateur = $1;',[userId]);
     conn.release();

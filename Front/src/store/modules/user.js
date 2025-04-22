@@ -1,9 +1,21 @@
 // src/store/modules/user.js
+
+import { getSessionCookies, logout } from "@/services/authentification.service.js";
+
+import {
+    getAllUsers,
+    createUser,
+    getAllReservations,
+    updateUtilisateur,
+    deleteUtilisateur,
+    getUserFromSessionId,
+} from "@/services/users.service";
+
 export default {
     namespaced: true,
     state: () => ({
         userCourant: {
-            session_id: null,
+            id_session: null,
             id_role: null,
         },
         users: [],
@@ -15,7 +27,7 @@ export default {
         activityViewsData: null,
     }),
     getters: {
-        getSessionId: state => state.userCourant.session_id,
+        getSessionId: state => state.userCourant.id_session,
         getUserCourant: state => state.userCourant
     },
     mutations: {
@@ -36,7 +48,7 @@ export default {
             state.isConnected = true;
         },
         LOGOUT_USER(state) {
-            state.userCourant = { session_id: null, id_role: null };
+            state.userCourant = { id_session: null, id_role: null };
             state.isConnected = false;
         },
         UPDATE_USER(state, user) {
@@ -46,15 +58,15 @@ export default {
         },
         DELETE_UTILISATEUR(state, user) {
             if (state.userCourant.id_utilisateur === user.id_utilisateur) {
-                state.userCourant = { session_id: null, id_role: null };
+                state.userCourant = { id_session: null, id_role: null };
                 state.isConnected = false;
             }
         },
         SET_ACTIVITES(state, activites) {
             state.activites = activites;
         },
-        SET_SESSION_ID(state, session_id) {
-            state.userCourant.session_id = session_id;
+        SET_SESSION_ID(state, id_session) {
+            state.userCourant.id_session = id_session;
             state.isConnected = true;
         },
     },

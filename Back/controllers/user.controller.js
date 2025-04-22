@@ -73,8 +73,8 @@ exports.deleteUtilisateur = (req, res) => {
 
 
 exports.getUserBySessionId = (req, res) => {
-    const session_id = req.cookies.session
-    usersService.getUserBySessionId(session_id, (error, data) => {
+    const id_session = req.cookies.session
+    usersService.getUserBySessionId(id_session, (error, data) => {
         if (error) {
             return res.status(500).send("Internal error");
         } else {

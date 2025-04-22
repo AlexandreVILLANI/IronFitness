@@ -24,6 +24,14 @@
       <h2>S'inscrire</h2>
       <form @submit.prevent="registerUser">
         <div class="input-group">
+          <label for="nom">Nom</label>
+          <input type="nom" id="nom" v-model="nom" placeholder="Entrez votre nom" required />
+        </div>
+        <div class="input-group">
+          <label for="prenom">Prenom</label>
+          <input type="prenom" id="prenom" v-model="prenom" placeholder="Entrez votre prenom  " required />
+        </div>
+        <div class="input-group">
           <label for="email">Email</label>
           <input type="email" id="email" v-model="email" placeholder="Entrez votre email" required />
         </div>
@@ -153,7 +161,6 @@ export default {
         prenom: this.prenom,
         mail: this.email,
         password: this.password,
-        point: 0,
         id_role: 1,
       });
 

@@ -6,6 +6,7 @@ import ActiviteView from "@/views/ActiviteView.vue";
 import PlanningView from "@/views/PlanningView.vue";
 import CoursView from "@/views/CoursView.vue";
 import LoginView from "@/views/LoginView.vue";
+import ProfilView from "@/views/ProfilView.vue";
 
 const routes = [
     {
@@ -42,6 +43,11 @@ const routes = [
         path: '/login',
         name: 'login',
         component: LoginView,
+    },
+    {
+        path: '/profil',
+        name : 'profil',
+        component: ProfilView,
     }
 ]
 
