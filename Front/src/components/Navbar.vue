@@ -10,7 +10,15 @@
       <li><router-link to="/planning">Planning</router-link></li>
     </ul>
     <div class="auth-buttons">
-      <router-link to="/login" class="login-btn">Connexion</router-link>
+      <router-link v-if="userCourant.id_role === null" to="/login" class="login-btn">Connexion</router-link>
+      <router-link
+          v-else
+          to="/profil"
+          class="profile-btn"
+      >
+        <img src="@/assets/user-icon.svg" alt="Profil" class="user-icon" />
+        Profil
+      </router-link>
     </div>
   </nav>
 </template>
@@ -18,6 +26,32 @@
 
 
 <style scoped>
+
+.profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  color: #2c3e50;
+  border: 2px solid white;
+  padding: 0.4rem 1rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+  background-color: #f0f0f0;
+  color: #283e97;
+}
+
+.user-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .auth-buttons {
   margin-left: 2rem;
 }
@@ -98,4 +132,10 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const userCourant = computed(() => store.state.user.userCourant);
+
 </script>

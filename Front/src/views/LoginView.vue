@@ -45,35 +45,124 @@
 </template>
 
 <script>
+import { getSession } from "@/services/authentification.service.js";
+import { getUserFromSessionId } from "@/services/users.service";
+import { mapActions, mapState } from "vuex";
+import AlertDialog from "@/components/AlertDialog.vue";
+
 export default {
+  name: "LoginView",
+  components: {
+    AlertDialog,
+  },
   data() {
     return {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      register: false, // Utilisé pour basculer entre la page de connexion et d'inscription
+      email: null,
+      password: null,
+      confirmPassword: null,
+      register: false,
+      // Champs supplémentaires pour l'inscription
+      nom: null,
+      prenom: null,
     };
   },
+  computed: {
+    ...mapState("user", ["userCourant"]),
+  },
   methods: {
-    login() {
-      // Implémentation de la logique de connexion
-      console.log('Connexion avec:', this.email, this.password);
-    },
-    registerUser() {
-      // Implémentation de la logique d'inscription
-      if (this.password === this.confirmPassword) {
-        console.log('Inscription avec:', this.email, this.password);
-      } else {
-        console.log('Les mots de passe ne correspondent pas');
-      }
-    },
+    ...mapActions("user", ["loginUtilisateur", "createUtilisateur"]),
     toggleRegister() {
-      // Bascule entre la page de connexion et la page d'inscription
+      // Remise à zéro des champs
+      this.email = null;
+      this.password = null;
+      this.confirmPassword = null;
+      this.nom = null;
+      this.prenom = null;
       this.register = !this.register;
-    }
-  }
+    },
+    async login() {
+      if (!this.email || !this.password) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur champ",
+          message: "Veuillez remplir tous les champs",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      const session_id = await getSession(this.email, this.password);
+      this.$store.commit("user/SET_SESSION_ID", session_id.data);
+
+      if (session_id.data.error === 1) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur de connexion",
+          message: "Email ou mot de passe incorrect",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      const user = await getUserFromSessionId();
+      this.$store.commit("user/SET_USER", user.data);
+
+      await this.$router.push({ path: "/" });
+    },
+    async registerUser() {
+      if (!this.email || !this.password || !this.confirmPassword || !this.nom || !this.prenom) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur champ",
+          message: "Veuillez remplir tous les champs",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      // Validation nom/prénom (lettres uniquement)
+      const regexNom = /^[A-Za-zÀ-ÖØ-öø-ÿ\- ]+$/;
+      if (!regexNom.test(this.nom) || !regexNom.test(this.prenom)) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur champ",
+          message: "Le nom et le prénom ne doivent contenir que des lettres",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      // Validation email simple
+      if (!this.email.includes("@")) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur champ",
+          message: "Adresse email invalide",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      // Confirmation mot de passe
+      if (this.password !== this.confirmPassword) {
+        await this.$refs.alertDialog.show({
+          title: "Erreur champ",
+          message: "Les mots de passe ne correspondent pas",
+          okButton: "Ok",
+        });
+        return;
+      }
+
+      await this.createUtilisateur({
+        nom: this.nom,
+        prenom: this.prenom,
+        mail: this.email,
+        password: this.password,
+        point: 0,
+        id_role: 1,
+      });
+
+      this.toggleRegister(); // Retour au formulaire de connexion
+    },
+  },
 };
 </script>
+
 
 <style scoped>
 /* Styles identiques à ceux précédemment fournis */

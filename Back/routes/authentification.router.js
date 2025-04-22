@@ -95,5 +95,4 @@ router.get("/",loginController.getLoginToken);
 router.get("/without-hash",loginController.getWithoutHash);
 
 
-
 module.exports = router;
