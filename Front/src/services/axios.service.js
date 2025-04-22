@@ -53,3 +53,14 @@ export const deleteRequest = async (url) => {
         throw error;
     }
 };
+
+export const patchRequest = async (url, data) => {
+    try {
+        const response = await axiosInstance.patch(url, data);
+        return response;
+    } catch (error) {
+        console.error('Erreur PATCH :', error);
+        throw error;
+    }
+};
+

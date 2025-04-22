@@ -46,7 +46,6 @@ function getFormuleImage(nom_image) {
 
 
 <style scoped>
-
 .spikes {
   position: relative;
   background: #445f77;
@@ -74,7 +73,7 @@ function getFormuleImage(nom_image) {
 .formule-page {
   padding: 2rem;
   text-align: center;
-  background-color: #445f77; /* <-- ton nouveau fond */
+  background-color: #445f77;
 }
 
 .formule-page h1 {
@@ -84,17 +83,18 @@ function getFormuleImage(nom_image) {
 }
 
 .formules {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .formule-card {
   background: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  width: 300px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
@@ -128,5 +128,30 @@ function getFormuleImage(nom_image) {
   font-size: 0.95rem;
   color: #7f8c8d;
 }
+
+/* Responsive design pour petits écrans */
+@media (max-width: 600px) {
+  .formule-page {
+    padding: 1rem;
+  }
+
+  .formule-page h1 {
+    font-size: 2rem;
+  }
+
+  .formule-card {
+    padding: 1rem;
+  }
+
+  .formule-card h2 {
+    font-size: 1.2rem;
+  }
+
+  .formule-card .prix,
+  .formule-card .activites {
+    font-size: 0.95rem;
+  }
+}
 </style>
+
 

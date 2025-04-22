@@ -59,9 +59,14 @@ app.use(express.json());
 // === Routes ===
 const activiteRouter = require('./routes/activite.router');
 const formuleRouter = require('./routes/formule.router');
+const loginRoutes = require('./routes/authentification.router')
+const usersRoutes = require('./routes/user.router')
 
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
+app.use('/login',loginRoutes);
+app.use('/users', usersRoutes);
+
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;
