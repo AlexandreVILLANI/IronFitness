@@ -18,12 +18,16 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
-// Test de connexion
 pool.query('SELECT NOW()')
-    .then(() => console.log('✅ Connecté à la base de données'))
-    .catch(err => console.error('❌ Erreur DB:', err.message));
+    .then(res => console.log('✅ Connecté à la base de données à', res.rows[0].now))
+    .catch(err => {
+        console.error('❌ Erreur DB:', err.message);
+        process.exit(1);
+    });
 
 module.exports = pool;
