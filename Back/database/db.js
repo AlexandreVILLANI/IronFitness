@@ -15,20 +15,23 @@ module.exports = pool;*/
 const { Pool } = require("pg");
 require("dotenv").config();
 
+// Conversion explicite du port en nombre + valeur par défaut
+const dbPort = parseInt(process.env.DB_PORT) || 5432; // 5432 par défaut si non défini
+
 const pool = new Pool({
     user: process.env.DB_USERNAME,
     host: process.env.DB_HOST,
     database: process.env.DB_DATABASE,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-    ssl: {  // ⚠️ Obligatoire pour Render
-        rejectUnauthorized: false
+    port: dbPort, // Utilisez la variable convertie
+    ssl: {
+        rejectUnauthorized: false // Toujours nécessaire pour Render
     }
 });
 
-// Test de connexion (optionnel mais recommandé)
+// Test de connexion
 pool.query('SELECT NOW()')
-    .then(() => console.log('✅ Connecté à la base de données'))
-    .catch(err => console.error('❌ Erreur de connexion DB:', err));
+    .then(res => console.log('Database connected at:', res.rows[0].now))
+    .catch(err => console.error('Database connection error:', err));
 
 module.exports = pool;
