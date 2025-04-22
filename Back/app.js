@@ -66,8 +66,20 @@ app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
 app.use('/login',loginRoutes);
 app.use('/users', usersRoutes);
+
+// test pour render
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Le backend fonctionne 🔥' });
+});
+//test 2 pour render
+app.get('/api/db-test', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT NOW()');
+        res.json({ time: result.rows[0].now });
+    } catch (err) {
+        console.error('Erreur DB :', err);
+        res.status(500).json({ error: 'Connexion DB échouée' });
+    }
 });
 
 // Démarrage du serveur
