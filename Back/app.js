@@ -20,7 +20,7 @@ const swaggerOptions = {
             version: '1.0.0',
             description: 'Documentation de l\'API',
         },
-        servers: [{ url: "http://localhost:3000" }],
+        servers: [{ url: "https://ironfitness.onrender.com" }],
     },
     apis: ['./routes/*.js'],
 };
@@ -32,7 +32,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(cors({
     origin: ['https://ironfitness-front.onrender.com'],
     credentials: true,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
 }));
 
