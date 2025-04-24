@@ -137,11 +137,12 @@ async function getUserBySessionIdAsync(id_session) {
     }
 }
 
+
 module.exports = {
     getAllUsers: getAllUsers,
     getUserById: getUserById,
     createUser: createUser,
     updateUtilisateur: updateUtilisateur,
     deleteUtilisateur: deleteUtilisateur,
-    getUserBySessionId: getUserBySessionId,
+    getUserBySessionId: getUserBySessionId
 }

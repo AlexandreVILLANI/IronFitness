@@ -2,13 +2,24 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:3000'; // ou l'URL de ton serveur backend
 
-
 const axiosInstance = axios.create({
     baseURL: API_URL,
     withCredentials: true, // Si tu utilises les cookies/sessions
     headers: {
         'Content-Type': 'application/json',
     },
+});
+
+
+// Injecte le token automatiquement
+axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export async function getRequest(endpoint, debugKey = '') {

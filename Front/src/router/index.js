@@ -7,6 +7,7 @@ import PlanningView from "@/views/PlanningView.vue";
 import CoursView from "@/views/CoursView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProfilView from "@/views/ProfilView.vue";
+import SAbonnerView from "@/views/SAbonnerView.vue";
 
 const routes = [
     {
@@ -48,6 +49,11 @@ const routes = [
         path: '/profil',
         name : 'profil',
         component: ProfilView,
+    },
+    {
+        path: '/souscrire/:id',
+        name: 'souscrire',
+        component: SAbonnerView,
     }
 ]
 

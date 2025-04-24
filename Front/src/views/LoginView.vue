@@ -69,7 +69,6 @@ export default {
       password: null,
       confirmPassword: null,
       register: false,
-      // Champs supplémentaires pour l'inscription
       nom: null,
       prenom: null,
     };
@@ -80,7 +79,6 @@ export default {
   methods: {
     ...mapActions("user", ["loginUtilisateur", "createUtilisateur"]),
     toggleRegister() {
-      // Remise à zéro des champs
       this.email = null;
       this.password = null;
       this.confirmPassword = null;
@@ -172,16 +170,18 @@ export default {
 
 
 <style scoped>
-/* Styles identiques à ceux précédemment fournis */
+/* Container global pour centrer les éléments */
 .login-container {
-  height: 100vh;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  min-height: 100vh; /* Prend toute la hauteur de la page */
+  padding: 2rem;
   overflow: hidden;
 }
 
+/* Fond flou avec image */
 .login-container::before {
   content: '';
   position: absolute;
@@ -189,28 +189,31 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../assets/Login/loginPage.jpg');
+  background-image: url('../assets/Login/background.jpg');
   background-size: cover;
   background-position: center;
   filter: blur(8px);
-  z-index: -1;
+  z-index: -1; /* Pour que l'image de fond soit derrière le contenu */
 }
 
+/* Formulaire d'authentification et d'inscription */
 .login-form, .register-form {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8); /* Fond blanc semi-transparent */
   padding: 20px;
   border-radius: 8px;
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; /* Largeur du formulaire */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Titre */
 h2 {
   text-align: center;
   font-size: 24px;
   margin-bottom: 20px;
 }
 
+/* Styles des groupes d'input */
 .input-group {
   margin-bottom: 15px;
 }
@@ -230,6 +233,7 @@ h2 {
   box-sizing: border-box;
 }
 
+/* Bouton */
 .btn {
   width: 100%;
   padding: 10px;
@@ -245,6 +249,7 @@ h2 {
   background-color: #45a049;
 }
 
+/* Lien pour changer de formulaire (se connecter / s'inscrire) */
 .signup-link, .login-link {
   text-align: center;
   margin-top: 10px;
@@ -258,4 +263,5 @@ h2 {
 .signup-link a:hover, .login-link a:hover {
   text-decoration: underline;
 }
+
 </style>

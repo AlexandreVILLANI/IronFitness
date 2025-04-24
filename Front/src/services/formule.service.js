@@ -9,7 +9,18 @@ async function getAllFormule() {
     return answer
 }
 
+async function getFormuleByIdFromAPI(id) {
+    return getRequest(`/Formule/${id}`, 'GETFORMULEBYID');
+}
+
+async function getFormuleById(id) {
+    const response = await getFormuleByIdFromAPI(id);
+    return response;
+}
+
+
 
 export {
-    getAllFormule
+    getAllFormule,
+    getFormuleById
 }

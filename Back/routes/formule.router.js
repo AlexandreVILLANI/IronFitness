@@ -42,4 +42,52 @@ const { get } = require("axios");
  */
 router.get('/', formuleController.getAllFormule);
 
+/**
+ * @swagger
+ * /formule/{id}:
+ *   get:
+ *     summary: Récupérer une formule par son identifiant avec ses activités liées
+ *     tags:
+ *       - Formules
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la formule à récupérer
+ *     responses:
+ *       200:
+ *         description: Formule récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id_formule:
+ *                     type: integer
+ *                     example: 1
+ *                   nom_formule:
+ *                     type: string
+ *                     example: Formule Découverte
+ *                   prix_formule:
+ *                     type: number
+ *                     format: float
+ *                     example: 29.99
+ *                   unite:
+ *                     type: string
+ *                     example: mois
+ *                   activites_liees:
+ *                     type: string
+ *                     example: Yoga, Pilates
+ *       404:
+ *         description: Formule non trouvée
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+router.get('/:id', formuleController.getFormuleById);
+
+
 module.exports = router;
