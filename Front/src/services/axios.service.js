@@ -35,12 +35,14 @@ export async function getRequest(endpoint, debugKey = '') {
     }
 }
 
-export const postRequest = async (url, data) => {
+export const postRequest = async (url, data = {}, debugKey = '', headers = {}) => {
     try {
-        const response = await axiosInstance.post(url, data);
+        const response = await axiosInstance.post(url, data, {
+            headers: headers
+        });
         return response;
     } catch (error) {
-        console.error('Erreur POST :', error);
+        console.error(`Erreur POST ${debugKey} :`, error);
         throw error;
     }
 };

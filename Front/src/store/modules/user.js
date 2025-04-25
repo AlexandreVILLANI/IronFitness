@@ -131,10 +131,10 @@ export default {
         },
         async fetchSessionFromCookies({ commit }) {
             try {
-                const response = await getSessionCookies();
-                if (response && response.data !== "Pas de session trouvée") {
-                    const user = await getUserFromSessionId(response);
-                    commit("SET_SESSION_ID", response);
+                const sessionId = await getSessionCookies(); // <- c'est une string
+                if (sessionId !== "Pas de session trouvée") {
+                    const user = await getUserFromSessionId(sessionId);
+                    commit("SET_SESSION_ID", sessionId);
                     commit("SET_USER", user.data);
                 }
             } catch (error) {

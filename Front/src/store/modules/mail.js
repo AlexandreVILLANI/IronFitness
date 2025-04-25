@@ -35,9 +35,15 @@ export default {
             }
         },
 
-        async sendAbonnementMail({ commit }, sessionId) {
+        async sendAbonnementMail({ commit }, { sessionId, id_formule }) {
             try {
-                await sendAbonnementMail(sessionId);
+                if (!id_formule) {
+                    console.error("ID de formule manquant.");
+                    commit("SET_MAIL_SENT_SUCCESS", false);
+                    commit("SET_MAIL_SEND_ERROR", "ID de formule manquant.");
+                    return;
+                }
+                await sendAbonnementMail(sessionId, id_formule);
                 commit("SET_MAIL_SENT_SUCCESS", true);
                 commit("SET_MAIL_SEND_ERROR", null);
             } catch (err) {

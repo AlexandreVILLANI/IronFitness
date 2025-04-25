@@ -1,26 +1,57 @@
 const mailService = require("../services/mail.service");
 
-exports.getAdminEmail = (req, res) => {
-    mailService.getAdminEmail((error, data) => {
-        if (error) {
-            return res.status(500).send("Internal error");
-        } else {
-            return res.status(200).send(data);
-        }
-    });
-}
+exports.getAdminEmail = async (req, res) => {
+    try {
+        const adminEmail = await mailService.getAdminEmailAsync();
+        return res.status(200).json(adminEmail);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal server error");
+    }
+};
 
-exports.sendAbonnementMail = async (req, res) => {
+exports.getFormuleComplete = async (req, res) => {
+    try {
+        const { idFormule } = req.params;
+        const formule = await mailService.getFormuleCompleteAsync(idFormule);
+        if (!formule) {
+            return res.status(404).send("Formule non trouvée");
+        }
+        return res.status(200).json(formule);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Erreur interne du serveur");
+    }
+};
+
+exports.envoyerMailAbonnement = async (req, res) => {
     try {
         const sessionId = req.headers['session-id'];
+        const { id_formule } = req.body;
+
         if (!sessionId) {
-            return res.status(401).json({ message: 'Session non fournie ou invalide.' });
+            return res.status(401).json({
+                success: false,
+                message: "Aucune session trouvée. Veuillez vous connecter."
+            });
         }
 
-        await mailService.envoyerMailAbonnement(sessionId);
-        res.status(200).json({ message: 'Email envoyé au gérant avec succès.' });
+        if (!id_formule) {
+            console.log(id_formule)
+            return res.status(400).json({
+                success: false,
+                message: "ID de formule manquant dans la requête"
+            });
+        }
+
+        const result = await mailService.envoyerMailAbonnementAsync(sessionId, id_formule);
+        return res.status(200).json(result);
     } catch (error) {
-        console.error('Erreur lors de l’envoi de l’email d’abonnement:', error);
-        res.status(500).json({ message: 'Erreur lors de l’envoi du mail.' });
+        console.error("Erreur lors de l'envoi de l'email :", error);
+        return res.status(500).json({
+            success: false,
+            message: "Erreur interne, l'email n'a pas pu être envoyé",
+            error: error.message
+        });
     }
 };

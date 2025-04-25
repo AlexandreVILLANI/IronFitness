@@ -76,43 +76,85 @@ router.get("/getAdminEmail", mailController.getAdminEmail);
  *     in: header
  *     description: JWT token pour l'authentification
  */
-router.post("/abonnement-mail", mailController.sendAbonnementMail);
+router.post("/abonnement-mail", mailController.envoyerMailAbonnement);
 
 /**
  * @swagger
  * /mail/abonnement-mail:
  *   post:
  *     tags: [Mail]
- *     summary: Envoie une demande d’abonnement à l’administrateur
+ *     summary: Envoie une demande d'abonnement à l'administrateur
  *     description: >
- *       Cette route envoie un email à l’administrateur à partir des informations
- *       récupérées grâce à l'identifiant de session envoyé dans les en-têtes HTTP.
+ *       Cette route envoie un email détaillé à l'administrateur avec les informations
+ *       de la formule demandée, ses activités associées et les informations de l'utilisateur.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - idFormule
+ *             properties:
+ *               idFormule:
+ *                 type: integer
+ *                 description: ID de la formule demandée
+ *                 example: 5
  *     parameters:
  *       - in: header
  *         name: session-id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de session valide obtenu à la connexion de l’utilisateur
+ *         description: ID de session valide obtenu à la connexion de l'utilisateur
  *     responses:
  *       200:
- *         description: Email envoyé avec succès
+ *         description: Demande d'abonnement envoyée avec succès
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Email envoyé au gérant avec succès."
- *       401:
- *         description: Session manquante ou invalide
- *       500:
- *         description: Erreur lors de l’envoi de l’email
+ *                   example: "Demande d'abonnement envoyée au gérant avec succès."
+ *       400:
+ *         description: Données manquantes ou invalides
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Session manquante ou invalide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Ressource non trouvée (utilisateur, formule ou admin)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erreur serveur lors de l'envoi de l'email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           description: Message d'erreur détaillé
+ *           example: "Email de l'administrateur introuvable."
  */
 
 

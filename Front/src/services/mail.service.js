@@ -11,15 +11,15 @@ async function getAdminEmail() {
 }
 
 // Appel pour envoyer la demande d’abonnement
-async function sendAbonnementMailFromAPI(sessionId) {
-    return postRequest('/mail/abonnement-mail', {}, 'SEND_ABONNEMENT_MAIL', {
+async function sendAbonnementMailFromAPI(sessionId, id_formule) {
+    return postRequest('/mail/abonnement-mail', { id_formule }, 'SEND_ABONNEMENT_MAIL', {
         'session-id': sessionId
-    })
+    });
 }
 
-async function sendAbonnementMail(sessionId) {
-    const response = await sendAbonnementMailFromAPI(sessionId)
-    return response
+async function sendAbonnementMail(sessionId, id_formule) {
+    const response = await sendAbonnementMailFromAPI(sessionId, id_formule);
+    return response;
 }
 
 export {
