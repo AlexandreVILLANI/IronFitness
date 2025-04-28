@@ -3,6 +3,8 @@ const router = express.Router();
 const activiteController = require('../controllers/activite.controller');
 const {get} = require("axios");
 
+router.get('/', activiteController.getAllActivite);
+
 /**
  * @swagger
  * /activite:
@@ -39,8 +41,8 @@ const {get} = require("axios");
  *       500:
  *         description: Erreur interne du serveur
  */
-router.get('/', activiteController.getAllActivite);
 
+router.get('/:id', activiteController.getActiviteByID);
 
 /**
  * @swagger
@@ -86,6 +88,63 @@ router.get('/', activiteController.getAllActivite);
  *       500:
  *         description: Erreur interne du serveur
  */
-router.get('/:id', activiteController.getActiviteByID);
+
+router.patch('/updateActivite',activiteController.updateActivite);
+
+/**
+ * @swagger
+ * /activite/updateActivite:
+ *   patch:
+ *     summary: Mettre à jour une activité existante
+ *     tags:
+ *       - Activités
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_activite:
+ *                 type: integer
+ *                 description: ID de l'activité à mettre à jour
+ *                 example: 1
+ *               nom_activite:
+ *                 type: string
+ *                 description: Nouveau nom de l'activité
+ *                 example: "Tournoi de tennis"
+ *               image_activite:
+ *                 type: string
+ *                 description: Nouvelle image de l'activité
+ *                 example: "tennis.jpg"
+ *               description_activite:
+ *                 type: string
+ *                 description: Nouvelle description de l'activité
+ *                 example: "Tournoi amical ouvert à tous"
+ *               type_activite:
+ *                 type: string
+ *                 enum: [En groupe, Personnel]
+ *                 description: Type de l'activité
+ *                 example: "En groupe"
+ *             required:
+ *               - id_activite
+ *     responses:
+ *       200:
+ *         description: Activité mise à jour avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Activité mise à jour avec succès"
+ *       400:
+ *         description: Données invalides fournies
+ *       404:
+ *         description: Activité non trouvée
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 
 module.exports = router;

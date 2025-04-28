@@ -30,6 +30,12 @@
             <i class="fas fa-users"></i> Activité
           </li>
           <li
+              :class="{ active: activeTab === 'utilisateur' }"
+              @click="setActiveTab('utilisateur')"
+          >
+            <i class="fas fa-users"></i> Utilisateur
+          </li>
+          <li
               :class="{ active: activeTab === 'creneau' }"
               @click="setActiveTab('creneau')"
           >
@@ -43,6 +49,7 @@
         <DashboardView v-if="activeTab === 'dashboard'" />
         <ActivityView v-if="activeTab === 'activity'" />
         <CreneauView v-if="activeTab === 'creneau'" />
+        <UserView v-if="activeTab === 'utilisateur'"/>
       </main>
     </div>
   </div>
@@ -56,6 +63,7 @@ import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
 import DashboardView from '@/components/Admin/DashboardView.vue';
 import ActivityView from '@/components/Admin/ActivityView.vue';
 import CreneauView from '@/components/Admin/CreneauView.vue';
+import UserView from "@/components/Admin/UserView.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -94,7 +102,7 @@ const logout = async () => {
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  background: #000000;
   color: white;
   padding: 1.5rem 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -178,48 +186,8 @@ const logout = async () => {
   padding: 2rem;
 }
 
-.stats-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
 
-.stat-card {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
-}
 
-.stat-value {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.stat-icon {
-  position: absolute;
-  right: 1.5rem;
-  top: 1.5rem;
-  font-size: 2.5rem;
-  opacity: 0.2;
-  color: #6e8efb;
-}
-
-.recent-activity {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
 
 .recent-activity h2 {
   margin-top: 0;
@@ -227,48 +195,8 @@ const logout = async () => {
   font-size: 1.25rem;
 }
 
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
 
-.activity-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 6px;
-  transition: background 0.3s;
-}
 
-.activity-item:hover {
-  background: #f5f7fa;
-}
-
-.activity-icon {
-  width: 40px;
-  height: 40px;
-  background: #f0f2f5;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6e8efb;
-}
-
-.activity-content {
-  flex: 1;
-}
-
-.activity-title {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
-.activity-time {
-  font-size: 0.8rem;
-  color: #888;
-}
 
 @media (max-width: 768px) {
   .dashboard-content {
@@ -279,14 +207,8 @@ const logout = async () => {
     width: 100%;
   }
 
-  .stats-cards {
-    grid-template-columns: 1fr 1fr;
-  }
+
 }
 
-@media (max-width: 480px) {
-  .stats-cards {
-    grid-template-columns: 1fr;
-  }
-}
+
 </style>

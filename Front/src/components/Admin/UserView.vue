@@ -1,11 +1,9 @@
 <template>
-<div>Tableau de bord</div>
+<div>utilisateur</div>
 </template>
-
 <script setup>
 
 </script>
-
 <style scoped>
 
 </style>

@@ -47,8 +47,32 @@ async function getActiviteByIDAsync(id) {
     }
 }
 
+const updateActivite = (id,nom,image,description,type,callback) => {
+    updateActiviteAsync(id,nom,image,description,type)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.log(error);
+            callback(error, null);
+        });
+}
+
+async function updateActiviteAsync(id,nom,image,description,type) {
+    try {
+        const conn = await pool.connect();
+        const result = await conn.query("UPDATE Activite SET nom_activite = $1, image_activite=$2 , description_activite = $3 , type_activite = $4 where id_activite = $5",[nom,image,description,type,id]);
+        conn.release();
+        return result.rows;
+    } catch (error) {
+        console.error('Error in UPDATENBPLACEASYNC:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getAllActivite: getAllActivite,
-    getActiviteByID: getActiviteByID
+    getActiviteByID: getActiviteByID,
+    updateActivite: updateActivite
 }
 
