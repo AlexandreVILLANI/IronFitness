@@ -137,6 +137,4 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const userCourant = computed(() => store.state.user.userCourant);
-console.log(userCourant)
-
 </script>

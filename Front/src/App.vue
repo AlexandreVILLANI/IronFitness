@@ -20,12 +20,12 @@ const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const disconnectedDialog = ref(null);
+const userCourant = store.state.user.userCourant;
 
 const inactivityTime = 59 * 60 * 1000; // 59 minutes
 let inactivityTimer = null;
 
 function resetInactivityTimer() {
-  const userCourant = store.state.user.userCourant;
 
   if (!userCourant || !userCourant.id_session) {
     return;
