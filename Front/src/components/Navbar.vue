@@ -10,7 +10,7 @@
       <li><router-link to="/planning">Planning</router-link></li>
     </ul>
     <div class="auth-buttons">
-      <router-link v-if="userCourant.id_role === null" to="/login" class="login-btn">Connexion</router-link>
+      <router-link v-if="!userCourant || userCourant.id_session === null" to="/login" class="login-btn">Connexion</router-link>
       <router-link
           v-else
           to="/profil"
@@ -137,5 +137,6 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const userCourant = computed(() => store.state.user.userCourant);
+console.log(userCourant)
 
 </script>

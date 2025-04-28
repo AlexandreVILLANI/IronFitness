@@ -14,6 +14,7 @@ const routes = [
         path: '/',
         name: 'home',
         component: AccueilView,
+        meta: { hideNavbar: false, hideFooter: false },
     },
     {
         path: '/about',

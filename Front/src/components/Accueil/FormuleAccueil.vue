@@ -24,6 +24,8 @@
 import { onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+
+
 const router = useRouter();
 const store = useStore();
 const formules = computed(() => store.state.formule.formules);
@@ -34,13 +36,14 @@ const images = import.meta.glob('@/assets/Formule/*.jpg', {
 });
 
 async function abonner(formule) {
-  if (!userCourant.value || userCourant.value.id_role === null) {
+  if (!userCourant.value || !userCourant.value.id_session) {
     alert("Vous devez être connecté pour vous abonner.");
-    router.push({ name: 'login' }); // ou la route de connexion que tu utilises
+    router.push({ name: 'login' });
     return;
   }
   router.push({ name: 'souscrire', params: { id: formule.id_formule } });
 }
+
 
 onMounted(() => {
   store.dispatch("formule/getAllFormule");

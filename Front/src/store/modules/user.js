@@ -66,8 +66,14 @@ export default {
             state.activites = activites;
         },
         SET_SESSION_ID(state, id_session) {
-            state.userCourant.id_session = id_session;
-            state.isConnected = true;
+            // S'assurer que userCourant est un objet valide avant d'affecter la session
+            if (state.userCourant && typeof state.userCourant === 'object') {
+                state.userCourant.id_session = id_session;
+                state.isConnected = true;
+            } else {
+                state.userCourant = { id_session: id_session, id_role: null }; // Initialisation de l'objet si nécessaire
+                state.isConnected = true;
+            }
         },
     },
     actions: {
@@ -132,10 +138,14 @@ export default {
         async fetchSessionFromCookies({ commit }) {
             try {
                 const sessionId = await getSessionCookies(); // <- c'est une string
-                if (sessionId !== "Pas de session trouvée") {
+                if (sessionId !== "Pas de session trouvée" && typeof sessionId === 'string') {
                     const user = await getUserFromSessionId(sessionId);
-                    commit("SET_SESSION_ID", sessionId);
-                    commit("SET_USER", user.data);
+                    if (user && user.data && typeof user.data === 'object') {
+                        commit("SET_SESSION_ID", sessionId);
+                        commit("SET_USER", user.data);
+                    } else {
+                        console.error("L'utilisateur récupéré est invalide");
+                    }
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération de la session :", error);

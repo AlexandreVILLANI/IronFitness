@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import ConfirmDialogue from "@/components/ConfirmDialog.vue";
+import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';

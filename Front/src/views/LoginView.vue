@@ -56,7 +56,7 @@
 import { getSession } from "@/services/authentification.service.js";
 import { getUserFromSessionId } from "@/services/users.service";
 import { mapActions, mapState } from "vuex";
-import AlertDialog from "@/components/AlertDialog.vue";
+import AlertDialog from "@/components/Dialog/AlertDialog.vue";
 
 export default {
   name: "LoginView",

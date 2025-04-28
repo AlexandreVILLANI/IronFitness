@@ -19,17 +19,17 @@ import { onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-// Store
-const store = useStore();
-const router = useRouter(); // Initialisation du router
-onMounted(() => {
-  store.dispatch("activite/getAllActivite");
-});
-const activities = computed(() => store.state.activite.activites);
 
+const activities = computed(() => store.state.activite.activites);
+const store = useStore();
+const router = useRouter();
 const images = import.meta.glob('@/assets/Activite/*.jpg', {
   eager: true,
   import: 'default'
+});
+
+onMounted(() => {
+  store.dispatch("activite/getAllActivite");
 });
 
 function getActivityImage(nom_image) {
@@ -39,7 +39,7 @@ function getActivityImage(nom_image) {
 }
 
 function goToActivity() {
-  router.push('/activite'); // Redirection vers la page /activite
+  router.push('/activite');
 }
 </script>
 <style scoped>
