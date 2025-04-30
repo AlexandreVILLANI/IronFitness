@@ -18,12 +18,6 @@
       <nav class="sidebar">
         <ul>
           <li
-              :class="{ active: activeTab === 'dashboard' }"
-              @click="setActiveTab('dashboard')"
-          >
-            <i class="fas fa-tachometer-alt"></i> Tableau de bord
-          </li>
-          <li
               :class="{ active: activeTab === 'activity' }"
               @click="setActiveTab('activity')"
           >
@@ -46,7 +40,6 @@
 
       <main class="main-content">
         <!-- Contenu dynamique en fonction de l'onglet sélectionné -->
-        <DashboardView v-if="activeTab === 'dashboard'" />
         <ActivityView v-if="activeTab === 'activity'" />
         <CreneauView v-if="activeTab === 'creneau'" />
         <UserView v-if="activeTab === 'utilisateur'"/>
@@ -60,7 +53,6 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
-import DashboardView from '@/components/Admin/DashboardView.vue';
 import ActivityView from '@/components/Admin/ActivityView.vue';
 import CreneauView from '@/components/Admin/CreneauView.vue';
 import UserView from "@/components/Admin/UserView.vue";
@@ -68,7 +60,7 @@ import UserView from "@/components/Admin/UserView.vue";
 const store = useStore();
 const router = useRouter();
 const confirmDialog = ref(null);
-const activeTab = ref('dashboard'); // Onglet actif par défaut
+const activeTab = ref('utilisateur');
 
 const userCourant = store.state.user.userCourant;
 

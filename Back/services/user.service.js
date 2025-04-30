@@ -137,6 +137,85 @@ async function getUserBySessionIdAsync(id_session) {
     }
 }
 
+const updateUserFormule = (id_utilisateur, formules, callback) => {
+    updateUserFormuleAsync(id_utilisateur, formules)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.error(error);
+            callback(error, null);
+        });
+};
+
+async function updateUserFormuleAsync(id_utilisateur, formules) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        for (const id_formule of formules) {
+            await client.query(
+                "INSERT INTO Formule_Utilisateur (id_formule, id_utilisateur) VALUES ($1, $2) ON CONFLICT DO NOTHING;",
+                [id_formule, id_utilisateur]
+            );
+        }
+        await client.query('COMMIT');
+        client.release();
+        return { success: true, message: "Formules ajoutées avec succès" };
+    } catch (error) {
+        await client.query('ROLLBACK');
+        client.release();
+        console.error('Error in updateUserFormuleAsync:', error);
+        throw error;
+    }
+}
+
+
+const getUserFormules = (id_utilisateur, callback) => {
+    getUserFormulesAsync(id_utilisateur)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.error(error);
+            callback(error, null);
+        });
+};
+
+async function getUserFormulesAsync(id_utilisateur) {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `
+                SELECT f.id_formule, f.nom_formule, f.prix_formule, f.unite
+                FROM Formule_Utilisateur fu
+                         JOIN Formule f ON fu.id_formule = f.id_formule
+                WHERE fu.id_utilisateur = $1;
+            `,
+            [id_utilisateur]
+        );
+        client.release();
+        return result.rows;
+    } catch (error) {
+        client.release();
+        console.error('Error in getUserFormulesAsync:', error);
+        throw error;
+    }
+}
+
+async function getUtilisateurById(id_utilisateur) {
+    const client = await pool.connect();
+    try {
+        const result = await client.query("SELECT * FROM utilisateur WHERE id_utilisateur = $1", [id_utilisateur]);
+        if (result.rows.length > 0) {
+            return result.rows[0];  // Retourne l'utilisateur
+        } else {
+            throw new Error("Utilisateur non trouvé");
+        }
+    } catch (err) {
+        console.error("Erreur lors de la récupération de l'utilisateur:", err);
+        throw err;
+    }
+}
 
 module.exports = {
     getAllUsers: getAllUsers,
@@ -144,5 +223,8 @@ module.exports = {
     createUser: createUser,
     updateUtilisateur: updateUtilisateur,
     deleteUtilisateur: deleteUtilisateur,
-    getUserBySessionId: getUserBySessionId
+    getUserBySessionId: getUserBySessionId,
+    getUserFormules: getUserFormules,
+    updateUserFormule: updateUserFormule,
+    getUtilisateurById: getUtilisateurById
 }

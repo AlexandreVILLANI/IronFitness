@@ -1,4 +1,4 @@
-import {getRequest,postRequest,patchRequest} from "./axios.service"
+import {getRequest, postRequest, patchRequest, deleteRequest} from "./axios.service"
 
 async function getAllUsersFromAPI() {
     return getRequest('/users', 'GETALLUSERS')
@@ -27,22 +27,22 @@ async function updateUtilisateur(data) {
     return answer
 }
 
-async function getAllReservations(id) {
-    let answer = await getAllReservationsFromAPI(id)
+async function getUserById(id) {
+    let answer = await getUserByIdFromAPI(id)
     return answer
 }
 
-async function getAllReservationsFromAPI(id) {
-    return getRequest('/users/reservations?id='+id, 'GETALLRESERVATIONS')
+async function getUserByIdFromAPI(id) {
+    return getRequest('/users/byid?id='+id, 'GETUSERBYID')
 }
 
-async function deleteUtilisateurFromAPI(data) {
-    return patchRequest('/users/delete',data, 'DELETEUSER')
+async function deleteUtilisateurFromAPI(id) {
+    return deleteRequest('/users/delete', id);
 }
 
-async function deleteUtilisateur(data) {
-    let answer = await deleteUtilisateurFromAPI(data)
-    return answer
+async function deleteUtilisateur(id) {
+    let answer = await deleteUtilisateurFromAPI(id);
+    return answer;
 }
 
 async function getUserFromSessionIdFromAPI() {
@@ -53,13 +53,32 @@ async function getUserFromSessionId() {
     return await getUserFromSessionIdFromAPI();
 }
 
+async function getUserFormulesFromAPI(id) {
+    return getRequest(`/users/getUserFormule?id_utilisateur=${id}`, 'GETUSERFORMULE');
+}
+
+async function getUserFormules(id) {
+    let answer = await getUserFormulesFromAPI(id)
+    return answer
+}
+
+async function updateUserFormuleFromAPI({ id_utilisateur, formules }) {
+    return patchRequest('/users/updateUserFormule',{ id_utilisateur, formules }, 'UPDATEUSERFORMULE')
+}
+
+async function updateUserFormule({ id_utilisateur, formules }) {
+    let answer = await updateUserFormuleFromAPI({ id_utilisateur, formules })
+    return answer
+}
 
 
 export {
     getAllUsers,
     createUser,
     updateUtilisateur,
-    getAllReservations,
+    getUserById,
     deleteUtilisateur,
     getUserFromSessionId,
+    getUserFormules,
+    updateUserFormule
 }

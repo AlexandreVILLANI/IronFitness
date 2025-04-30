@@ -1,14 +1,14 @@
-// src/store/modules/user.js
-
 import { getSessionCookies, logout } from "@/services/authentification.service.js";
 
 import {
     getAllUsers,
     createUser,
-    getAllReservations,
+    getUserById,
     updateUtilisateur,
     deleteUtilisateur,
     getUserFromSessionId,
+    getUserFormules,
+    updateUserFormule
 } from "@/services/users.service";
 
 export default {
@@ -25,10 +25,12 @@ export default {
         prestataires: null,
         activites: null,
         activityViewsData: null,
+        formulesUtilisateur: [],
     }),
     getters: {
         getSessionId: state => state.userCourant.id_session,
-        getUserCourant: state => state.userCourant
+        getUserCourant: state => state.userCourant,
+        getFormulesUtilisateur: state => state.formulesUtilisateur,
     },
     mutations: {
         SET_USERS(state, users) {
@@ -74,6 +76,12 @@ export default {
                 state.isConnected = true;
             }
         },
+        SET_USER_FORMULES(state, formules) {
+            state.formulesUtilisateur = Array.isArray(formules) ? formules : [];
+        },
+        UPDATE_USER_FORMULE(state, updatedFormules) {
+            state.formulesUtilisateur = updatedFormules;
+        },
     },
     actions: {
         async getAllUsers({ commit }) {
@@ -99,18 +107,6 @@ export default {
         async changeRoleStore({ commit }, id) {
             commit('CHANGE_ROLE', id);
         },
-        async getAllReservations({ commit }, id) {
-            try {
-                const result = await getAllReservations(id);
-                if (Array.isArray(result.data)) {
-                    commit('SET_RESERVATIONS', result.data);
-                } else {
-                    console.error("Unexpected response format:", result);
-                }
-            } catch (err) {
-                console.error("Error in getAllReservationStore():", err);
-            }
-        },
         async loginUtilisateur({ commit }, data) {
             commit('SET_USER', data);
         },
@@ -121,17 +117,22 @@ export default {
         async updateUtilisateur({ commit }, data) {
             try {
                 const result = await updateUtilisateur(data);
-                commit('UPDATE_USER', result[0]);
+                if (result.data && result.data.length > 0) {
+                    commit('UPDATE_USER', result.data[0]);
+                } else {
+                    console.error("Aucune donnée renvoyée par l'API");
+                }
             } catch (err) {
-                console.error("Error in createUserStore():", err);
+                console.error("Error in updateUserStore():", err);
             }
         },
+
         async deleteUtilisateur({ commit }, id) {
             try {
                 const result = await deleteUtilisateur(id);
                 commit('DELETE_UTILISATEUR', result[0]);
             } catch (err) {
-                console.error("Error in deleteUser():", err);
+                console.error("Error in deleteUtilisateur():", err);
             }
         },
         async fetchSessionFromCookies({ commit }) {
@@ -145,8 +146,38 @@ export default {
             } catch (error) {
                 console.error("Erreur lors de la récupération de la session :", error);
             }
+        },
+        async getUserFormules({ commit }, id_utilisateur) {
+            try {
+                const result = await getUserFormules(id_utilisateur);
+                if (Array.isArray(result.data)) {
+                    commit("SET_USER_FORMULES", result.data);
+                } else {
+                    console.error("Unexpected response format:", result);
+                }
+            } catch (err) {
+                console.error("Error in getUserFormulesStore():", err);
+            }
+        },
+
+        async updateUserFormule({ commit }, { id_utilisateur, formules }) {
+            console.log('tableaux',formules)
+            try {
+                const result = await updateUserFormule({ id_utilisateur, formules });
+                commit("UPDATE_USER_FORMULE", result.data);
+            } catch (err) {
+                console.error("Error in updateUserFormuleStore():", err);
+            }
+        },
+
+        async getUserById({ commit }, id) {
+            try {
+                const result = await getUserById(id);
+                return result.data[0];
+            } catch (err) {
+                console.error("Error in getUserByIdStore():", err);
+                throw err;
+            }
         }
     }
 };
-
-

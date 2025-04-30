@@ -23,7 +23,14 @@
   </nav>
 </template>
 
+<script setup lang="ts">
+import { computed } from "vue";
+import { useStore } from "vuex";
 
+const store = useStore();
+const userCourant = computed(() => store.state.user.userCourant);
+
+</script>
 
 <style scoped>
 
@@ -131,10 +138,4 @@
 }
 </style>
 
-<script setup lang="ts">
-import { computed } from "vue";
-import { useStore } from "vuex";
 
-const store = useStore();
-const userCourant = computed(() => store.state.user.userCourant);
-</script>

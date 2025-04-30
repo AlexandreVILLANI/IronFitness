@@ -130,7 +130,6 @@ router.get("/",usersController.getAllUsers);
  */
 
 router.get("/byid", usersController.getUserById);
-
 /**
  * @swagger
  * /users/byid:
@@ -201,27 +200,38 @@ router.patch("/",usersController.updateUtilisateur);
 
 
 
-router.delete("/delete",usersController.deleteUtilisateur);
+router.delete("/delete/:id", usersController.deleteUtilisateur);
 
 /**
  * @swagger
- * /users/delete:
+ * /users/delete/{id}:
  *   delete:
  *     tags: [Users]
  *     summary: Delete a user by its ID.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UserD'
+ *     description: Deletes a user from the system using their unique identifier.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the user to delete
  *     responses:
  *       200:
  *         description: User deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User deleted successfully"
+ *       404:
+ *         description: User not found.
  *       500:
  *         description: Internal server error.
  */
-
 
 router.get("/getBySessionId", usersController.getUserBySessionId);
 
@@ -272,8 +282,103 @@ router.get("/getBySessionId", usersController.getUserBySessionId);
  *       500:
  *         description: Internal server error
  */
+router.get('/getUserFormule', usersController.getUserFormules);
+
+/**
+ * @swagger
+ * /users/getUserFormule:
+ *   get:
+ *     summary: Get all formules associated with a user
+ *     tags: [Users]
+ *     description: Retrieves all the formules linked to a specific user by their ID.
+ *     parameters:
+ *       - name: id_utilisateur
+ *         in: query
+ *         description: ID of the user
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *     responses:
+ *       200:
+ *         description: List of formules retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id_formule:
+ *                     type: integer
+ *                     example: 2
+ *                   nom_formule:
+ *                     type: string
+ *                     example: "Abonnement Mensuel"
+ *                   prix_formule:
+ *                     type: number
+ *                     format: float
+ *                     example: 49.99
+ *                   unite:
+ *                     type: string
+ *                     example: "mois"
+ *       400:
+ *         description: Missing or invalid id_utilisateur parameter
+ *       404:
+ *         description: No formules found for the specified user
+ *       500:
+ *         description: Internal server error
+ */
 
 
+router.patch('/updateUserFormule',usersController.addFormuleToUser);
+
+/**
+ * @swagger
+ * /users/updateUserFormule:
+ *   patch:
+ *     summary: Add formules to a user
+ *     tags: [Users]
+ *     description: Assigns one or multiple formules to a user based on their user ID.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id_utilisateur
+ *               - formules
+ *             properties:
+ *               id_utilisateur:
+ *                 type: integer
+ *                 example: 5
+ *                 description: The ID of the user.
+ *               formules:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                   example: 2
+ *                 description: An array of formule IDs to assign to the user.
+ *     responses:
+ *       200:
+ *         description: Formules successfully assigned to the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Formules ajoutées avec succès"
+ *       400:
+ *         description: Bad request, missing or invalid parameters
+ *       500:
+ *         description: Internal server error
+ */
 
 
 

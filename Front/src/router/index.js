@@ -8,6 +8,8 @@ import CoursView from "@/views/CoursView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProfilView from "@/views/ProfilView.vue";
 import SAbonnerView from "@/views/SAbonnerView.vue";
+import EditUserView from "@/components/Admin/EditUserView.vue";
+import AddFormuleUserView from "@/components/Admin/AddFormuleUserView.vue";
 
 const routes = [
     {
@@ -55,6 +57,16 @@ const routes = [
         path: '/souscrire/:id',
         name: 'souscrire',
         component: SAbonnerView,
+    },
+    {
+        path: '/profil/editProfil/:id',
+        name: 'editUser',
+        component: EditUserView,
+    },
+    {
+        path :'/profil/addFormule/:id',
+        name: 'addFormule',
+        component: AddFormuleUserView,
     }
 ]
 
