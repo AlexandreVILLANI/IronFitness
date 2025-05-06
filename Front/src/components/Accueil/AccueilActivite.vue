@@ -1,21 +1,23 @@
 <template>
-  <div class="sticker-page">
-    <h1>Activités</h1>
-    <div class="stickers">
-      <div
-          v-for="(activity, index) in activities"
-          :key="index"
-          class="sticker"
-          @click="goToActivity"
-      >
-        <img
-            class="image-activite"
-            :src="getActivityImage(activity.image_activite)"
-            alt="Image de l'activité"
-        />
-        <h2>{{ activity.nom_activite }}</h2>
-      </div>
+  <div class="stickers">
+    <div
+        v-for="(activity, index) in visibleActivities"
+        :key="index"
+        class="sticker"
+        @click="goToActivity"
+    >
+      <img
+          class="image-activite"
+          :src="getActivityImage(activity.image_activite)"
+          alt="Image de l'activité"
+      />
+      <h2>{{ activity.nom_activite }}</h2>
     </div>
+  </div>
+
+  <!-- Bouton "Voir plus" -->
+  <div class="voir-plus">
+    <button @click="goToActivity">Voir plus</button>
   </div>
 </template>
 
@@ -27,6 +29,8 @@ import {useRouter} from "vue-router";
 const activities = computed(() => store.state.activite.activites);
 const store = useStore();
 const router = useRouter();
+const visibleActivities = computed(() => activities.value.slice(0, 5));
+
 const images = import.meta.glob('@/assets/Activite/*.jpg', {
   eager: true,
   import: 'default',
@@ -48,6 +52,28 @@ function goToActivity() {
 </script>
 
 <style scoped>
+.voir-plus {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.voir-plus button {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.1rem;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.voir-plus button:hover {
+  background-color: #1a252f;
+}
+
+
 .sticker-page {
   padding: 1.5rem; /* Réduit un peu le padding global sur mobile */
   text-align: center;
@@ -98,37 +124,37 @@ function goToActivity() {
 /* Media query pour les écrans plus grands (tablettes et ordinateurs) */
 @media (min-width: 768px) {
   .sticker-page {
-    padding: 2rem;
+    padding: 3rem; /* Augmente le padding global sur ordinateur */
   }
 
   .sticker-page h1 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
+    font-size: 3rem; /* Augmente la taille du titre sur ordinateur */
+    margin-bottom: 2.5rem;
   }
 
   .stickers {
-    gap: 2rem;
+    gap: 2.5rem; /* Augmente l'espace entre les stickers sur ordinateur */
     justify-content: flex-start; /* Alignement à gauche sur les écrans plus grands */
   }
 
   .sticker {
-    width: 300px; /* Retour à la largeur fixe sur les écrans plus grands */
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 350px; /* Augmente la largeur des stickers sur ordinateur */
+    padding: 2rem; /* Augmente le padding à l'intérieur du sticker sur ordinateur */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée sur ordinateur */
   }
 
   .sticker:hover {
-    transform: scale(1.05);
+    transform: scale(1.07); /* Effet de survol plus marqué sur ordinateur */
   }
 
   .sticker img {
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
+    margin-bottom: 1.2rem; /* Augmente la marge sous l'image sur ordinateur */
+    border-radius: 0.6rem;
   }
 
   .sticker h2 {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem; /* Augmente la taille du titre du sticker sur ordinateur */
+    margin-bottom: 0.7rem;
   }
 }
 
@@ -136,11 +162,22 @@ function goToActivity() {
 @media (min-width: 576px) and (max-width: 767px) {
   .stickers {
     justify-content: center; /* Centre les stickers sur les tablettes de taille moyenne */
-    gap: 1.5rem;
+    gap: 2rem; /* Ajuste l'espace pour les tablettes */
   }
 
   .sticker {
-    width: calc(33.33% - 1rem); /* Trois colonnes sur les tablettes de taille moyenne */
+    width: calc(50% - 1rem); /* Deux colonnes sur les tablettes de taille moyenne */
+    padding: 1.2rem; /* Ajuste le padding pour les tablettes */
+  }
+
+  .sticker img {
+    margin-bottom: 0.9rem; /* Ajuste la marge pour les tablettes */
+    border-radius: 0.4rem;
+  }
+
+  .sticker h2 {
+    font-size: 1.2rem; /* Ajuste la taille du titre pour les tablettes */
+    margin-bottom: 0.4rem;
   }
 }
 </style>

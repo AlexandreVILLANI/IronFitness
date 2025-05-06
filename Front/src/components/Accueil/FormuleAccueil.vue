@@ -71,25 +71,22 @@ function getFormuleImage(nom_image) {
 
 .spikes {
   position: relative;
-  background: #445f77;
-  height: 1vh;
-  z-index: 1;
+  background: #ffffff;
+  height: 2vh;
 }
 
 .spikes::after {
-  content: "";
+  content: '';
   position: absolute;
   right: 0;
-  left: -98%;
-  bottom: 100%;
-  z-index: 2;
+  left: -0%;
+  top: 100%;
+  z-index: 10;
   display: block;
-  height: 10px;
-  background-size: 10px 100%;
-  background-image: linear-gradient(135deg, #445f77 25%, transparent 25%),
-  linear-gradient(225deg, #445f77 25%, transparent 25%);
+  height: 40px;
+  background-size: 20px 100%;
+  background-image: linear-gradient(135deg, #ffffff 25%, transparent 25%), linear-gradient(225deg, #ffffff 25%, transparent 25%);
   background-position: 0 0;
-  transform: rotate(180deg);
 }
 
 .formule-page {
