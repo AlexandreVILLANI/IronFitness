@@ -66,13 +66,16 @@ onUnmounted(() => {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* Solution principale */
-#app {
-  display: grid;
-  grid-template-rows: auto 1fr auto; /* Navbar - Contenu - Footer */
-  min-height: 100vh;
+/* Reset global pour empêcher le défilement horizontal */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* Empêche le défilement horizontal sur tout le document */
+  position: relative;
 }
-/* Vos styles existants */
+
 * {
   margin: 0;
   padding: 0;
@@ -80,7 +83,32 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
+/* Structure principale */
+#app {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Navbar - Contenu - Footer */
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100vw; /* Empêche le dépassement de la largeur */
+  overflow-x: hidden; /* Empêche le défilement horizontal au niveau de l'app */
+  position: relative;
+}
+
+/* Pour éviter que le contenu de routerView ne cause de défilement horizontal */
+#app > * {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Media queries pour les appareils mobiles */
+@media screen and (max-width: 768px) {
+  body {
+    -webkit-text-size-adjust: 100%; /* Empêche le zoom du texte sur iOS */
+  }
+
+  #app {
+    padding: 0; /* Élimine tout padding potentiellement problématique */
+  }
 }
 </style>
