@@ -1,35 +1,5 @@
-<script setup>
-import { onMounted, computed } from "vue";
-import { useStore } from "vuex";
-
-// Store
-const store = useStore();
-
-onMounted(() => {
-  store.dispatch("formule/getAllFormule");
-});
-
-const formules = computed(() => store.state.formule.formules);
-
-// Images (si tu as des images pour les formules)
-const images = import.meta.glob('@/assets/Formule/*.jpg', {
-  eager: true,
-  import: 'default'
-});
-
-function getFormuleImage(nom_image) {
-  if (!nom_image) return images['/src/assets/notfound.jpg'];
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
-  const imagePath = `/src/assets/Formule/${fileName}`;
-  return images[imagePath] || images['/src/assets/notfound.jpg'];
-}
-</script>
-
-
 <template>
-
   <section class="spikes"></section>
-
 
   <div class="formule-page">
     <h1>Formules</h1>
@@ -39,13 +9,74 @@ function getFormuleImage(nom_image) {
         <h2>{{ formule.nom_formule }}</h2>
         <p class="prix">{{ formule.prix_formule }} € / {{ formule.unite }}</p>
         <p class="activites">Activités : {{ formule.activites_liees }}</p>
+
+        <button @click="abonner(formule)" class="subscribe-button">
+          S'abonner
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 
+
+<script setup>
+import { onMounted, computed } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
+
+const router = useRouter();
+const store = useStore();
+const formules = computed(() => store.state.formule.formules);
+const userCourant = computed(() => store.state.user.userCourant);
+const images = import.meta.glob('@/assets/Formule/*.jpg', {
+  eager: true,
+  import: 'default'
+});
+
+async function abonner(formule) {
+  if (!userCourant.value || !userCourant.value.id_session) {
+    alert("Vous devez être connecté pour vous abonner.");
+    router.push({ name: 'login' });
+    return;
+  }
+  router.push({ name: 'souscrire', params: { id: formule.id_formule } });
+}
+
+
+onMounted(() => {
+  store.dispatch("formule/getAllFormule");
+});
+
+function getFormuleImage(nom_image) {
+  if (!nom_image) return images['/src/assets/notfound.jpg'];
+  const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
+  const imagePath = `/src/assets/Formule/${fileName}`;
+  return images[imagePath] || images['/src/assets/notfound.jpg'];
+}
+
+</script>
+
 <style scoped>
+
+.subscribe-button {
+  background-color: #527091;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.subscribe-button:hover {
+  background-color: #3b5a75;
+}
+
+
 .spikes {
   position: relative;
   background: #445f77;

@@ -9,8 +9,8 @@
 <script>
 
 import {mapState} from "vuex";
-import DashboardUtilisateur from "@/components/Profil/DashboardUtilisateur.vue";
-import DashboardAdmin from "@/components/Profil/DashboardAdmin.vue";
+import DashboardUtilisateur from "@/components/Profil/ProfilUtilisateur.vue";
+import DashboardAdmin from "@/components/Profil/ProfilAdmin.vue";
 export default {
   name: 'ProfilView',
   components: {

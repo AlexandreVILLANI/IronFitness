@@ -31,9 +31,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Middleware CORS
 app.use(cors({
     origin: ['https://ironfitness-front.onrender.com', 'http://localhost:5173'],
+    servers: [{ url: "http://localhost:3000" }],
+    //    origin: 'http://localhost:5173',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],  // Ajoutez 'PATCH' ici
+    allowedHeaders: ['Content-Type', 'session-id'] // <-- ajoute ton header ici
 }));
 
 
@@ -55,14 +57,12 @@ app.use(session({
 // Body parser
 app.use(express.json());
 
-
-
 // === Routes ===
 const activiteRouter = require('./routes/activite.router');
 const formuleRouter = require('./routes/formule.router');
-const loginRoutes = require('./routes/authentification.router')
-const usersRoutes = require('./routes/user.router')
-
+const loginRoutes = require('./routes/authentification.router');
+const usersRoutes = require('./routes/user.router');
+const mailRoutes = require('./routes/mail.router');
 
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
@@ -96,6 +96,7 @@ app.get('/api/db-test', async (req, res) => {
     }
 });
 
+app.use('/mail',mailRoutes);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;

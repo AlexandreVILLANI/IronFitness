@@ -1,17 +1,35 @@
+<template>
+  <div class="sticker-page">
+    <h1>Activités</h1>
+    <div class="stickers">
+      <div
+          v-for="(activity, index) in activities"
+          :key="index"
+          class="sticker"
+          @click="goToActivity"
+      >
+        <img class="image-activite" :src="getActivityImage(activity.image_activite)" />
+        <h2>{{ activity.nom_activite }}</h2>
+      </div>
+    </div>
+  </div>
+</template>
 <script setup>
 import { onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-// Store
-const store = useStore();
-onMounted(() => {
-  store.dispatch("activite/getAllActivite");
-});
+
 const activities = computed(() => store.state.activite.activites);
-
+const store = useStore();
+const router = useRouter();
 const images = import.meta.glob('@/assets/Activite/*.jpg', {
   eager: true,
   import: 'default'
+});
+
+onMounted(() => {
+  store.dispatch("activite/getAllActivite");
 });
 
 function getActivityImage(nom_image) {
@@ -20,20 +38,10 @@ function getActivityImage(nom_image) {
   return images[imagePath] || images['/src/assets/notfound.jpg'];
 }
 
+function goToActivity() {
+  router.push('/activite');
+}
 </script>
-
-<template>
-  <div class="sticker-page">
-    <h1>Activités</h1>
-    <div class="stickers">
-      <div v-for="(activity, index) in activities" :key="index" class="sticker">
-        <img class="image-activite" :src="getActivityImage(activity.image_activite)"  />
-        <h2>{{ activity.nom_activite }}</h2>
-      </div>
-    </div>
-  </div>
-</template>
-
 <style scoped>
 .sticker-page {
   padding: 2rem;
@@ -58,9 +66,10 @@ function getActivityImage(nom_image) {
   background: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  width: 300px;  /* Taille augmentée */
+  width: 300px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
+  cursor: pointer; /* Ajout du curseur pour indiquer que c'est cliquable */
 }
 
 .sticker:hover {
@@ -68,11 +77,11 @@ function getActivityImage(nom_image) {
 }
 
 .sticker img {
-  width: 100%; /* Largeur maximale pour occuper l'espace */
-  height: auto; /* Pour garder le ratio d'aspect */
-  object-fit: cover; /* Recadrage d'image pour occuper l'espace sans déformation */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
   margin-bottom: 1rem;
-  border-radius: 0.5rem; /* Ajouter une bordure arrondie à l'image */
+  border-radius: 0.5rem;
 }
 
 .sticker h2 {

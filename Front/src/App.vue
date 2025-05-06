@@ -3,39 +3,65 @@
     <Navbar v-if="!route.meta.hideNavbar" />
     <RouterView />
     <Footer v-if="!route.meta.hideFooter" />
+    <DisconnectedDialog ref="disconnectedDialog" />
   </div>
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
-import Navbar from '@/components/Navbar.vue'
-import Footer from '@/components/Footer.vue'
-import { ref, onMounted } from 'vue'
-import { useStore } from 'vuex'
-import axios from 'axios'
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
+import DisconnectedDialog from '@/components/Dialog/DisconnectedDialog.vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
-// Récupérer l'URL de l'API depuis le .env
-const apiUrl = import.meta.env.VITE_API_URL
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const disconnectedDialog = ref(null);
+const userCourant = store.state.user.userCourant;
 
-const activites = ref([])
+const inactivityTime = 59 * 60 * 1000; // 59 minutes
+let inactivityTimer = null;
 
-const store = useStore()
-const route = useRoute()
+function resetInactivityTimer() {
 
-onMounted(async () => {
-  // Appel à fetchSessionFromCookies dès que l'app est montée
-  await store.dispatch('user/fetchSessionFromCookies')
-
-  // Exemple de requête à ton API pour récupérer des activités
-  try {
-    const res = await axios.get(`${apiUrl}/activites`)
-    activites.value = res.data
-  } catch (error) {
-    console.error('Erreur lors du chargement des activités :', error)
+  if (!userCourant || !userCourant.id_session) {
+    return;
   }
-})
-</script>
 
+  if (inactivityTimer) {
+    clearTimeout(inactivityTimer);
+  }
+
+  inactivityTimer = setTimeout(() => {
+    disconnectedDialog.value?.show();
+
+    store.dispatch('user/logoutUser');
+    router.push({ name: 'login' });
+  }, inactivityTime);
+}
+
+function setupInactivityListener() {
+  document.addEventListener('mousemove', resetInactivityTimer);
+  document.addEventListener('keydown', resetInactivityTimer);
+  document.addEventListener('click', resetInactivityTimer);
+}
+
+onMounted(() => {
+  store.dispatch('user/fetchSessionFromCookies');
+  setupInactivityListener();
+  resetInactivityTimer();
+});
+
+onUnmounted(() => {
+  clearTimeout(inactivityTimer);
+  document.removeEventListener('mousemove', resetInactivityTimer);
+  document.removeEventListener('keydown', resetInactivityTimer);
+  document.removeEventListener('click', resetInactivityTimer);
+});
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
@@ -46,11 +72,6 @@ onMounted(async () => {
   grid-template-rows: auto 1fr auto; /* Navbar - Contenu - Footer */
   min-height: 100vh;
 }
-
-.main-content {
-  min-height: 0; /* Important pour le débordement */
-}
-
 /* Vos styles existants */
 * {
   margin: 0;

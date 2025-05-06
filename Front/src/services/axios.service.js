@@ -2,13 +2,24 @@ import axios from 'axios';
 
 const API_URL = 'https://ironfitness.onrender.com';
 
-
 const axiosInstance = axios.create({
     baseURL: API_URL,
     withCredentials: true, // Si tu utilises les cookies/sessions
     headers: {
         'Content-Type': 'application/json',
     },
+});
+
+
+// Injecte le token automatiquement
+axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export async function getRequest(endpoint, debugKey = '') {
@@ -24,12 +35,14 @@ export async function getRequest(endpoint, debugKey = '') {
     }
 }
 
-export const postRequest = async (url, data) => {
+export const postRequest = async (url, data = {}, debugKey = '', headers = {}) => {
     try {
-        const response = await axiosInstance.post(url, data);
+        const response = await axiosInstance.post(url, data, {
+            headers: headers
+        });
         return response;
     } catch (error) {
-        console.error('Erreur POST :', error);
+        console.error(`Erreur POST ${debugKey} :`, error);
         throw error;
     }
 };
@@ -44,9 +57,9 @@ export const putRequest = async (url, data) => {
     }
 };
 
-export const deleteRequest = async (url) => {
+export const deleteRequest = async (url, id) => {
     try {
-        const response = await axiosInstance.delete(url);
+        const response = await axiosInstance.delete(`${url}/${id}`);
         return response;
     } catch (error) {
         console.error('Erreur DELETE :', error);
