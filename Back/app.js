@@ -55,16 +55,31 @@ app.use(session({
 // Body parser
 app.use(express.json());
 
+
+
 // === Routes ===
 const activiteRouter = require('./routes/activite.router');
 const formuleRouter = require('./routes/formule.router');
 const loginRoutes = require('./routes/authentification.router')
 const usersRoutes = require('./routes/user.router')
 
+
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
 app.use('/login',loginRoutes);
 app.use('/users', usersRoutes);
+
+try {
+    const activiteRouter = require('./routes/activite.router');
+    app.use('/activite', activiteRouter);
+    console.log('✅ Route /activite chargée');
+} catch (err) {
+    console.error('❌ Problème lors du chargement de la route /activite:', err);
+}
+
+app.get('/ping', (req, res) => {
+    res.send('pong');
+});
 
 // test pour render
 app.get('/api/test', (req, res) => {
