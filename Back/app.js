@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-console.log('URL de connexion à la DB :', process.env.DATABASE_URL);
+const pool = require('./database/db'); // ou le chemin réel
 
 // Config .env
 dotenv.config();
@@ -30,7 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Middleware CORS
 app.use(cors({
-    origin: ['https://ironfitness-front.onrender.com'],
+    origin: ['https://ironfitness-front.onrender.com', 'http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
@@ -73,13 +73,14 @@ app.get('/api/test', (req, res) => {
 //test 2 pour render
 app.get('/api/db-test', async (req, res) => {
     try {
-        const result = await pool.query('SELECT NOW()');
-        res.json({ time: result.rows[0].now });
+        const [rows] = await pool.query('SELECT NOW() AS now');
+        res.json({ time: rows[0].now });
     } catch (err) {
         console.error('Erreur DB :', err);
         res.status(500).json({ error: 'Connexion DB échouée' });
     }
 });
+
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;

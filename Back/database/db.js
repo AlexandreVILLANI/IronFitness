@@ -14,20 +14,18 @@ const pool = new Pool(credentials);
 module.exports = pool;
 */
 
-const { Pool } = require('pg');
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+const pool = mysql.createPool({
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
-
-pool.query('SELECT NOW()')
-    .then(res => console.log('✅ Connecté à la base de données à', res.rows[0].now))
-    .catch(err => {
-        console.error('❌ Erreur DB:', err.message);
-        process.exit(1);
-    });
 
 module.exports = pool;
