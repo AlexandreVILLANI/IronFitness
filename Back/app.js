@@ -68,6 +68,7 @@ app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
 app.use('/login',loginRoutes);
 app.use('/users', usersRoutes);
+app.use('/mail',mailRoutes);
 
 try {
     const activiteRouter = require('./routes/activite.router');
@@ -96,7 +97,6 @@ app.get('/api/db-test', async (req, res) => {
     }
 });
 
-app.use('/mail',mailRoutes);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;
