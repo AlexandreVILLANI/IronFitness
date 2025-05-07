@@ -102,8 +102,7 @@ function closeModal() {
         <h2>{{ selectedEvent.title }}</h2>
         <p><strong>Date :</strong> {{ selectedEvent.date }}</p>
         <p><strong>Heure :</strong> {{ selectedEvent.heureDebut }} → {{ selectedEvent.heureFin }}</p>
-        <p><strong>Places disponibles :</strong> {{ selectedEvent.places }}</p>
-        <p><strong>Réservations :</strong> {{ selectedEvent.reservations }}</p>
+        <p><strong>Nombres de personnes inscrites :</strong> {{ selectedEvent.reservations }}/{{ selectedEvent.places }}</p>
         <button @click="closeModal">Fermer</button>
       </div>
     </div>

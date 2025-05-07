@@ -29,7 +29,6 @@ export default {
         async getAllCreneau({ commit }) {
             try {
                 const result = await getAllCreneau();
-                console.log(result)
                 if (Array.isArray(result.data)) {
                     commit("SET_CRENEAUX", result.data);
                 } else {
