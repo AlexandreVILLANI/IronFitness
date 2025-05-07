@@ -1,5 +1,9 @@
-const {Pool} = require("pg");
+const {Pool, types} = require("pg");
 require("dotenv").config();
+
+// Désactive le parsing automatique des champs de type DATE (PostgreSQL type OID 1082)
+types.setTypeParser(1082, val => val); // renvoie "YYYY-MM-DD" en string
+
 
 const credentials = {
     user: process.env.DB_USERNAME,

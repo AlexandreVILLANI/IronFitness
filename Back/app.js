@@ -62,12 +62,14 @@ const formuleRouter = require('./routes/formule.router');
 const loginRoutes = require('./routes/authentification.router');
 const usersRoutes = require('./routes/user.router');
 const mailRoutes = require('./routes/mail.router');
+const creneauRoutes = require('./routes/creneau.router')
 
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
 app.use('/login',loginRoutes);
 app.use('/users', usersRoutes);
 app.use('/mail',mailRoutes);
+app.use('/creneau',creneauRoutes);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;
