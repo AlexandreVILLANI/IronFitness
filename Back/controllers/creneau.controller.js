@@ -28,8 +28,8 @@ exports.updateCreneau = (req, res) => {
     let date_activite = req.body.date_activite
     let heure_debut = req.body.heure_debut
     let heure_fin = req.body.heure_fin
-    let place_dispo = req.body.place_dispo
-    creneauService.updateCreneau(id_creneau,id_activite,date_activite,heure_debut,heure_fin,place_dispo,(error, data) => {
+    let places_disponibles = req.body.places_disponibles
+    creneauService.updateCreneau(id_creneau,id_activite,date_activite,heure_debut,heure_fin,places_disponibles,(error, data) => {
         if (error) {
             return res.status(500).send("Internal error");
         }
@@ -44,8 +44,8 @@ exports.createCreneau = (req, res) => {
     let date_activite = req.body.date_activite
     let heure_debut = req.body.heure_debut
     let heure_fin = req.body.heure_fin
-    let place_dispo = req.body.place_dispo
-    creneauService.createCreneau(id_activite,date_activite,heure_debut,heure_fin,place_dispo,(error, data) => {
+    let places_disponibles = req.body.places_disponibles
+    creneauService.createCreneau(id_activite,date_activite,heure_debut,heure_fin,places_disponibles,(error, data) => {
         if (error) {
             return res.status(500).send("Internal error");
         }
@@ -54,4 +54,19 @@ exports.createCreneau = (req, res) => {
         }
     })
 }
+
+exports.deleteCreneau = (req, res) => {
+    const idCreneau = req.params.id;
+    if (!idCreneau) {
+        return res.status(400).send("L'id du créneau est requis");
+    }
+    creneauService.deleteCreneau(idCreneau, (error, result) => {
+        if (error) {
+            return res.status(500).send("Erreur lors de la suppression du créneau");
+        } else {
+            return res.status(200).send({ message: "Créneau supprimé avec succès", id: idCreneau });
+        }
+    });
+};
+
 

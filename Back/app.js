@@ -33,7 +33,7 @@ app.use(cors({
     servers: [{ url: "http://localhost:3000" }],
     //    origin: 'http://localhost:5173',
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],  // Ajoutez 'PATCH' ici
+    methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],  // Ajoutez 'PATCH' ici
     allowedHeaders: ['Content-Type', 'session-id'] // <-- ajoute ton header ici
 }));
 

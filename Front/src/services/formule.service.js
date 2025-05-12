@@ -19,7 +19,6 @@ async function getFormuleById(id) {
 }
 
 
-
 export {
     getAllFormule,
     getFormuleById

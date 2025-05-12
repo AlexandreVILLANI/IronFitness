@@ -1,12 +1,17 @@
-import {getRequest, postRequest, putRequest} from "./axios.service"
+import {
+    getRequest,
+    postRequest,
+    putRequest,
+    deleteRequest
+} from "./axios.service"
 
 async function getAllCreneauFromAPI() {
-    return getRequest('/Creneau', 'GETALLCRENEAU')
+    return getRequest('/Creneau', 'GETALLCRENEAU');
 }
 
 async function getAllCreneau() {
-    let answer = await getAllCreneauFromAPI()
-    return answer
+    let answer = await getAllCreneauFromAPI();
+    return answer;
 }
 
 async function getCreneauByIdFromAPI(id) {
@@ -19,7 +24,7 @@ async function getCreneauById(id) {
 }
 
 async function updateCreneauAPI(creneauData) {
-    return putRequest(`/Creneau/${creneauData.id_creneau}`, creneauData, 'UPDATECRENEAU');
+    return putRequest('/Creneau', creneauData, 'UPDATECRENEAU');
 }
 
 async function updateCreneau(creneauData) {
@@ -36,9 +41,19 @@ async function createCreneau(creneauData) {
     return response;
 }
 
+async function deleteCreneauAPI(id) {
+    return deleteRequest('/creneau', id); // id = 11
+}
+
+async function deleteCreneau(id) {
+    const response = await deleteCreneauAPI(id);
+    return response;
+}
+
 export {
     getAllCreneau,
     getCreneauById,
     updateCreneau,
-    createCreneau
+    createCreneau,
+    deleteCreneau
 }

@@ -1,6 +1,10 @@
-// store/modules/creneau.js
-
-import { getAllCreneau, getCreneauById, updateCreneau, createCreneau } from "@/services/creneau.service";
+import {
+    getAllCreneau,
+    getCreneauById,
+    updateCreneau,
+    createCreneau,
+    deleteCreneau // ✅ ajout
+} from "@/services/creneau.service";
 
 export default {
     namespaced: true,
@@ -23,6 +27,9 @@ export default {
         },
         ADD_CRENEAU(state, newCreneau) {
             state.creneaux.push(newCreneau);
+        },
+        DELETE_CRENEAU(state, id) {
+            state.creneaux = state.creneaux.filter(c => c.id_creneau !== id);
         }
     },
     actions: {
@@ -58,7 +65,7 @@ export default {
         async updateCreneau({ commit }, creneauData) {
             try {
                 const result = await updateCreneau(creneauData);
-                commit('UPDATE_CRENEAU', creneauData); // Optimistically update state
+                commit('UPDATE_CRENEAU', creneauData);
                 return result;
             } catch (err) {
                 console.error("Erreur lors de la mise à jour du créneau:", err);
@@ -77,6 +84,16 @@ export default {
                 }
             } catch (err) {
                 console.error("Erreur lors de la création du créneau:", err);
+                throw err;
+            }
+        },
+        async deleteCreneau({ commit }, id) {
+            try {
+                const result = await deleteCreneau(id);
+                commit("DELETE_CRENEAU", id);
+                return result;
+            } catch (err) {
+                console.error(`Erreur lors de la suppression du créneau avec l'ID ${id}:`, err);
                 throw err;
             }
         }

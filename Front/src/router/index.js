@@ -10,6 +10,7 @@ import ProfilView from "@/views/ProfilView.vue";
 import SAbonnerView from "@/views/SAbonnerView.vue";
 import EditUserView from "@/components/Admin/EditUserView.vue";
 import AddFormuleUserView from "@/components/Admin/AddFormuleUserView.vue";
+import EditCreneau from "@/components/Planning/EditCreneau.vue"
 
 const routes = [
     {
@@ -67,7 +68,12 @@ const routes = [
         path :'/profil/addFormule/:id',
         name: 'addFormule',
         component: AddFormuleUserView,
-    }
+    },
+    {
+        path: '/planning/editCreneau',
+        name: 'editCreneau',
+        component: EditCreneau,
+    },
 ]
 
 const router = createRouter({

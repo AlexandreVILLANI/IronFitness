@@ -14,6 +14,14 @@ export default {
             state.selectedFormule = formule;
         },
     },
+    getters: {
+        formules(state) {
+            return state.formules;
+        },
+        selectedFormule(state) {
+            return state.selectedFormule;
+        }
+    },
     actions: {
         async getAllFormule({ commit }) {
             try {

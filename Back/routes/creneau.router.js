@@ -137,7 +137,7 @@ router.put('/', creneauController.updateCreneau);
  *           type: string
  *           format: time
  *           description: Heure de fin (HH:MM:SS)
- *         place_dispo:
+ *         places_disponibles:
  *           type: integer
  *           description: Nombre de places disponibles
  *       example:
@@ -146,7 +146,7 @@ router.put('/', creneauController.updateCreneau);
  *         date_activite: "2023-12-15"
  *         heure_debut: "09:00:00"
  *         heure_fin: "10:30:00"
- *         place_dispo: 15
+ *         places_disponibles: 15
  *
  *     CreneauInput:
  *       type: object
@@ -155,7 +155,7 @@ router.put('/', creneauController.updateCreneau);
  *         - date_activite
  *         - heure_debut
  *         - heure_fin
- *         - place_dispo
+ *         - places_disponibles
  *       properties:
  *         id_activite:
  *           type: integer
@@ -168,14 +168,14 @@ router.put('/', creneauController.updateCreneau);
  *         heure_fin:
  *           type: string
  *           format: time
- *         place_dispo:
+ *         places_disponibles:
  *           type: integer
  *       example:
  *         id_activite: 3
  *         date_activite: "2023-12-15"
  *         heure_debut: "09:00:00"
  *         heure_fin: "10:30:00"
- *         place_dispo: 15
+ *         places_disponibles: 15
  *
  *     CreneauUpdate:
  *       allOf:
@@ -188,6 +188,48 @@ router.put('/', creneauController.updateCreneau);
  *               type: integer
  *           example:
  *             id_creneau: 1
+ */
+router.delete('/:id', creneauController.deleteCreneau);
+
+/**
+ * @swagger
+ * /creneau/{id}:
+ *   delete:
+ *     summary: Supprime un créneau par son ID
+ *     tags: [Créneaux]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID du créneau à supprimer
+ *     responses:
+ *       200:
+ *         description: Créneau supprimé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Créneau supprimé avec succès"
+ *                 id:
+ *                   type: integer
+ *                   example: 5
+ *       400:
+ *         description: ID manquant ou invalide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "L'id du créneau est requis"
+ *       500:
+ *         description: Erreur interne du serveur
  */
 
 module.exports = router;

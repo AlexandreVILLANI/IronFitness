@@ -159,7 +159,6 @@ export default {
                 console.error("Error in getUserFormulesStore():", err);
             }
         },
-
         async updateUserFormule({ commit }, { id_utilisateur, formules }) {
             console.log('tableaux',formules)
             try {
