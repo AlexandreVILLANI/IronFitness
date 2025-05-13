@@ -82,7 +82,7 @@ const routes = [
         component: CreateFormuleView
     },
     {
-        path: '/profil/editFormule',
+        path: '/profil/editFormule/:id',
         name: 'editFormule',
         component: EditFormuleView
     }

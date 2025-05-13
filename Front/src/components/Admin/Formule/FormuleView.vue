@@ -117,10 +117,7 @@ export default {
     },
 
     editFormule(formule) {
-      this.$router.push({
-        name: 'editFormule',
-        params: { id: formule.id_formule }
-      });
+      this.$router.push({name: 'editFormule', params: { id: formule.id_formule }});
     },
 
     confirmDelete(formule) {
