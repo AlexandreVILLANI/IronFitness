@@ -8,9 +8,11 @@ import CoursView from "@/views/CoursView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProfilView from "@/views/ProfilView.vue";
 import SAbonnerView from "@/views/SAbonnerView.vue";
-import EditUserView from "@/components/Admin/EditUserView.vue";
-import AddFormuleUserView from "@/components/Admin/AddFormuleUserView.vue";
-import EditCreneau from "@/components/Planning/EditCreneau.vue"
+import EditUserView from "@/components/Admin/User/EditUserView.vue";
+import AddFormuleUserView from "@/components/Admin/User/AddFormuleUserView.vue";
+import EditCreneauView from "@/components/Planning/EditCreneau.vue"
+import CreateFormuleView from "@/components/Admin/Formule/CreateFormuleView.vue";
+import EditFormuleView from "@/components/Admin/Formule/EditFormuleView.vue";
 
 const routes = [
     {
@@ -72,8 +74,18 @@ const routes = [
     {
         path: '/planning/editCreneau',
         name: 'editCreneau',
-        component: EditCreneau,
+        component: EditCreneauView,
     },
+    {
+        path: '/profil/createFormule',
+        name: 'createFormule',
+        component: CreateFormuleView
+    },
+    {
+        path: '/profil/editFormule',
+        name: 'editFormule',
+        component: EditFormuleView
+    }
 ]
 
 const router = createRouter({

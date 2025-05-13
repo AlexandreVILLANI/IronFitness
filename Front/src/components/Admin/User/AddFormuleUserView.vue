@@ -2,107 +2,129 @@
   <div class="formule-selection-container">
     <button class="back-button" @click="$router.push('/profil')">⬅ Retour au profil</button>
 
-    <h2>Sélectionner une formule pour l'utilisateur</h2>
+    <h2>Gérer les formules de l'utilisateur</h2>
 
     <div v-if="loading" class="loading">Chargement en cours...</div>
 
     <div v-else>
-      <div v-if="formules.length === 0" class="no-formules">
+      <div v-if="allFormules.length === 0" class="no-formules">
         Aucune formule disponible.
       </div>
 
       <div v-else class="formule-list">
         <div
-            v-for="formule in formules"
+            v-for="formule in allFormules"
             :key="formule.id_formule"
             class="formule-card"
-            :class="{ 'selected': selectedFormuleId === formule.id_formule }"
-            @click="selectFormule(formule)"
+            :class="{ 'selected': isFormuleSelected(formule.id_formule) }"
+            @click="toggleFormule(formule.id_formule)"
         >
           <h3>{{ formule.nom_formule }}</h3>
           <p class="price">{{ formule.prix_formule }} €</p>
+          <input
+              type="checkbox"
+              :value="formule.id_formule"
+              :checked="isFormuleSelected(formule.id_formule)"
+              @change="toggleFormule(formule.id_formule)"
+              class="formule-checkbox"
+          >
         </div>
       </div>
 
       <button
           class="validate-button"
-          :disabled="!selectedFormuleId"
           @click="validateSelection"
       >
-        Valider la sélection
+        Valider les modifications
       </button>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'AddFormule',
+  name: 'ManageUserFormules',
 
   data() {
     return {
       loading: true,
-      selectedFormuleId: null,
-      userId: null
-    }
+      userId: null,
+      selectedFormuleIds: [] // Tableau pour stocker les IDs des formules sélectionnées
+    };
   },
 
   computed: {
     ...mapState('formule', ['formules']),
-    ...mapState('user', ['formulesUtilisateur'])
+    ...mapState('user', ['formulesUtilisateur']),
+
+    // Renommer pour plus de clarté : toutes les formules disponibles
+    allFormules() {
+      return this.formules;
+    }
   },
 
   async created() {
-    this.userId = this.$route.params.id
-    await this.loadFormules()
+    this.userId = this.$route.params.id;
+    await Promise.all([
+      this.loadAllFormules(),
+      this.loadUserFormules()
+    ]);
+    this.loading = false;
   },
 
   methods: {
     ...mapActions('formule', ['getAllFormule']),
     ...mapActions('user', ['updateUserFormule', 'getUserFormules']),
 
-    async loadFormules() {
+    async loadAllFormules() {
       try {
-        await this.getAllFormule()
-        this.loading = false
+        await this.getAllFormule();
       } catch (error) {
-        console.error('Erreur lors du chargement des formules:', error)
-        this.loading = false
+        console.error('Erreur lors du chargement des formules:', error);
       }
     },
 
-    selectFormule(formule) {
-      this.selectedFormuleId = formule.id_formule
+    async loadUserFormules() {
+      try {
+        await this.getUserFormules(this.userId);
+        // Initialiser le tableau des IDs sélectionnés avec les formules actuelles de l'utilisateur
+        this.selectedFormuleIds = this.formulesUtilisateur.map(f => f.id_formule);
+      } catch (error) {
+        console.error('Erreur lors du chargement des formules de l\'utilisateur:', error);
+      }
+    },
+
+    isFormuleSelected(formuleId) {
+      return this.selectedFormuleIds.includes(formuleId);
+    },
+
+    toggleFormule(formuleId) {
+      if (this.selectedFormuleIds.includes(formuleId)) {
+        this.selectedFormuleIds = this.selectedFormuleIds.filter(id => id !== formuleId);
+      } else {
+        this.selectedFormuleIds.push(formuleId);
+      }
     },
 
     async validateSelection() {
-      if (!this.selectedFormuleId || !this.userId) return
+      if (!this.userId) return;
 
       try {
-        // Récupérer les formules actuelles de l'utilisateur
-        await this.getUserFormules(this.userId)
-
-        // Créer un nouveau tableau avec les formules existantes + la nouvelle
-        const updatedFormules = [
-          ...this.formulesUtilisateur.map(f => f.id_formule),
-          this.selectedFormuleId,
-        ]
-        // Mettre à jour les formules de l'utilisateur
         await this.updateUserFormule({
           id_utilisateur: this.userId,
-          formules: updatedFormules
-        })
+          formules: this.selectedFormuleIds
+        });
 
         // Rediriger vers la page précédente ou afficher un message de succès
-        this.$router.go(-1)
+        this.$router.go(-1);
       } catch (error) {
-        console.error('Erreur lors de la mise à jour des formules:', error)
+        console.error('Erreur lors de la mise à jour des formules de l\'utilisateur:', error);
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -131,6 +153,8 @@ export default {
   padding: 15px;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .formule-card:hover {
@@ -149,7 +173,7 @@ export default {
 }
 
 .formule-card p {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   color: #666;
 }
 
@@ -157,6 +181,10 @@ export default {
   font-weight: bold;
   color: #42b983;
   font-size: 1.2em;
+}
+
+.formule-checkbox {
+  margin-top: 10px;
 }
 
 .validate-button {

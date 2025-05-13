@@ -1,8 +1,7 @@
 <template>
   <section class="spikes"></section>
-
   <div class="formule-page">
-    <h1>Formules</h1>
+    <h1>Nos abonnements</h1>
     <div class="formules">
       <div v-for="(formule, index) in formules" :key="index" class="formule-card">
         <h2>{{ formule.nom_formule }}</h2>

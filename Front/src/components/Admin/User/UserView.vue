@@ -49,7 +49,7 @@
               <span v-else>{{ user.noms_formules }}</span>
             </td>
             <td class="actions">
-              <button @click="addFormule(user)" class="btn-edit">Ajouter des Formules</button>
+              <button @click="addFormule(user)" class="btn-edit">Attribution des formules</button>
               <button @click="editUser(user)" class="btn-edit">Modifier</button>
               <button @click="confirmDelete(user)" class="btn-delete">Supprimer</button>
             </td>

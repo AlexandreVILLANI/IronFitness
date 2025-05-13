@@ -21,7 +21,8 @@
       </div>
 
       <div class="form-group">
-        <label for="formule">Formule attribuée :</label>
+        <label for="formule">Formule attribuée (ce champ ne peut pas être changé ici) :
+        </label>
         <div id="formule" class="form-display">
           {{ user.formules }}
         </div>
@@ -132,6 +133,11 @@ export default {
         this.onConfirm();
       }
       this.closeDialog();
+    },
+
+    editFormule() {
+      const userId = this.$route.params.id;
+      this.$router.push({ name: 'editUser', params: { id: userId.id_utilisateur } });
     },
 
     async saveChanges() {

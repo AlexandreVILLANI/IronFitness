@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import {onMounted, computed, ref} from "vue";
+import {onMounted, computed} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -87,6 +87,9 @@ function goToActivity() {
 }
 
 .stickers {
+  margin-top: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

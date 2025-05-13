@@ -6,7 +6,7 @@
         class="create-button"
         @click="openCreateModal"
     >
-      Créer un créneau
+      Ajouter un cours
     </button>
 
     <FullCalendar :options="calendarOptions" />
@@ -41,7 +41,7 @@
     <!-- MODALE DE CREATION -->
     <div v-if="showCreateModal" class="modal-overlay" @click.self="closeCreateModal">
       <div class="modal-content">
-        <h2>Créer un nouveau créneau</h2>
+        <h2>Ajouter un nouveau cours</h2>
 
         <form @submit.prevent="submitNewCreneau">
           <div class="form-group">
@@ -105,7 +105,7 @@
 
           <div class="form-actions">
             <button type="button" @click="closeCreateModal">Annuler</button>
-            <button type="submit" class="submit-button">Créer</button>
+            <button type="submit" class="submit-button">Ajouter</button>
           </div>
         </form>
       </div>

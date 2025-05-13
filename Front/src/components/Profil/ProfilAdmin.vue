@@ -33,7 +33,7 @@
               :class="{ active: activeTab === 'creneau' }"
               @click="setActiveTab('creneau')"
           >
-            <i class="fas fa-file-alt"></i> Créneau
+            <i class="fas fa-file-alt"></i> Formules
           </li>
         </ul>
       </nav>
@@ -53,9 +53,9 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
-import ActivityView from '@/components/Admin/ActivityView.vue';
-import CreneauView from '@/components/Admin/CreneauView.vue';
-import UserView from "@/components/Admin/UserView.vue";
+import ActivityView from '@/components/Admin/Activite/ActivityView.vue';
+import CreneauView from '@/components/Admin/Formule/FormuleView.vue';
+import UserView from "@/components/Admin/User/UserView.vue";
 
 const store = useStore();
 const router = useRouter();

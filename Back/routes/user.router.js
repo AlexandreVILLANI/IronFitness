@@ -331,12 +331,12 @@ router.get('/getUserFormule', usersController.getUserFormules);
  */
 
 
-router.patch('/updateUserFormule',usersController.addFormuleToUser);
+router.put('/updateUserFormule',usersController.updateUserFormule);
 
 /**
  * @swagger
  * /users/updateUserFormule:
- *   patch:
+ *   put:
  *     summary: Add formules to a user
  *     tags: [Users]
  *     description: Assigns one or multiple formules to a user based on their user ID.

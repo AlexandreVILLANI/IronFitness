@@ -1,4 +1,10 @@
-import { getAllFormule, getFormuleById } from "@/services/formule.service";
+import {
+    getAllFormule,
+    getFormuleById,
+    createFormule,
+    updateFormule,
+    deleteFormule
+} from "@/services/formule.service";
 
 export default {
     namespaced: true,
@@ -35,6 +41,7 @@ export default {
                 console.error("Error in getAllFormule():", err);
             }
         },
+
         async getFormuleById({ commit }, id) {
             try {
                 const result = await getFormuleById(id);
@@ -48,5 +55,35 @@ export default {
                 console.error("Error in getFormuleById():", err);
             }
         },
+
+        async createFormule(_, payload) {
+            try {
+                const result = await createFormule(payload);
+                return result;
+            } catch (err) {
+                console.error("Error in createFormule():", err);
+                throw err;
+            }
+        },
+
+        async updateFormule(_, { id, payload }) {
+            try {
+                const result = await updateFormule(id, payload);
+                return result;
+            } catch (err) {
+                console.error("Error in updateFormule():", err);
+                throw err;
+            }
+        },
+
+        async deleteFormule(_, id) {
+            try {
+                const result = await deleteFormule(id);
+                return result;
+            } catch (err) {
+                console.error("Error in deleteFormule():", err);
+                throw err;
+            }
+        }
     },
 };

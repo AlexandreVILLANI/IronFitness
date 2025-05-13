@@ -115,7 +115,7 @@ exports.getUserFormules = (req, res) => {
 
 
 
-exports.addFormuleToUser = (req, res) => {
+exports.updateUserFormule = (req, res) => {
     const id_utilisateur = req.body.id_utilisateur;
     const formules = req.body.formules; // tableau de id_formule
     if (!id_utilisateur || !formules || !Array.isArray(formules)) {

@@ -1,12 +1,11 @@
-import {getRequest} from "./axios.service"
+import { getRequest, postRequest, putRequest, deleteRequest } from "./axios.service";
 
 async function getAllFormuleFromAPI() {
-    return getRequest('/Formule', 'GETALLFORMULE')
+    return getRequest('/Formule', 'GETALLFORMULE');
 }
 
 async function getAllFormule() {
-    let answer = await getAllFormuleFromAPI()
-    return answer
+    return await getAllFormuleFromAPI();
 }
 
 async function getFormuleByIdFromAPI(id) {
@@ -14,12 +13,37 @@ async function getFormuleByIdFromAPI(id) {
 }
 
 async function getFormuleById(id) {
-    const response = await getFormuleByIdFromAPI(id);
-    return response;
+    return await getFormuleByIdFromAPI(id);
 }
 
+async function createFormuleFromAPI(data) {
+    return postRequest('/Formule', data, 'CREATEFORMULE');
+}
+
+async function createFormule(data) {
+    return await createFormuleFromAPI(data);
+}
+
+async function updateFormuleFromAPI(id, data) {
+    return putRequest(`/Formule/${id}`, data, 'UPDATEFORMULE');
+}
+
+async function updateFormule(id, data) {
+    return await updateFormuleFromAPI(id, data);
+}
+
+async function deleteFormuleFromAPI(id) {
+    return deleteRequest(`/Formule`,id);
+}
+
+async function deleteFormule(id) {
+    return await deleteFormuleFromAPI(id);
+}
 
 export {
     getAllFormule,
-    getFormuleById
-}
+    getFormuleById,
+    createFormule,
+    updateFormule,
+    deleteFormule
+};
