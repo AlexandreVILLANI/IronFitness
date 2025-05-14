@@ -1,299 +1,499 @@
 <template>
-  <div class="admin-edit-activite">
-    <h2>Modifier une activité</h2>
+  <div class="admin-activites-page">
+    <h1>Gestion des Activités</h1>
 
-    <div v-if="!selectedActiviteId">
-      <h3>Sélectionnez une activité à modifier</h3>
-      <select
-          v-model="selectedActiviteId"
-          class="form-control"
-          @change="loadSelectedActivite"
-      >
-        <option value="">-- Choisir une activité --</option>
-        <option
-            v-for="activite in activites"
-            :key="activite.id_activite"
-            :value="activite.id_activite"
-        >
-          {{ activite.nom_activite }}
-        </option>
-      </select>
+    <div class="header-actions">
+      <div class="search-container">
+        <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Rechercher par nom, type ou description..."
+            class="search-input"
+        />
+        <button @click="resetSearch" class="btn-reset">Réinitialiser</button>
+      </div>
+
+      <div class="filter-container">
+        <label for="type-filter" class="filter-label">Filtrer par type:</label>
+        <select v-model="typeFilter" id="type-filter" class="filter-select">
+          <option value="">Tous les types</option>
+          <option value="En groupe">En groupe</option>
+          <option value="Personnel">Personnel</option>
+        </select>
+      </div>
+
+      <button @click="createActivite" class="btn-create">
+        <i class="fas fa-plus"></i> Créer une activité
+      </button>
+    </div>
+
+    <div v-if="loading" class="loading">
+      Chargement des activités...
+    </div>
+
+    <div v-else-if="filteredActivitesByType.length === 0" class="no-results">
+      Aucune activité trouvée
     </div>
 
     <div v-else>
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Modification de l'activité {{ formData.nom_activite}}</h3>
-        <button @click="selectedActiviteId = null" class="btn btn-secondary">
-          Changer d'activité
-        </button>
+      <div class="activites-table-container">
+        <table class="activites-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+              v-for="activite in filteredActivitesByType"
+              :key="activite.id_activite"
+          >
+            <td>{{ activite.id_activite }}</td>
+            <td class="image-cell">
+              <img
+                  v-if="activite.image_activite"
+                  :src="getActivityImage(activite.image_activite)"
+                  :alt="activite.nom_activite"
+                  class="activite-image"
+              >
+              <span v-else class="no-image">Aucune image</span>
+            </td>
+            <td>{{ activite.nom_activite }}</td>
+            <td>{{ truncateDescription(activite.description_activite) }}</td>
+            <td>{{ activite.type_activite }}</td>
+            <td class="actions">
+              <button @click="editActivite(activite)" class="btn-edit">
+                <i class="fas fa-edit"></i> Modifier
+              </button>
+              <button @click="confirmDelete(activite)" class="btn-delete">
+                <i class="fas fa-trash"></i> Supprimer
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <form @submit.prevent="submitForm">
-        <div class="form-group">
-          <label for="nom">Nom de l'activité</label>
-          <input
-              id="nom"
-              v-model="formData.nom_activite"
-              type="text"
-              required
-              class="form-control"
-          >
+    <div v-if="showDeleteModal" class="modal-overlay">
+      <div class="modal-content">
+        <h3>Confirmer la suppression</h3>
+        <p>Êtes-vous sûr de vouloir supprimer l'activité "{{ activiteToDelete?.nom_activite }}" ?</p>
+        <div class="modal-actions">
+          <button @click="cancelDelete" class="btn-cancel">Annuler</button>
+          <button @click="deleteActivite" class="btn-confirm">Confirmer</button>
         </div>
-
-        <div class="form-group">
-          <label for="image">Image (URL)</label>
-          <input
-              id="image"
-              v-model="formData.image_activite"
-              type="text"
-              required
-              class="form-control"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea
-              id="description"
-              v-model="formData.description_activite"
-              required
-              class="form-control"
-              rows="3"
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="type">Type d'activité</label>
-          <select
-              id="type"
-              v-model="formData.type_activite"
-              required
-              class="form-control"
-          >
-            <option value="En groupe">En groupe</option>
-            <option value="Personnel">Personnel</option>
-          </select>
-        </div>
-
-        <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-primary" :disabled="saving">
-            {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
-          </button>
-
-          <button type="button" class="btn btn-outline-danger" @click="cancelEdit">
-            Annuler
-          </button>
-        </div>
-
-        <div v-if="successMessage" class="alert alert-success mt-3">
-          {{ successMessage }}
-        </div>
-
-        <div v-if="errorMessage" class="alert alert-danger mt-3">
-          {{ errorMessage }}
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+const images = import.meta.glob('@/assets/Activite/*.jpg', {
+  eager: true,
+  import: 'default',
+});
+
+
 export default {
+  name: 'AdminActivitesPage',
   data() {
     return {
-      loading: false,
-      saving: false,
-      activites: [],
-      selectedActiviteId: null,
-      formData: {
-        id_activite: null,
-        nom_activite: '',
-        image_activite: '',
-        description_activite: '',
-        type_activite: 'En groupe'
-      },
-      successMessage: '',
-      errorMessage: ''
+      loading: true,
+      showDeleteModal: false,
+      activiteToDelete: null,
+      searchQuery: '',
+      typeFilter: '', // Ajout du filtre de type
+      activites: [] // Stockage local des activités
     };
+  },
+  computed: {
+    ...mapState('activite', {
+      storeActivites: state => state.activites
+    }),
+
+    filteredActivites() {
+      if (!this.activites) return [];
+      const search = this.searchQuery.toLowerCase();
+      return this.activites.filter(activite => {
+        return !this.searchQuery ||
+            (activite.nom_activite && activite.nom_activite.toLowerCase().includes(search)) ||
+            (activite.description_activite && activite.description_activite.toLowerCase().includes(search)) ||
+            (activite.type_activite && activite.type_activite.toLowerCase().includes(search)) ||
+            (activite.id_activite && activite.id_activite.toString().includes(this.searchQuery));
+      });
+    },
+
+    filteredActivitesByType() {
+      const filteredBySearch = this.filteredActivites;
+      if (!this.typeFilter) {
+        return filteredBySearch; // Retourne tous les résultats si aucun filtre de type n'est sélectionné
+      }
+      return filteredBySearch.filter(activite => activite.type_activite === this.typeFilter);
+    }
   },
   async created() {
     await this.loadActivites();
+    this.loading = false;
   },
   methods: {
+    ...mapActions('activite', ['getAllActivite', 'deleteActivite']),
+
     async loadActivites() {
       try {
-        this.loading = true;
-        await this.$store.dispatch('activite/getAllActivite');
-        this.activites = this.$store.getters['activite/allActivites'];
+        await this.getAllActivite();
+        // Mise à jour des activités locales avec celles du store
+        this.activites = this.storeActivites || [];
       } catch (error) {
         console.error("Erreur lors du chargement des activités:", error);
-        this.errorMessage = "Impossible de charger la liste des activités";
-      } finally {
-        this.loading = false;
+        this.activites = [];
       }
     },
 
-    async loadSelectedActivite() {
-      if (!this.selectedActiviteId) {
-        console.error('Aucune activité sélectionnée');
-        return;
-      }
+    getActivityImage(nom_image) {
+      const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
+      const imagePath = `/src/assets/Activite/${fileName}`;
+      return images[imagePath] || images["/src/assets/notfound.jpg"];
+    },
 
+    truncateDescription(desc) {
+      if (!desc) return '';
+      return desc.length > 50 ? `${desc.substring(0, 50)}...` : desc;
+    },
+
+    resetSearch() {
+      this.searchQuery = '';
+      this.typeFilter = ''; // Réinitialise également le filtre de type
+    },
+
+    createActivite() {
+      this.$router.push({name: 'addActivite'});
+    },
+
+    editActivite(activite) {
+      this.$router.push({name: 'editActivite', params: {id: activite.id_activite}});
+    },
+
+    confirmDelete(activite) {
+      this.activiteToDelete = activite;
+      this.showDeleteModal = true;
+    },
+
+    cancelDelete() {
+      this.showDeleteModal = false;
+      this.activiteToDelete = null;
+    },
+
+    async deleteActivite() {
+      if (!this.activiteToDelete) return;
       try {
-        this.loading = true;
-        const activite = await this.$store.dispatch('activite/getActiviteById', this.selectedActiviteId);
-        if (!activite) {
-          throw new Error('Activité non trouvée');
-        }
-
-
-        this.formData = {
-          id_activite: this.selectedActiviteId,
-          nom_activite: activite.nom_activite,
-          image_activite: activite.image_activite,
-          description_activite: activite.description_activite,
-          type_activite: activite.type_activite
-        };
-
+        await this.$store.dispatch('activite/deleteActivite', this.activiteToDelete.id_activite);
+        await this.loadActivites();
       } catch (error) {
-        console.error("Erreur lors du chargement de l'activité:", error);
-        this.errorMessage = "Impossible de charger l'activité sélectionnée";
-        this.selectedActiviteId = null;
+        console.error("Erreur lors de la suppression:", error);
       } finally {
-        this.loading = false;
+        this.showDeleteModal = false;
+        this.activiteToDelete = null;
       }
-    },
-
-
-    async submitForm() {
-      try {
-        this.saving = true;
-        this.successMessage = '';
-        this.errorMessage = '';
-
-
-        await this.$store.dispatch(
-            'activite/updateActivite',
-            this.formData
-        );
-
-        this.successMessage = "L'activité a été mise à jour avec succès";
-        setTimeout(() => {
-          this.successMessage = '';
-          this.loadActivites(); // Rafraîchir la liste
-        }, 2000);
-      } catch (error) {
-        console.error("Erreur lors de la mise à jour:", error);
-        this.errorMessage = "Erreur lors de la mise à jour de l'activité";
-      } finally {
-        this.saving = false;
-      }
-    },
-
-    cancelEdit() {
-      this.selectedActiviteId = null;
-      this.formData = {
-        id_activite: null,
-        nom_activite: '',
-        image_activite: '',
-        description_activite: '',
-        type_activite: 'En groupe'
-      };
-      this.successMessage = '';
-      this.errorMessage = '';
     }
   }
 };
+
+function getActivityImage(nom_image) {
+  const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
+  const imagePath = `/src/assets/Activite/${fileName}`;
+  return images[imagePath] || images["/src/assets/notfound.jpg"];
+}
 </script>
 
 <style scoped>
-.admin-edit-activite {
-  max-width: 800px;
-  margin: 0 auto;
+.admin-activites-page {
   padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.form-group {
+h1 {
+  color: #2c3e50;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
-.form-control {
-  width: 100%;
-  padding: 8px;
+.search-container {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.search-input {
+  padding: 10px 15px;
   border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  flex: 1;
+}
+
+.btn-reset {
+  padding: 10px 15px;
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-reset:hover {
+  background-color: #7f8c8d;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-label {
+  font-weight: bold;
+  color: #34495e;
+}
+
+.filter-select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.btn-create {
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-create:hover {
+  background-color: #27ae60;
+}
+
+.activites-table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activites-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.activites-table th, .activites-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.activites-table th {
+  background-color: #f5f7fa;
+  font-weight: 600;
+  color: #2c3e50;
+  position: sticky;
+  top: 0;
+}
+
+.activites-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.image-cell {
+  width: 120px;
+}
+
+.activite-image {
+  width: 100px;
+  height: 70px;
+  object-fit: cover;
   border-radius: 4px;
 }
 
-.btn {
+.no-image {
+  color: #95a5a6;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.btn-edit, .btn-delete {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
+
+.loading, .no-results {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  font-size: 1.1em;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancel, .btn-confirm {
   padding: 8px 16px;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.btn-primary {
-  background-color: #007bff;
+.btn-cancel {
+  background-color: #95a5a6;
   color: white;
-  border: none;
 }
 
-.btn-primary:disabled {
-  background-color: #cccccc;
+.btn-cancel:hover {
+  background-color: #7f8c8d;
 }
 
-.btn-secondary {
-  background-color: #6c757d;
+.btn-confirm {
+  background-color: #e74c3c;
   color: white;
-  border: none;
 }
 
-.btn-outline-danger {
-  color: #dc3545;
-  background-color: transparent;
-  border: 1px solid #dc3545;
+.btn-confirm:hover {
+  background-color: #c0392b;
 }
 
-.alert {
-  padding: 10px;
-  border-radius: 4px;
-  margin-top: 15px;
+/* Responsive design */
+@media (max-width: 992px) {
+  .activites-table td, .activites-table th {
+    padding: 8px 10px;
+  }
+
+  .btn-edit, .btn-delete {
+    padding: 6px 8px;
+    font-size: 0.8em;
+  }
 }
 
-.alert-success {
-  background-color: #d4edda;
-  color: #155724;
-}
+@media (max-width: 768px) {
+  .header-actions {
+    flex-direction: column;
+  }
 
-.alert-danger {
-  background-color: #f8d7da;
-  color: #721c24;
-}
+  .search-container {
+    width: 100%;
+    margin-bottom: 15px;
+  }
 
-.loading {
-  text-align: center;
-  padding: 20px;
-}
+  .filter-container {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 
-.d-flex {
-  display: flex;
-}
+  .btn-create {
+    width: 100%;
+    justify-content: center;
+  }
 
-.justify-content-between {
-  justify-content: space-between;
-}
+  .activite-image {
+    width: 60px;
+    height: 40px;
+  }
 
-.align-items-center {
-  align-items: center;
-}
+  .actions {
+    flex-direction: column;
+    gap: 5px;
+    min-width: auto;
+  }
 
-.gap-2 {
-  gap: 8px;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-.mt-3 {
-  margin-top: 1rem;
+  .btn-edit, .btn-delete {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

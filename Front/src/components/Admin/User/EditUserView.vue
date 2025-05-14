@@ -24,7 +24,8 @@
         <label for="formule">Formule attribuée (ce champ ne peut pas être changé ici) :
         </label>
         <div id="formule" class="form-display">
-          {{ user.formules }}
+          <span v-if="user.formules">{{ user.formules }}</span>
+          <span v-else>Aucune formule attribuée</span>
         </div>
       </div>
 
@@ -167,35 +168,39 @@ export default {
 
 <style scoped>
 .user-details-container {
-  max-width: 600px;
+  max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #f9f9f9;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .back-button {
-  margin-bottom: 1.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #ccc;
-  color: #333;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
 }
 
 .back-button:hover {
-  background-color: #bbb;
+  background-color: #e9ecef;
+  border-color: #ced4da;
 }
 
 .edit-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .form-group {
@@ -204,37 +209,48 @@ export default {
 }
 
 label {
-  font-weight: bold;
-  margin-bottom: 0.3rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #2c3e50;
 }
 
 input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
+  padding: 0.6rem;
+  border: 1px solid #ced4da;
   border-radius: 6px;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+input:focus {
+  outline: none;
+  border-color: #42b983;
+  box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.15);
 }
 
 .form-display {
-  padding: 0.5rem;
-  background-color: #eaeaea;
+  padding: 0.6rem;
+  background-color: #f1f3f5;
   border-radius: 6px;
-  color: #333;
+  color: #495057;
 }
 
 .save-button {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #4caf50;
+  align-self: flex-end;
+  padding: 0.8rem 1.5rem;
+  background-color: #42b983;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .save-button:hover {
-  background-color: #45a049;
+  background-color: #3aa876;
+  transform: translateY(-1px);
 }
 
 /* Styles pour la boîte de dialogue */
@@ -272,7 +288,7 @@ input {
 
 .dialog-header h3 {
   margin: 0;
-  color: #333;
+  color: #2c3e50;
   font-size: 1.2rem;
 }
 
@@ -314,12 +330,12 @@ input {
 }
 
 .dialog-button.confirm {
-  background-color: #4caf50;
+  background-color: #42b983;
   color: white;
 }
 
 .dialog-button.confirm:hover {
-  background-color: #43a047;
+  background-color: #3aa876;
 }
 
 .dialog-button.cancel {
@@ -343,7 +359,7 @@ input {
   }
 }
 
-/* Style pour les différents types de boîtes */
+/* Types de boîtes */
 .dialog-box.error .dialog-header {
   background-color: #f8d7da;
   color: #721c24;
@@ -377,5 +393,11 @@ input {
 
 .dialog-box.confirm .dialog-header h3 {
   color: #155724;
+}
+
+@media (max-width: 768px) {
+  .user-details-container {
+    padding: 1rem;
+  }
 }
 </style>

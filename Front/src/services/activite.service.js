@@ -1,4 +1,4 @@
-import { getRequest, patchRequest } from "./axios.service";
+import { getRequest, patchRequest, postRequest, deleteRequest } from "./axios.service";
 
 async function getAllActiviteFromAPI() {
     return getRequest('/activite', 'GETALLACTIVITE');
@@ -27,8 +27,29 @@ async function updateActivite(data) {
     return answer;
 }
 
+async function createActiviteFromAPI(data) {
+    return postRequest('/activite', data, 'CREATEACTIVITE');
+}
+
+async function createActivite(data) {
+    const answer = await createActiviteFromAPI(data);
+    return answer;
+}
+
+async function deleteActiviteFromAPI(id) {
+    return deleteRequest(`/activite`, id);
+}
+
+async function deleteActivite(id) {
+    const answer = await deleteActiviteFromAPI(id);
+    return answer;
+}
+
+
 export {
     getAllActivite,
     getActiviteById,
-    updateActivite
+    updateActivite,
+    createActivite,
+    deleteActivite
 };

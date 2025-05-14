@@ -6,7 +6,7 @@
       <div class="user-info">
         <h1>Tableau de bord Administrateur</h1>
         <div class="welcome-message">
-          <span>Bonjour, {{ userCourant.prenom }}</span>
+          <span>Bonjour, {{ userCourant.prenom_utilisateur }} {{ userCourant.nom_utilisateur }}</span>
           <button class="logout-btn" @click="logout">
             <i class="fas fa-sign-out-alt"></i> Déconnexion
           </button>

@@ -13,6 +13,8 @@ import AddFormuleUserView from "@/components/Admin/User/AddFormuleUserView.vue";
 import EditCreneauView from "@/components/Planning/EditCreneau.vue"
 import CreateFormuleView from "@/components/Admin/Formule/CreateFormuleView.vue";
 import EditFormuleView from "@/components/Admin/Formule/EditFormuleView.vue";
+import AddActiviteView from "@/components/Admin/Activite/AddActiviteView.vue";
+import EditActiviteView from "@/components/Admin/Activite/EditActiviteView.vue";
 
 const routes = [
     {
@@ -85,6 +87,16 @@ const routes = [
         path: '/profil/editFormule/:id',
         name: 'editFormule',
         component: EditFormuleView
+    },
+    {
+        path: '/profil/addActivite',
+        name: 'addActivite',
+        component: AddActiviteView
+    },
+    {
+        path: '/profil/editActivite/:id',
+        name: 'editActivite',
+        component: EditActiviteView
     }
 ]
 
