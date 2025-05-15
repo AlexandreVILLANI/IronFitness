@@ -2,7 +2,15 @@
   <section class="spikes"></section>
   <div class="formule-page">
     <h1>Nos abonnements</h1>
-    <div class="formules">
+
+    <!-- Indicateur de chargement -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Chargement des abonnements...</p>
+    </div>
+
+    <!-- Contenu principal -->
+    <div v-else class="formules">
       <div v-for="(formule, index) in formules" :key="index" class="formule-card">
         <h2>{{ formule.nom_formule }}</h2>
         <p class="prix">{{ formule.prix_formule }} € / {{ formule.unite }}</p>
@@ -17,10 +25,11 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { onMounted, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
+const loading = ref(true);
 const router = useRouter();
 const store = useStore();
 const formules = computed(() => store.state.formule.formules);
@@ -39,8 +48,14 @@ async function abonner(formule) {
   router.push({ name: "souscrire", params: { id: formule.id_formule } });
 }
 
-onMounted(() => {
-  store.dispatch("formule/getAllFormule");
+onMounted(async () => {
+  try {
+    await store.dispatch("formule/getAllFormule");
+  } catch (error) {
+    console.error("Erreur lors du chargement des formules:", error);
+  } finally {
+    loading.value = false;
+  }
 });
 
 function getFormuleImage(nom_image) {
@@ -52,6 +67,32 @@ function getFormuleImage(nom_image) {
 </script>
 
 <style scoped>
+/* Styles pour l'indicateur de chargement */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+  min-height: 200px;
+  color: white;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .subscribe-button {
   background-color: #527091;
   color: white;
@@ -89,21 +130,22 @@ function getFormuleImage(nom_image) {
 }
 
 .formule-page {
-  padding: 1.5rem; /* Réduit le padding global sur mobile */
+  padding: 1.5rem;
   text-align: center;
   background-color: #445f77;
+  min-height: 300px;
 }
 
 .formule-page h1 {
-  font-size: 2rem; /* Réduit la taille du titre sur mobile */
+  font-size: 2rem;
   margin-bottom: 1.5rem;
   color: white;
 }
 
 .formules {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Légèrement réduit la largeur minimale */
-  gap: 1.5rem; /* Réduit l'espace entre les cartes sur mobile */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
@@ -111,47 +153,47 @@ function getFormuleImage(nom_image) {
 
 .formule-card {
   background: white;
-  border-radius: 0.75rem; /* Réduit légèrement le rayon de bordure sur mobile */
-  padding: 1rem; /* Réduit le padding à l'intérieur de la carte sur mobile */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Ombre plus subtile sur mobile */
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
 .formule-card:hover {
-  transform: scale(1.02); /* Effet de survol plus subtil sur mobile */
+  transform: scale(1.02);
 }
 
 .image-formule {
   width: 100%;
   height: auto;
   object-fit: cover;
-  margin-bottom: 0.75rem; /* Réduit la marge sous l'image sur mobile */
-  border-radius: 0.3rem; /* Réduit le rayon de bordure de l'image sur mobile */
+  margin-bottom: 0.75rem;
+  border-radius: 0.3rem;
 }
 
 .formule-card h2 {
-  font-size: 1.2rem; /* Réduit la taille du titre de la formule sur mobile */
+  font-size: 1.2rem;
   color: #527091;
   margin-bottom: 0.3rem;
 }
 
 .formule-card .prix {
-  font-size: 1rem; /* Réduit la taille du prix sur mobile */
+  font-size: 1rem;
   font-weight: bold;
   color: #27ae60;
   margin-bottom: 0.3rem;
 }
 
 .formule-card .activites {
-  font-size: 0.9rem; /* Réduit légèrement la taille du texte des activités */
+  font-size: 0.9rem;
   color: #7f8c8d;
 }
 
 .subscribe-button {
-  font-size: 0.9rem; /* Réduit la taille du texte du bouton sur mobile */
-  padding: 0.5rem 1rem; /* Réduit le padding du bouton sur mobile */
-  margin-top: 0.75rem; /* Réduit la marge au-dessus du bouton sur mobile */
-  border-radius: 0.3rem; /* Réduit légèrement le rayon de bordure du bouton */
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  border-radius: 0.3rem;
 }
 
 /* Media query pour les écrans de taille moyenne (petites tablettes) */
