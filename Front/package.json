@@ -10,13 +10,13 @@
     "start": "http-server dist"
   },
   "dependencies": {
+    "@fullcalendar/vue3": "^6.1.17",
     "axios": "^1.6.7",
+    "crypto-js": "^4.2.0",
+    "vite-plugin-vue-devtools": "^7.7.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
-    "vuex": "^4.1.0",
-    "vite-plugin-vue-devtools": "^7.7.2",
-    "crypto-js": "^4.2.0"
-
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
