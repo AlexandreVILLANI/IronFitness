@@ -34,7 +34,7 @@ app.use(cors({
     servers: [{ url: "http://localhost:3000" }],
     //    origin: 'http://localhost:5173',
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],  // Ajoutez 'PATCH' ici
+    methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],  // Ajoutez 'PATCH' ici
     allowedHeaders: ['Content-Type', 'session-id'] // <-- ajoute ton header ici
 }));
 
@@ -63,6 +63,7 @@ const formuleRouter = require('./routes/formule.router');
 const loginRoutes = require('./routes/authentification.router');
 const usersRoutes = require('./routes/user.router');
 const mailRoutes = require('./routes/mail.router');
+const creneauRoutes = require('./routes/creneau.router')
 
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
@@ -97,6 +98,8 @@ app.get('/api/db-test', async (req, res) => {
     }
 });
 
+app.use('/mail',mailRoutes);
+app.use('/creneau',creneauRoutes);
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;

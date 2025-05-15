@@ -6,7 +6,7 @@
       <div class="user-info">
         <h1>Tableau de bord Administrateur</h1>
         <div class="welcome-message">
-          <span>Bonjour, {{ userCourant.prenom }}</span>
+          <span>Bonjour, {{ userCourant.prenom_utilisateur }} {{ userCourant.nom_utilisateur }}</span>
           <button class="logout-btn" @click="logout">
             <i class="fas fa-sign-out-alt"></i> Déconnexion
           </button>
@@ -21,7 +21,7 @@
               :class="{ active: activeTab === 'activity' }"
               @click="setActiveTab('activity')"
           >
-            <i class="fas fa-users"></i> Activité
+            <i class="fas fa-chart-bar"></i> Activité
           </li>
           <li
               :class="{ active: activeTab === 'utilisateur' }"
@@ -30,18 +30,17 @@
             <i class="fas fa-users"></i> Utilisateur
           </li>
           <li
-              :class="{ active: activeTab === 'creneau' }"
-              @click="setActiveTab('creneau')"
+              :class="{ active: activeTab === 'formule' }"
+              @click="setActiveTab('formule')"
           >
-            <i class="fas fa-file-alt"></i> Créneau
+            <i class="fas fa-file-alt"></i> Formules
           </li>
         </ul>
       </nav>
 
       <main class="main-content">
-        <!-- Contenu dynamique en fonction de l'onglet sélectionné -->
         <ActivityView v-if="activeTab === 'activity'" />
-        <CreneauView v-if="activeTab === 'creneau'" />
+        <FormuleView v-if="activeTab === 'formule'" />
         <UserView v-if="activeTab === 'utilisateur'"/>
       </main>
     </div>
@@ -49,23 +48,34 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import {ref, onMounted} from 'vue';
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
 import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
-import ActivityView from '@/components/Admin/ActivityView.vue';
-import CreneauView from '@/components/Admin/CreneauView.vue';
-import UserView from "@/components/Admin/UserView.vue";
+import ActivityView from '@/components/Admin/Activite/ActivityView.vue';
+import FormuleView from '@/components/Admin/Formule/FormuleView.vue';
+import UserView from "@/components/Admin/User/UserView.vue";
 
 const store = useStore();
 const router = useRouter();
 const confirmDialog = ref(null);
-const activeTab = ref('utilisateur');
+const activeTab = ref('utilisateur'); // Valeur par défaut
 
 const userCourant = store.state.user.userCourant;
+const localStorageKey = 'lastActiveAdminTab';
+
+onMounted(() => {
+  // Récupérer le dernier onglet actif depuis localStorage au montage du composant
+  const storedTab = localStorage.getItem(localStorageKey);
+  if (storedTab) {
+    activeTab.value = storedTab;
+  }
+});
 
 const setActiveTab = (tab) => {
   activeTab.value = tab;
+  // Sauvegarder l'onglet actif dans localStorage
+  localStorage.setItem(localStorageKey, tab);
 };
 
 const logout = async () => {
@@ -179,15 +189,11 @@ const logout = async () => {
 }
 
 
-
-
 .recent-activity h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
 }
-
-
 
 
 @media (max-width: 768px) {

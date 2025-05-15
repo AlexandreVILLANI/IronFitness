@@ -70,9 +70,69 @@ async function updateActiviteAsync(id,nom,image,description,type) {
     }
 }
 
+const createActivite = (activiteData, callback) => {
+    createActiviteAsync(activiteData)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.error(error);
+            callback(error, null);
+        });
+};
+
+async function createActiviteAsync(activiteData) {
+    try {
+        const { nom_activite, image_activite, description_activite, type_activite } = activiteData;
+        const conn = await pool.connect();
+        const query = `
+            INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id_activite;
+        `;
+        const values = [nom_activite, image_activite, description_activite, type_activite];
+        const result = await conn.query(query, values);
+        conn.release();
+        return result.rows[0];
+    } catch (error) {
+        console.error('Error in createActiviteAsync:', error);
+        throw error;
+    }
+}
+
+const deleteActivite = (idActivite, callback) => {
+    deleteActiviteAsync(idActivite)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.error(error);
+            callback(error, null);
+        });
+};
+
+async function deleteActiviteAsync(idActivite) {
+    try {
+        const conn = await pool.connect();
+        const query = `
+            DELETE FROM Activite
+            WHERE id_activite = $1;
+        `;
+        const values = [idActivite];
+        const result = await conn.query(query, values);
+        conn.release();
+        return result.rowCount;
+    } catch (error) {
+        console.error('Error in deleteActiviteAsync:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getAllActivite: getAllActivite,
     getActiviteByID: getActiviteByID,
-    updateActivite: updateActivite
+    updateActivite: updateActivite,
+    createActivite: createActivite,
+    deleteActivite: deleteActivite
 }
 

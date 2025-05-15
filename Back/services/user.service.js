@@ -152,15 +152,24 @@ async function updateUserFormuleAsync(id_utilisateur, formules) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
+
+        // 1. Supprimer toutes les associations de formules pour cet utilisateur
+        await client.query(
+            "DELETE FROM Formule_Utilisateur WHERE id_utilisateur = $1",
+            [id_utilisateur]
+        );
+
+        // 2. Insérer les nouvelles associations de formules
         for (const id_formule of formules) {
             await client.query(
                 "INSERT INTO Formule_Utilisateur (id_formule, id_utilisateur) VALUES ($1, $2) ON CONFLICT DO NOTHING;",
                 [id_formule, id_utilisateur]
             );
         }
+
         await client.query('COMMIT');
         client.release();
-        return { success: true, message: "Formules ajoutées avec succès" };
+        return { success: true, message: "Formules de l'utilisateur mises à jour avec succès" };
     } catch (error) {
         await client.query('ROLLBACK');
         client.release();

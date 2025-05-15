@@ -17,14 +17,13 @@
     </div>
   </div>
 
-  <!-- Modal -->
   <transition name="fade">
     <div v-if="selectedActivite" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <button class="close-button" @click="closeModal" aria-label="Fermer la fenêtre">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
         <div class="modal-image-container">
@@ -41,7 +40,6 @@
           </div>
           <p class="modal-description">{{ selectedActivite.description_activite }}</p>
 
-          <!-- Place type_activite sous la description -->
           <span class="modal-tag" :class="selectedActivite.type_activite.toLowerCase()">
             {{ selectedActivite.type_activite }}
           </span>
@@ -75,17 +73,104 @@ function getActivityImage(nom_image) {
   return images[imagePath]?.default || images["/src/assets/notfound.jpg"];
 }
 
-
-
 onMounted(() => {
   store.dispatch("activite/getAllActivite");
 });
 </script>
 
 <style scoped>
+/* Grid layout */
+.activites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Largeur minimale réduite */
+  gap: 0.75rem; /* Espacement réduit pour les petits écrans */
+  padding: 0.75rem; /* Padding réduit pour les petits écrans */
+}
 
+/* Sur les écrans très petits, forcer deux colonnes */
+@media (max-width: 480px) {
+  .activites-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
-/* Modal styles */
+@media (min-width: 640px) {
+  .activites-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Deux colonnes minimum sur les écrans un peu plus grands */
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .activites-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Plus large sur les écrans moyens */
+    gap: 2rem;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .activites-grid {
+    grid-template-columns: repeat(5, 1fr); /* Cinq colonnes sur les grands écrans */
+  }
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px; /* Rayon de bordure encore plus réduit pour s'adapter à deux colonnes */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); /* Ombre encore plus subtile */
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.01); /* Effet de survol discret */
+}
+
+.card-image {
+  width: 100%;
+  height: 100px; /* Hauteur d'image encore réduite pour deux colonnes */
+  object-fit: cover;
+}
+
+@media (min-width: 640px) {
+  .card-image {
+    height: 120px; /* Hauteur légèrement plus importante sur les écrans un peu plus grands */
+  }
+}
+
+@media (min-width: 960px) {
+  .card-image {
+    height: 150px; /* Hauteur standard sur les écrans moyens */
+  }
+}
+
+.card-body {
+  padding: 0.5rem; /* Padding encore réduit pour deux colonnes */
+}
+
+.card-title {
+  font-size: 1rem; /* Taille de titre réduite pour deux colonnes */
+  margin-bottom: 0.2rem;
+  color: #34495e;
+}
+
+@media (min-width: 640px) {
+  .card-title {
+    font-size: 1.1rem; /* Taille légèrement plus importante sur les écrans un peu plus grands */
+    margin-bottom: 0.3rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .card-title {
+    font-size: 1.2rem; /* Taille standard sur les écrans moyens */
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Styles du modal (inchangés) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -193,10 +278,6 @@ onMounted(() => {
   height: 20px;
 }
 
-
-
-
-/* Responsive */
 @media (min-width: 768px) {
   .modal-content {
     grid-template-columns: 1fr 1fr;
@@ -204,12 +285,6 @@ onMounted(() => {
 
   .modal-image-container {
     height: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .activites-grid {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -223,53 +298,4 @@ onMounted(() => {
     transform: translateY(0);
   }
 }
-
-/* Grid layout */
-.activites-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2rem;
-  padding: 20px;
-}
-
-@media (max-width: 1024px) {
-  .activites-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .activites-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: scale(1.02);
-}
-
-.card-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.card-body {
-  padding: 1rem;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #34495e;
-}
-
 </style>

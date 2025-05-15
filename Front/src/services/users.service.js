@@ -1,4 +1,4 @@
-import {getRequest, postRequest, patchRequest, deleteRequest} from "./axios.service"
+import {getRequest, postRequest, patchRequest, deleteRequest, putRequest} from "./axios.service"
 
 async function getAllUsersFromAPI() {
     return getRequest('/users', 'GETALLUSERS')
@@ -63,7 +63,7 @@ async function getUserFormules(id) {
 }
 
 async function updateUserFormuleFromAPI({ id_utilisateur, formules }) {
-    return patchRequest('/users/updateUserFormule',{ id_utilisateur, formules }, 'UPDATEUSERFORMULE')
+    return putRequest('/users/updateUserFormule',{ id_utilisateur, formules }, 'UPDATEUSERFORMULE')
 }
 
 async function updateUserFormule({ id_utilisateur, formules }) {

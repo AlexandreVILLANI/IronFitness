@@ -12,10 +12,18 @@
           <label for="password">Mot de passe</label>
           <input type="password" id="password" v-model="password" placeholder="Entrez votre mot de passe" required />
         </div>
-        <button type="submit" class="btn">Se connecter</button>
+
+        <!-- Message d'erreur de connexion -->
+        <div v-if="loginError" class="error-message">
+          {{ loginError }}
+        </div>
+
+        <button type="submit" class="btn" :disabled="loading">
+          {{ loading ? 'Connexion en cours...' : 'Se connecter' }}
+        </button>
       </form>
       <p class="signup-link">
-        Pas encore de compte ? <a href="#" @click="toggleRegister">S'inscrire</a>
+        Pas encore de compte ? <a href="#" @click.prevent="toggleRegister">S'inscrire</a>
       </p>
     </div>
 
@@ -25,11 +33,11 @@
       <form @submit.prevent="registerUser">
         <div class="input-group">
           <label for="nom">Nom</label>
-          <input type="nom" id="nom" v-model="nom" placeholder="Entrez votre nom" required />
+          <input type="text" id="nom" v-model="nom" placeholder="Entrez votre nom" required />
         </div>
         <div class="input-group">
-          <label for="prenom">Prenom</label>
-          <input type="prenom" id="prenom" v-model="prenom" placeholder="Entrez votre prenom  " required />
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" v-model="prenom" placeholder="Entrez votre prénom" required />
         </div>
         <div class="input-group">
           <label for="email">Email</label>
@@ -43,10 +51,18 @@
           <label for="confirm-password">Confirmer le mot de passe</label>
           <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="Confirmer votre mot de passe" required />
         </div>
-        <button type="submit" class="btn">S'inscrire</button>
+
+        <!-- Message d'erreur d'inscription -->
+        <div v-if="registerError" class="error-message">
+          {{ registerError }}
+        </div>
+
+        <button type="submit" class="btn" :disabled="loading">
+          {{ loading ? 'Inscription en cours...' : 'S\'inscrire' }}
+        </button>
       </form>
       <p class="login-link">
-        Déjà un compte ? <a href="#" @click="toggleRegister">Se connecter</a>
+        Déjà un compte ? <a href="#" @click.prevent="toggleRegister">Se connecter</a>
       </p>
     </div>
   </div>
@@ -56,13 +72,9 @@
 import { getSession } from "@/services/authentification.service.js";
 import { getUserFromSessionId } from "@/services/users.service";
 import { mapActions, mapState } from "vuex";
-import AlertDialog from "@/components/Dialog/AlertDialog.vue";
 
 export default {
   name: "LoginView",
-  components: {
-    AlertDialog,
-  },
   data() {
     return {
       email: null,
@@ -71,6 +83,10 @@ export default {
       register: false,
       nom: null,
       prenom: null,
+      loading: false,
+      loginError: null,
+      registerError: null,
+      connectionError: null
     };
   },
   computed: {
@@ -78,98 +94,149 @@ export default {
   },
   methods: {
     ...mapActions("user", ["loginUtilisateur", "createUtilisateur"]),
+
     toggleRegister() {
       this.email = null;
       this.password = null;
       this.confirmPassword = null;
       this.nom = null;
       this.prenom = null;
+      this.loginError = null;
+      this.registerError = null;
       this.register = !this.register;
     },
+
     async login() {
-      if (!this.email || !this.password) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur champ",
-          message: "Veuillez remplir tous les champs",
-          okButton: "Ok",
-        });
-        return;
+      this.loginError = null;
+      this.loading = true;
+
+      try {
+        if (!this.email || !this.password) {
+          this.loginError = "Veuillez remplir tous les champs";
+          return;
+        }
+
+        const sessionResponse = await getSession(this.email, this.password);
+
+        if (sessionResponse.data.error === 1) {
+          this.loginError = "Email ou mot de passe incorrect";
+          return;
+        }
+
+        if (!sessionResponse.data) {
+          this.loginError = "Erreur de connexion au serveur";
+          return;
+        }
+
+        this.$store.commit("user/SET_SESSION_ID", sessionResponse.data);
+
+        const userResponse = await getUserFromSessionId();
+        this.$store.commit("user/SET_USER", userResponse.data);
+
+        await this.$router.push({ path: "/" });
+      } catch (error) {
+        console.error("Erreur de connexion:", error);
+        if (error.response) {
+          // Erreur HTTP
+          if (error.response.status === 401) {
+            this.loginError = "Identifiants incorrects";
+          } else if (error.response.status === 500) {
+            this.loginError = "Erreur serveur, veuillez réessayer plus tard";
+          } else {
+            this.loginError = "Erreur de connexion (" + error.response.status + ")";
+          }
+        } else if (error.request) {
+          this.loginError = "Impossible de se connecter au serveur. Vérifiez votre connexion internet.";
+        } else {
+          this.loginError = "Une erreur inattendue s'est produite";
+        }
+      } finally {
+        this.loading = false;
       }
-
-      const session_id = await getSession(this.email, this.password);
-      this.$store.commit("user/SET_SESSION_ID", session_id.data);
-
-      if (session_id.data.error === 1) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur de connexion",
-          message: "Email ou mot de passe incorrect",
-          okButton: "Ok",
-        });
-        return;
-      }
-
-      const user = await getUserFromSessionId();
-      this.$store.commit("user/SET_USER", user.data);
-
-      await this.$router.push({ path: "/" });
     },
+
     async registerUser() {
-      if (!this.email || !this.password || !this.confirmPassword || !this.nom || !this.prenom) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur champ",
-          message: "Veuillez remplir tous les champs",
-          okButton: "Ok",
+      this.registerError = null;
+      this.loading = true;
+
+      try {
+        // Validation des champs
+        if (!this.email || !this.password || !this.confirmPassword || !this.nom || !this.prenom) {
+          this.registerError = "Veuillez remplir tous les champs";
+          return;
+        }
+
+        // Validation nom/prénom
+        const regexNom = /^[A-Za-zÀ-ÖØ-öø-ÿ\- ]+$/;
+        if (!regexNom.test(this.nom) || !regexNom.test(this.prenom)) {
+          this.registerError = "Le nom et le prénom ne doivent contenir que des lettres";
+          return;
+        }
+
+        // Validation email
+        if (!this.email.includes("@") || !this.email.includes(".")) {
+          this.registerError = "Adresse email invalide";
+          return;
+        }
+
+        // Confirmation mot de passe
+        if (this.password !== this.confirmPassword) {
+          this.registerError = "Les mots de passe ne correspondent pas";
+          return;
+        }
+
+        // Tentative d'inscription
+        await this.createUtilisateur({
+          nom: this.nom,
+          prenom: this.prenom,
+          mail: this.email,
+          password: this.password,
+          id_role: 1,
         });
-        return;
+
+        // Retour au formulaire de connexion après inscription réussie
+        this.toggleRegister();
+        this.loginError = "Inscription réussie ! Vous pouvez maintenant vous connecter";
+      } catch (error) {
+        console.error("Erreur d'inscription:", error);
+        if (error.response) {
+          if (error.response.status === 409) {
+            this.registerError = "Cet email est déjà utilisé";
+          } else {
+            this.registerError = "Erreur lors de l'inscription (" + error.response.status + ")";
+          }
+        } else if (error.request) {
+          this.registerError = "Impossible de se connecter au serveur";
+        } else {
+          this.registerError = "Erreur lors de l'inscription";
+        }
+      } finally {
+        this.loading = false;
       }
-
-      // Validation nom/prénom (lettres uniquement)
-      const regexNom = /^[A-Za-zÀ-ÖØ-öø-ÿ\- ]+$/;
-      if (!regexNom.test(this.nom) || !regexNom.test(this.prenom)) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur champ",
-          message: "Le nom et le prénom ne doivent contenir que des lettres",
-          okButton: "Ok",
-        });
-        return;
-      }
-
-      // Validation email simple
-      if (!this.email.includes("@")) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur champ",
-          message: "Adresse email invalide",
-          okButton: "Ok",
-        });
-        return;
-      }
-
-      // Confirmation mot de passe
-      if (this.password !== this.confirmPassword) {
-        await this.$refs.alertDialog.show({
-          title: "Erreur champ",
-          message: "Les mots de passe ne correspondent pas",
-          okButton: "Ok",
-        });
-        return;
-      }
-
-      await this.createUtilisateur({
-        nom: this.nom,
-        prenom: this.prenom,
-        mail: this.email,
-        password: this.password,
-        id_role: 1,
-      });
-
-      this.toggleRegister(); // Retour au formulaire de connexion
-    },
-  },
+    }
+  }
 };
 </script>
 
 
+
 <style scoped>
+
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 /* Container global pour centrer les éléments */
 .login-container {
   position: relative;

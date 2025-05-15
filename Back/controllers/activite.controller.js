@@ -38,4 +38,31 @@ exports.updateActivite = (req, res) => {
     })
 }
 
+exports.createActivite = (req, res) => {
+    const activiteData = req.body;
+    activiteService.createActivite(activiteData, (error, data) => {
+        if (error) {
+            return res.status(500).send("Internal server error during activity creation");
+        } else {
+            return res.status(201).send(data);
+        }
+    });
+};
+
+exports.deleteActivite = (req, res) => {
+    const activiteId = req.params.id;
+    activiteService.deleteActivite(activiteId, (error, data) => {
+        if (error) {
+            return res.status(500).send("Internal server error during activity deletion");
+        } else {
+            if (data > 0) {
+                return res.status(200).send({ message: `Activity ${activiteId} deleted successfully` });
+            } else {
+                return res.status(404).send({ message: `Activity ${activiteId} not found` });
+            }
+        }
+    });
+};
+
+
 

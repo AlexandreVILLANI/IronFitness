@@ -132,7 +132,7 @@ export default {
                 const result = await deleteUtilisateur(id);
                 commit('DELETE_UTILISATEUR', result[0]);
             } catch (err) {
-                console.error("Error in deleteUtilisateur():", err);
+                //console.error("Error in deleteUtilisateur():", err);
             }
         },
         async fetchSessionFromCookies({ commit }) {
@@ -159,9 +159,7 @@ export default {
                 console.error("Error in getUserFormulesStore():", err);
             }
         },
-
         async updateUserFormule({ commit }, { id_utilisateur, formules }) {
-            console.log('tableaux',formules)
             try {
                 const result = await updateUserFormule({ id_utilisateur, formules });
                 commit("UPDATE_USER_FORMULE", result.data);

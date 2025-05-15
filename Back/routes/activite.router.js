@@ -147,4 +147,93 @@ router.patch('/updateActivite',activiteController.updateActivite);
  *         description: Erreur interne du serveur
  */
 
+
+router.post('/', activiteController.createActivite);
+/**
+ * @swagger
+ * /activite:
+ *   post:
+ *     summary: Créer une nouvelle activité
+ *     tags:
+ *       - Activités
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom_activite:
+ *                 type: string
+ *                 description: Nom de la nouvelle activité
+ *                 example: "Atelier de poterie"
+ *               image_activite:
+ *                 type: string
+ *                 description: Image de la nouvelle activité
+ *                 example: "poterie.jpg"
+ *               description_activite:
+ *                 type: string
+ *                 description: Description de la nouvelle activité
+ *                 example: "Venez découvrir l'art de la poterie."
+ *               type_activite:
+ *                 type: string
+ *                 enum: [En groupe, Personnel]
+ *                 description: Type de la nouvelle activité
+ *                 example: "En groupe"
+ *             required:
+ *               - nom_activite
+ *               - type_activite
+ *     responses:
+ *       201:
+ *         description: Activité créée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id_activite:
+ *                   type: integer
+ *                   description: ID de la nouvelle activité créée
+ *                   example: 5
+ *       400:
+ *         description: Données invalides fournies
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+
+router.delete('/:id', activiteController.deleteActivite);
+
+/**
+ * @swagger
+ * /activite/{id}:
+ *   delete:
+ *     summary: Supprimer une activité par son ID
+ *     tags:
+ *       - Activités
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de l'activité à supprimer
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *     responses:
+ *       200:
+ *         description: Activité supprimée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Activité 1 supprimée avec succès"
+ *       404:
+ *         description: Activité non trouvée
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+
+
 module.exports = router;
