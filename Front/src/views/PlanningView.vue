@@ -177,7 +177,7 @@ function resetNewCreneau() {
   }
 }
 
-// Supprimer le créneau sélectionné
+
 async function deleteSelectedCreneau() {
   if (!selectedEvent.value.id) return
 
@@ -187,11 +187,10 @@ async function deleteSelectedCreneau() {
     await store.dispatch('creneau/getAllCreneau')
   } catch (error) {
     console.error("Erreur lors de la suppression du créneau:", error)
-    // Vous pourriez ajouter ici un message d'erreur à l'utilisateur
   }
 }
 
-// Soumettre le nouveau créneau
+
 async function submitNewCreneau() {
   try {
     const selectedActivite = activites.value.find(a => a.id_activite === newCreneau.value.id_activite)
