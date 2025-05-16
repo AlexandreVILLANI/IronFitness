@@ -1,4 +1,18 @@
 <template>
+  <div class="page-intro">
+    <h1>Nos Activités Sportives</h1>
+    <div class="intro-container">
+      <p class="intro-text">
+        Découvrez notre large gamme d'activités adaptées à tous les niveaux et à tous les objectifs.
+        Que vous préfériez les séances en groupe dynamiques ou les entraînements personnels individualisés,
+        notre salle propose des options variées pour vous accompagner dans votre pratique sportive.
+      </p>
+      <p class="intro-text">
+        Cliquez sur une activité pour en voir le détail et choisissez celle qui correspond le mieux à vos besoins.
+      </p>
+    </div>
+  </div>
+
   <div class="activites-grid">
     <div
         v-for="activite in activites"
@@ -79,6 +93,59 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+.page-intro {
+  padding: 1.5rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  text-align: center;
+}
+
+.intro-container {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  backdrop-filter: blur(2px);
+}
+
+.page-intro h1 {
+  font-size: clamp(1.5rem, 4vw, 2rem); /* Taille responsive */
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+}
+
+.intro-text {
+  font-size: clamp(0.95rem, 2vw, 1.1rem); /* Taille responsive */
+  color: var(--gray-color);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .intro-container {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: left;
+  }
+
+  .page-intro {
+    padding: 1rem 0.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .intro-container {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding: 1rem 0.5rem;
+  }
+}
 /* Grid layout */
 .activites-grid {
   display: grid;
