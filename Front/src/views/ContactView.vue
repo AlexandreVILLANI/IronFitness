@@ -10,12 +10,12 @@
       <div class="contact-info">
         <div class="contact-item">
           <span class="icon">✉️</span>
-          <a href="mailto:contact@ironfitness.fr">contact@ironfitness.fr</a>
+          <a href="mailto:contact@ironfitness.fr">fitboxing70@gmail.com</a>
         </div>
 
         <div class="contact-item">
           <span class="icon">📞</span>
-          <span>06 12 34 56 78</span>
+          <span>06 19 52 76 27</span>
         </div>
 
         <div class="contact-item">

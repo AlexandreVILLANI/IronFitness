@@ -146,7 +146,8 @@ INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_
     ('Durand', 'Alice', 'alice.durand@example.com', '2f81cba8c3e6f76972a8a3991fd5980eb77515f1fc9d05e5e094e1b82f457776', 1),--mdp123
     ('Martin', 'Lucas', 'lucas.martin@example.com', '7cb1398717b8459e431ccb042a1c3c9825392898b354828141f093709137f2dc', 1), --mdp456
     ('Admin','Admin','test-ukur8zzhb@srv1.mail-tester.com','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',2), --test
-    ('VILLANI','Alexandre','villalex405@gmail.com','6ac56698cdf0324fe1f38afbad1a3190d229431f91bd15924b0d82a9cc7bf8c5',1); --voiture
+    ('VILLANI','Alexandre','villalex405@gmail.com','6ac56698cdf0324fe1f38afbad1a3190d229431f91bd15924b0d82a9cc7bf8c5',1), --voiture
+    ('Administrateur','William','fitboxing70@gmail.com','89e0bc8bfa515d4d8da38e46400a3e724638dead9dcd085a0dd56300798de6a3',2);
 
 --pour faire des test sur une adresse mail : https://www.mail-tester.com/?lang=fr
 
