@@ -22,6 +22,31 @@
       </div>
     </div>
   </div>
+  <!-- modal -->
+  <transition name="fade">
+    <div v-if="showLoginModal" class="login-modal">
+      <div class="modal-overlay" @click="closeModal"></div>
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal" aria-label="Fermer la fenêtre">
+          &times;
+        </button>
+
+        <div class="modal-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#527091">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </div>
+
+        <h3 class="modal-title">Connexion requise</h3>
+        <p class="modal-message">Vous devez être connecté pour accéder à cette fonctionnalité.</p>
+
+        <div class="modal-actions">
+          <button @click="closeModal" class="modal-button cancel">Plus tard</button>
+          <button @click="goToLogin" class="modal-button confirm">Se connecter</button>
+        </div>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script setup>
@@ -39,14 +64,26 @@ const images = import.meta.glob("@/assets/Formule/*.jpg", {
   import: "default",
 });
 
+const showLoginModal = ref(false);
+
 async function abonner(formule) {
   if (!userCourant.value || !userCourant.value.id_session) {
-    alert("Vous devez être connecté pour vous abonner.");
-    router.push({ name: "login" });
+    showLoginModal.value = true; // Affiche le modal au lieu de l'alert
     return;
   }
   router.push({ name: "souscrire", params: { id: formule.id_formule } });
 }
+
+function closeModal() {
+  showLoginModal.value = false;
+}
+
+function goToLogin() {
+  closeModal();
+  router.push({ name: "login" });
+}
+
+
 
 onMounted(async () => {
   try {
@@ -58,15 +95,158 @@ onMounted(async () => {
   }
 });
 
-function getFormuleImage(nom_image) {
-  if (!nom_image) return images["/src/assets/notfound.jpg"];
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, "_") + ".jpg";
-  const imagePath = `/src/assets/Formule/${fileName}`;
-  return images[imagePath] || images["/src/assets/notfound.jpg"];
-}
+
 </script>
 
 <style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Styles du modal */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 10;
+  animation: modal-appear 0.3s ease-out;
+}
+
+@keyframes modal-appear {
+  from {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(82, 112, 145, 0.1);
+  border-radius: 50%;
+}
+
+.modal-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  color: #527091;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.modal-message {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-button {
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-button.cancel {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.modal-button.cancel:hover {
+  background: #e0e0e0;
+}
+
+.modal-button.confirm {
+  background: #527091;
+  color: white;
+}
+
+.modal-button.confirm:hover {
+  background: #3b5a75;
+  transform: translateY(-1px);
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #555;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 1.5rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .modal-button {
+    width: 100%;
+  }
+}
 /* Styles pour l'indicateur de chargement */
 .loading-container {
   display: flex;

@@ -10,20 +10,41 @@
 
     <!-- Contenu principal -->
     <template v-else>
-      <div class="stickers">
-        <div
-            v-for="(activity, index) in visibleActivities"
-            :key="index"
-            class="sticker"
-            @click="goToActivity"
-        >
-          <img
-              class="image-activite"
-              :src="getActivityImage(activity.image_activite)"
-              alt="Image de l'activité"
-          />
-          <h2>{{ activity.nom_activite }}</h2>
+      <div class="carousel-container">
+        <button class="carousel-button prev" @click="prevSlide" aria-label="Précédent">
+          &lt;
+        </button>
+
+        <div class="carousel">
+          <div
+              v-for="(activity, index) in activities"
+              :key="index"
+              class="sticker"
+              :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
+              @click="goToActivity"
+          >
+            <img
+                class="image-activite"
+                :src="getActivityImage(activity.image_activite)"
+                alt="Image de l'activité"
+            />
+            <h2>{{ activity.nom_activite }}</h2>
+          </div>
         </div>
+
+        <button class="carousel-button next" @click="nextSlide" aria-label="Suivant">
+          &gt;
+        </button>
+      </div>
+
+      <!-- Indicateurs de slide -->
+      <div class="carousel-indicators">
+        <span
+            v-for="(_, index) in visibleDots"
+            :key="index"
+            :class="{ active: currentIndex === index }"
+            @click="goToSlide(index)"
+        ></span>
       </div>
 
       <!-- Bouton "Voir plus" -->
@@ -43,22 +64,42 @@ const loading = ref(true);
 const store = useStore();
 const router = useRouter();
 const activities = computed(() => store.state.activite.activites);
-const visibleActivities = computed(() => activities.value.slice(0, 5));
+const currentIndex = ref(0);
+
+// Calculer le nombre de points indicateurs visibles
+const visibleDots = computed(() => {
+  return Math.ceil(activities.value.length / slidesToShow());
+});
 
 const images = import.meta.glob('@/assets/Activite/*.jpg', {
   eager: true,
   import: 'default',
 });
 
+
+// Calculer le nombre de slides à afficher selon la largeur d'écran
+const slidesToShow = () => {
+  if (window.innerWidth >= 1200) return 4;
+  if (window.innerWidth >= 768) return 3;
+  if (window.innerWidth >= 576) return 2;
+  return 1;
+};
+
 onMounted(async () => {
   try {
     await store.dispatch("activite/getAllActivite");
+    window.addEventListener('resize', handleResize);
   } catch (error) {
     console.error("Erreur lors du chargement des activités:", error);
   } finally {
     loading.value = false;
   }
 });
+
+function handleResize() {
+  // Réinitialiser l'index si nécessaire lors du redimensionnement
+  currentIndex.value = 0;
+}
 
 function getActivityImage(nom_image) {
   const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
@@ -69,6 +110,18 @@ function getActivityImage(nom_image) {
 function goToActivity() {
   router.push("/activite");
 }
+
+function nextSlide() {
+  currentIndex.value = (currentIndex.value + 1) % visibleDots.value;
+}
+
+function prevSlide() {
+  currentIndex.value = (currentIndex.value - 1 + visibleDots.value) % visibleDots.value;
+}
+
+function goToSlide(index) {
+  currentIndex.value = index;
+}
 </script>
 
 <style scoped>
@@ -76,7 +129,8 @@ function goToActivity() {
   padding: 1.5rem;
   text-align: center;
   background-color: white;
-  min-height: 300px; /* Pour éviter les sauts de layout */
+  min-height: 300px;
+  overflow: hidden;
 }
 
 .sticker-page h1 {
@@ -105,10 +159,116 @@ function goToActivity() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
+/* Styles du carrousel */
+.carousel-container {
+  position: relative;
+  max-width: 100%; /* Prend toute la largeur disponible */
+  margin: 2rem auto; /* Ajoute une marge haut et bas */
+  padding: 0 10px; /* Réduit les marges latérales */
+}
+
+
+.carousel {
+  display: flex;
+  overflow: hidden;
+  scroll-behavior: smooth;
+  margin: 0 -10px;
+}
+
+.sticker {
+  flex: 0 0 calc(100% - 20px);
+  margin: 0 10px;
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.sticker:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sticker img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  border-radius: 0.3rem;
+}
+
+.sticker h2 {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+/* Boutons de navigation */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #ddd;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.carousel-button:hover {
+  background: #2c3e50;
+  color: white;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+/* Indicateurs de slide */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 8px;
+}
+
+.carousel-indicators span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.carousel-indicators span.active {
+  background: #2c3e50;
+}
+
+/* Bouton "Voir plus" */
 .voir-plus {
   margin-top: 2rem;
   display: flex;
@@ -130,45 +290,13 @@ function goToActivity() {
   background-color: #1a252f;
 }
 
-.stickers {
-  margin-top: 20px;
-  margin-right: 20px;
-  margin-left: 20px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* Media Queries */
+@media (min-width: 576px) {
+  .sticker {
+    flex: 0 0 calc(50% - 20px);
+  }
 }
 
-.sticker {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  width: calc(50% - 0.5rem);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-  cursor: pointer;
-}
-
-.sticker:hover {
-  transform: scale(1.02);
-}
-
-.sticker img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  margin-bottom: 0.75rem;
-  border-radius: 0.3rem;
-}
-
-.sticker h2 {
-  font-size: 1.1rem;
-  color: #333;
-  margin-bottom: 0.3rem;
-}
-
-/* Media query pour les écrans plus grands (tablettes et ordinateurs) */
 @media (min-width: 768px) {
   .sticker-page {
     padding: 3rem;
@@ -179,52 +307,28 @@ function goToActivity() {
     margin-bottom: 2.5rem;
   }
 
-  .stickers {
-    gap: 2.5rem;
-    justify-content: flex-start;
-  }
-
   .sticker {
-    width: 350px;
-    padding: 2rem;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  }
-
-  .sticker:hover {
-    transform: scale(1.07);
-  }
-
-  .sticker img {
-    margin-bottom: 1.2rem;
-    border-radius: 0.6rem;
-  }
-
-  .sticker h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.7rem;
-  }
-}
-
-/* Media query pour les écrans de taille moyenne (petites tablettes) */
-@media (min-width: 576px) and (max-width: 767px) {
-  .stickers {
-    justify-content: center;
-    gap: 2rem;
-  }
-
-  .sticker {
-    width: calc(50% - 1rem);
+    flex: 0 0 calc(33.333% - 20px);
     padding: 1.2rem;
   }
 
   .sticker img {
+    height: 200px;
     margin-bottom: 0.9rem;
-    border-radius: 0.4rem;
   }
 
   .sticker h2 {
     font-size: 1.2rem;
-    margin-bottom: 0.4rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .sticker {
+    flex: 0 0 calc(25% - 20px);
+  }
+
+  .sticker img {
+    height: 220px;
   }
 }
 </style>
