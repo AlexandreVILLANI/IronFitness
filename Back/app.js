@@ -35,7 +35,12 @@ app.use(cors({
     //    origin: 'http://localhost:5173',
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],  // Ajoutez 'PATCH' ici
-    allowedHeaders: ['Content-Type', 'session-id'] // <-- ajoute ton header ici
+    allowedHeaders: ['Content-Type', 'session-id'] ,// <-- ajoute ton header ici
+    cookie: {
+        sameSite: 'none',    // important !
+        secure: true,        // obligatoire si https
+        httpOnly: true
+    }
 }));
 
 
