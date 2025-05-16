@@ -105,7 +105,7 @@ const router = createRouter({
     routes,
     scrollBehavior(to, from, savedPosition) {
         // toujours faire un scroll tout en haut quand un recharge un page
-        return { top: 0 };
+        return { top: 0,behavior: 'smooth' };
     },
 })
 
