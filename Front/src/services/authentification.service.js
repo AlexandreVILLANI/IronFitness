@@ -22,6 +22,7 @@ async function getSessionCookies(){
 }
 
 async function logout(){
+    console.log('caca')
     return getRequest('/login/logout', 'LOGOUT')
 }
 

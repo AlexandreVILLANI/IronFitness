@@ -48,10 +48,12 @@ export default {
         SET_USER(state, user) {
             state.userCourant = user;
             state.isConnected = true;
+            console.log('connected');
         },
         LOGOUT_USER(state) {
             state.userCourant = { id_session: null, id_role: null };
             state.isConnected = false;
+            console.log('disconnected');
         },
         UPDATE_USER(state, user) {
             if (user.id_utilisateur === state.userCourant.id_utilisateur) {
@@ -70,11 +72,10 @@ export default {
         SET_SESSION_ID(state, id_session) {
             if (state.userCourant && typeof state.userCourant === 'object') {
                 state.userCourant.id_session = id_session;
-                state.isConnected = true;
             } else {
-                state.userCourant = { id_session: id_session, id_role: null }; // Initialisation de l'objet si nécessaire
-                state.isConnected = true;
+                state.userCourant = { id_session: id_session, id_role: null };
             }
+            // Ne pas mettre isConnected à true ici
         },
         SET_USER_FORMULES(state, formules) {
             state.formulesUtilisateur = Array.isArray(formules) ? formules : [];
@@ -140,11 +141,20 @@ export default {
                 const response = await getSessionCookies();
                 if (response && response.data !== "Pas de session trouvée") {
                     const user = await getUserFromSessionId(response);
-                    commit("SET_SESSION_ID", response);
-                    commit("SET_USER", user.data);
+                    if (user && user.data) {
+                        commit("SET_SESSION_ID", response);
+                        commit("SET_USER", user.data); // SET_USER mettra isConnected à true
+                    } else {
+                        // Si l'utilisateur n'est pas valide, on déconnecte
+                        commit("LOGOUT_USER");
+                    }
+                } else {
+                    // Pas de session trouvée, on déconnecte
+                    commit("LOGOUT_USER");
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération de la session :", error);
+                commit("LOGOUT_USER");
             }
         },
         async getUserFormules({ commit }, id_utilisateur) {

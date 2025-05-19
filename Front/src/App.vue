@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
@@ -20,14 +20,18 @@ const store = useStore();
 const router = useRouter();
 const route = useRoute();
 const disconnectedDialog = ref(null);
-const userCourant = store.state.user.userCourant;
+const userCourant = computed(() => store.state.user.userCourant);
+
+// Initialisation de la session avant le rendu
+store.dispatch('user/fetchSessionFromCookies').then(() => {
+  console.log('Session initialisée:', userCourant.value);
+});
 
 const inactivityTime = 59 * 60 * 1000; // 59 minutes
 let inactivityTimer = null;
 
 function resetInactivityTimer() {
-
-  if (!userCourant || !userCourant.id_session) {
+  if (!userCourant.value?.id_session) {
     return;
   }
 
@@ -37,7 +41,6 @@ function resetInactivityTimer() {
 
   inactivityTimer = setTimeout(() => {
     disconnectedDialog.value?.show();
-
     store.dispatch('user/logoutUser');
     router.push({ name: 'login' });
   }, inactivityTime);
@@ -50,7 +53,6 @@ function setupInactivityListener() {
 }
 
 onMounted(() => {
-  store.dispatch('user/fetchSessionFromCookies');
   setupInactivityListener();
   resetInactivityTimer();
 });

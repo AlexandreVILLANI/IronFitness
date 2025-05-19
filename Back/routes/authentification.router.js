@@ -20,19 +20,27 @@ router.get("/cookies",loginController.getLoginCookiesToken);
 
 /**
  * @swagger
- * /login/logout:
- *   get:
- *     summary: Déconnecte un utilisateur en supprimant sa session des cookies
+ * /login/logout/{id_utilisateur}:
+ *   delete:
+ *     summary: Déconnecte un utilisateur en supprimant sa session (base de données et cookie)
  *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: id_utilisateur
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID de l'utilisateur à déconnecter
  *     responses:
  *       '200':
- *         description: déconnexion réussie
- *       '401':
- *         description: Échec de la déconnexion
+ *         description: Déconnexion réussie
+ *       '400':
+ *         description: ID utilisateur invalide
  *       '500':
- *         description: Internal error
+ *         description: Erreur serveur
  */
-router.get("/logout",loginController.logout);
+
+router.delete('/logout/:id_utilisateur', loginController.logoutByUserId);
 
 /**
  * @swagger
