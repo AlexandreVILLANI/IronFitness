@@ -1,4 +1,4 @@
-import {getRequest,deleteRequest} from "@/services/axios.service";
+import {getRequest, deleteRequest, deleteRequestWithBody} from "@/services/axios.service";
 import sha256 from 'crypto-js/sha256';
 
 
@@ -22,7 +22,7 @@ async function getSessionCookies(){
 }
 
 async function logout(userId) {
-    return deleteRequest(`/login/logout/${userId}`, 'LOGOUT');
+    return deleteRequestWithBody(`/login/logout/${userId}`, 'LOGOUT');
 }
 
 export {

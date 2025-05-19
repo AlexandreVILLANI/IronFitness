@@ -67,6 +67,15 @@ export const deleteRequest = async (url, id) => {
     }
 };
 
+export const deleteRequestWithBody = async (url, data) => {
+    try {
+        const response = await axiosInstance.delete(url, { data });
+        return response;
+    } catch (error) {
+        console.error('Erreur DELETE avec body :', error);
+        throw error;
+    }
+};
 export const patchRequest = async (url, data) => {
     try {
         const response = await axiosInstance.patch(url, data);
