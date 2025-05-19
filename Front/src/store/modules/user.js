@@ -46,6 +46,9 @@ export default {
             state.reservations = data;
         },
         SET_USER(state, user) {
+            if (!user.id_utilisateur) {
+                console.warn("Utilisateur sans ID détecté dans SET_USER :", user);
+            }
             state.userCourant = user;
             state.isConnected = true;
             console.log('connected');
@@ -111,9 +114,21 @@ export default {
         async loginUtilisateur({ commit }, data) {
             commit('SET_USER', data);
         },
-        async logoutUser({ commit }) {
-            await logout();
-            commit('LOGOUT_USER');
+        async logoutUser({ commit, state }) {
+            try {
+                const userId = state.userCourant?.id_utilisateur;
+
+                if (!userId) {
+                    console.warn("Aucun utilisateur identifié pour la déconnexion.");
+                } else {
+                    await logout(userId); // appel avec l'ID
+                }
+
+                commit('LOGOUT_USER');
+            } catch (error) {
+                console.error("Erreur lors de la déconnexion :", error);
+                commit('LOGOUT_USER'); // déconnexion même si erreur back
+            }
         },
         async updateUtilisateur({ commit }, data) {
             try {

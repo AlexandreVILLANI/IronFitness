@@ -21,9 +21,8 @@ async function getSessionCookies(){
     return answer;
 }
 
-async function logout(){
-    console.log('caca')
-    return getRequest('/login/logout', 'LOGOUT')
+async function logout(userId) {
+    return deleteRequest(`/login/logout/${userId}`, 'LOGOUT');
 }
 
 export {
