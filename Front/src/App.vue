@@ -24,7 +24,6 @@ const userCourant = computed(() => store.state.user.userCourant);
 
 // Initialisation de la session avant le rendu
 store.dispatch('user/fetchSessionFromCookies').then(() => {
-  console.log('Session initialisée:', userCourant.value);
 });
 
 const inactivityTime = 59 * 60 * 1000; // 59 minutes
