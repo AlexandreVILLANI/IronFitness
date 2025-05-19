@@ -18,7 +18,7 @@
         <li><router-link to="/planning" @click="closeMenu">Planning</router-link></li>
       </ul>
       <div class="auth-buttons">
-        <router-link v-if="!userCourant || userCourant.id_session === null" to="/login" class="login-btn" @click="closeMenu">Connexion</router-link>
+        <router-link v-if="!isConnected || !userCourant?.id_session" to="/login" class="login-btn" @click="closeMenu">Connexion</router-link>
         <router-link
             v-else
             to="/profil"
@@ -39,6 +39,7 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const userCourant = computed(() => store.state.user.userCourant);
+const isConnected = computed( () => store.state.user.isConnected);
 const menuOpen = ref(false);
 
 const toggleMenu = () => {

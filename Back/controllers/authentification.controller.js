@@ -1,5 +1,6 @@
 const loginService = require("../services/authentification.service");
 const {sha256} = require("pg/lib/crypto/utils-webcrypto");
+const {deleteSessionAsync} = require("../services/authentification.service");
 
 exports.getLoginToken = (req, res) => {
     const email = req.query.email;
@@ -29,10 +30,20 @@ exports.getLoginCookiesToken = (req, res) => {
     return res.status(200).send(id_session);
 }
 
-exports.logout = (req, res) => {
-    res.clearCookie('session', { httpOnly: true });
-    return res.status(200).send("Déconnexion réussie");
-}
+exports.logoutByUserId = async (req, res) => {
+    const userId = parseInt(req.params.id_utilisateur);
+    if (!userId || isNaN(userId)) {
+        return res.status(400).json({ error: "ID utilisateur invalide" });
+    }
+    try {
+        await deleteSessionAsync(userId);
+        res.clearCookie('session', { httpOnly: true });
+        return res.status(200).json({ message: "Déconnexion réussie pour l'utilisateur" });
+    } catch (err) {
+        console.error('Erreur lors de la déconnexion :', err);
+        return res.status(500).json({ error: "Erreur serveur" });
+    }
+};
 
 // Fonction pour convertir ArrayBuffer en chaîne hexadécimale
 function bufferToHex(buffer) {

@@ -204,9 +204,5 @@ const logout = async () => {
   .sidebar {
     width: 100%;
   }
-
-
 }
-
-
 </style>
