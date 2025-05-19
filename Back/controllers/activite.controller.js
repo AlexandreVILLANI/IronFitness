@@ -1,6 +1,7 @@
 const activiteService = require("../services/activite.service");
 
 exports.getAllActivite = (req, res) => {
+    console.log('cljkqqdjzkjzqk')
     activiteService.getAllActivite((error, data) => {
         if (error) {
             return res.status(500).send("Internal error");
