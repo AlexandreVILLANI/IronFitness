@@ -40,6 +40,7 @@ import { useStore } from "vuex";
 const store = useStore();
 const userCourant = computed(() => store.state.user.userCourant);
 const menuOpen = ref(false);
+console.log(userCourant)
 
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;

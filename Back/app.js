@@ -49,7 +49,7 @@ app.use(session({
         maxAge: 2 * 60 * 60 * 1000,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Assurez-vous d'utiliser HTTPS en prod
-        sameSite: 'none',
+        sameSite: 'lax',
     },
 }));
 
