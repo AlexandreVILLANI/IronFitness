@@ -51,12 +51,10 @@ export default {
             }
             state.userCourant = user;
             state.isConnected = true;
-            console.log('connected');
         },
         LOGOUT_USER(state) {
             state.userCourant = { id_session: null, id_role: null };
             state.isConnected = false;
-            console.log('disconnected');
         },
         UPDATE_USER(state, user) {
             if (user.id_utilisateur === state.userCourant.id_utilisateur) {

@@ -32,8 +32,6 @@ exports.getLoginCookiesToken = (req, res) => {
 
 exports.logoutByUserId = async (req, res) => {
     const userId = parseInt(req.params.id_utilisateur);
-    console.log(userId)
-
     if (!userId || isNaN(userId)) {
         return res.status(400).json({ error: "ID utilisateur invalide" });
     }
