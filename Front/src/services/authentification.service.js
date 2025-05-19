@@ -1,4 +1,4 @@
-import {getRequest} from "@/services/axios.service";
+import {getRequest,deleteRequest} from "@/services/axios.service";
 import sha256 from 'crypto-js/sha256';
 
 
