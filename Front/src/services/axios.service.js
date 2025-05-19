@@ -69,10 +69,15 @@ export const deleteRequest = async (url, id) => {
 
 export const deleteRequestWithBody = async (url, data) => {
     try {
-        const response = await axiosInstance.delete(url, { data });
+        const response = await axiosInstance.delete(url, {
+            data: data,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         return response;
     } catch (error) {
-        console.error('Erreur DELETE avec body :', error);
+        console.error('Erreur DELETE avec body:', error);
         throw error;
     }
 };

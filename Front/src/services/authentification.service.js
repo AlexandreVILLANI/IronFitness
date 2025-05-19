@@ -22,7 +22,7 @@ async function getSessionCookies(){
 }
 
 async function logout(userId) {
-    return deleteRequestWithBody(`/login/logout/${userId}`, 'LOGOUT');
+    return deleteRequestWithBody(`/login/logout/${userId}`, { action: "LOGOUT" });
 }
 
 export {
