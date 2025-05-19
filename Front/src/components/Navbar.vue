@@ -14,7 +14,6 @@
       <ul class="nav-links">
         <li><router-link to="/" @click="closeMenu">Accueil</router-link></li>
         <li><router-link to="/activite" @click="closeMenu">Activité</router-link></li>
-        <li><router-link to="/cours" @click="closeMenu">Cours</router-link></li>
         <li><router-link to="/planning" @click="closeMenu">Planning</router-link></li>
       </ul>
       <div class="auth-buttons">

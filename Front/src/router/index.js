@@ -4,7 +4,6 @@ import AboutView from "@/views/AboutView.vue";
 import ContactView from "@/views/ContactView.vue";
 import ActiviteView from "@/views/ActiviteView.vue";
 import PlanningView from "@/views/PlanningView.vue";
-import CoursView from "@/views/CoursView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ProfilView from "@/views/ProfilView.vue";
 import SAbonnerView from "@/views/SAbonnerView.vue";
@@ -37,11 +36,6 @@ const routes = [
         path: '/activite',
         name: 'activite',
         component: ActiviteView,
-    },
-    {
-        path: '/cours',
-        name: 'cours',
-        component: CoursView,
     },
     {
         path: '/planning',
