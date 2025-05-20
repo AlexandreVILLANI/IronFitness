@@ -114,7 +114,8 @@ export default {
             (user.noms_formules && user.noms_formules.includes(this.formuleFilter));
 
         return searchMatch && formuleMatch;
-      });
+      })    .sort((a, b) => a.id_utilisateur - b.id_utilisateur); // Add this line to sort by ID
+
     }
   },
   async created() {

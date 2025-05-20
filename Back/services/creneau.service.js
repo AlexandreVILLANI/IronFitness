@@ -14,7 +14,7 @@ const getAllCreneau = (callback) => {
 async function getAllCreneauAsync() {
     try {
         const conn = await pool.connect();
-        const query = `SELECT c.id_creneau, c.id_activite,a.nom_activite, c.date_activite, c.heure_debut, c.heure_fin, c.places_disponibles, COUNT(r.id_utilisateur) AS nombre_reservations FROM Creneau c JOIN Activite a ON c.id_activite = a.id_activite LEFT JOIN Reservation r ON c.id_creneau = r.id_creneau GROUP BY c.id_creneau, a.nom_activite, c.date_activite, c.heure_debut, c.heure_fin, c.places_disponibles ORDER BY c.date_activite, c.heure_debut;`;
+        const query = `SELECT c.id_creneau, c.id_activite,a.nom_activite, c.date_activite, c.heure_debut, c.heure_fin, c.places_disponibles,a.sur_rendezvous, COUNT(r.id_utilisateur) AS nombre_reservations FROM Creneau c JOIN Activite a ON c.id_activite = a.id_activite LEFT JOIN Reservation r ON c.id_creneau = r.id_creneau GROUP BY c.id_creneau, a.nom_activite, c.date_activite, c.heure_debut, c.heure_fin, c.places_disponibles, a.sur_rendezvous ORDER BY c.date_activite, c.heure_debut;`;
         const result = await conn.query(query);
         conn.release();
         return result.rows;

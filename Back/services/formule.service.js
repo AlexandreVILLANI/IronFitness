@@ -14,7 +14,7 @@ const getAllFormule = (callback) => {
 async function getAllFormuleAsync() {
     try {
         const conn = await pool.connect();
-        const query = `SELECT f.id_formule,f.nom_formule, f.prix_formule, f.unite, STRING_AGG(a.nom_activite, ', ') AS activites_liees FROM Formule f JOIN Formule_Activite fa ON f.id_formule = fa.id_formule JOIN Activite a ON fa.id_activite = a.id_activite GROUP BY f.id_formule, f.nom_formule, f.prix_formule, f.unite ORDER BY f.prix_formule ASC;`;
+        const query = `SELECT f.id_formule,f.nom_formule, f.prix_formule, f.unite, f.sur_rendezvous,STRING_AGG(a.nom_activite, ', ') AS activites_liees FROM Formule f JOIN Formule_Activite fa ON f.id_formule = fa.id_formule JOIN Activite a ON fa.id_activite = a.id_activite GROUP BY f.id_formule, f.nom_formule, f.prix_formule, f.unite, f.sur_rendezvous ORDER BY f.prix_formule ASC;`;
         const result = await conn.query(query);
         conn.release();
         return result.rows;
@@ -37,14 +37,14 @@ const getFormuleById = (id, callback) => {
 
 async function getFormuleByIdAsync(id) {
     try {
-        const conn = await pool.connect();  // Connexion à la base de données
-        const query = `SELECT f.id_formule, f.nom_formule, f.prix_formule, f.unite,
+        const conn = await pool.connect();
+        const query = `SELECT f.id_formule, f.nom_formule, f.prix_formule, f.unite,f.sur_rendezvous,
                               STRING_AGG(a.nom_activite, ', ') AS activites_liees
                        FROM Formule f
                                 JOIN Formule_Activite fa ON f.id_formule = fa.id_formule
                                 JOIN Activite a ON fa.id_activite = a.id_activite
                        WHERE f.id_formule = $1
-                       GROUP BY f.id_formule, f.nom_formule, f.prix_formule, f.unite
+                       GROUP BY f.id_formule, f.nom_formule, f.prix_formule, f.unite , f.sur_rendezvous
                        ORDER BY f.prix_formule ASC;`;
 
         const result = await conn.query(query, [id]);
@@ -66,19 +66,18 @@ const createFormule = (formuleData, callback) => {
 }
 
 async function createFormuleAsync(formuleData) {
-    const { nom_formule, prix_formule, unite, activites } = formuleData;
+    const { nom_formule, prix_formule, unite, activites, sur_rendezvous } = formuleData;
     const client = await pool.connect();
-
     try {
         await client.query('BEGIN');
 
         // 1. Insertion de la formule
         const insertFormuleQuery = `
-            INSERT INTO Formule (nom_formule, prix_formule, unite)
-            VALUES ($1, $2, $3)
+            INSERT INTO Formule (nom_formule, prix_formule, unite, sur_rendezvous)
+            VALUES ($1, $2, $3, $4)
             RETURNING id_formule;
         `;
-        const resultFormule = await client.query(insertFormuleQuery, [nom_formule, prix_formule, unite]);
+        const resultFormule = await client.query(insertFormuleQuery, [nom_formule, prix_formule, unite,sur_rendezvous]);
         const idFormule = resultFormule.rows[0].id_formule;
 
         // 2. Insertion des associations Formule_Activite
@@ -112,7 +111,7 @@ const updateFormule = (id, formuleData, callback) => {
 };
 
 async function updateFormuleAsync(id, formuleData) {
-    const { nom_formule, prix_formule, unite, activites } = formuleData;
+    const { nom_formule, prix_formule, unite, activites , sur_rendezvous } = formuleData;
     const client = await pool.connect();
 
     try {
@@ -123,10 +122,11 @@ async function updateFormuleAsync(id, formuleData) {
             UPDATE Formule
             SET nom_formule = $1,
                 prix_formule = $2,
-                unite = $3
-            WHERE id_formule = $4;
+                unite = $3,
+                sur_rendezvous = $4
+            WHERE id_formule = $5;
         `;
-        await client.query(updateQuery, [nom_formule, prix_formule, unite, id]);
+        await client.query(updateQuery, [nom_formule, prix_formule, unite,sur_rendezvous, id]);
 
         // 2. Suppression des anciennes liaisons
         await client.query(`DELETE FROM Formule_Activite WHERE id_formule = $1;`, [id]);

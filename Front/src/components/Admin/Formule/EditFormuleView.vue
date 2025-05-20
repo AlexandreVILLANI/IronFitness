@@ -86,6 +86,31 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <label>La formule est sur rendez vous ?</label>
+        <div class="radio-group">
+          <label>
+            <input
+                type="radio"
+                name="sur_rendezvous"
+                :value="true"
+                v-model="formuleData.sur_rendezvous"
+                required
+            />
+            Oui
+          </label>
+          <label>
+            <input
+                type="radio"
+                name="sur_rendezvous"
+                :value="false"
+                v-model="formuleData.sur_rendezvous"
+                required
+            />
+            Non
+          </label>
+        </div>
+      </div>
 
       <div class="form-actions">
         <button type="button" @click="cancel" class="btn btn-cancel">
@@ -132,7 +157,8 @@ export default {
         nom_formule: '',
         prix_formule: 0,
         unite: 'mois',
-        activites: []
+        activites: [],
+        sur_rendezvous: false
       },
       loading: false,
       showSuccessModal: false,
@@ -183,7 +209,8 @@ export default {
             nom_formule: formule.nom_formule,
             prix_formule: parseFloat(formule.prix_formule),
             unite: formule.unite,
-            activites: activiteIds
+            activites: activiteIds,
+            sur_rendezvous: formule.sur_rendezvous
           };
         } else {
           this.$router.push({ name: 'formules' });

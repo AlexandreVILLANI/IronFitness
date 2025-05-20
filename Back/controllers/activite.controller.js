@@ -28,7 +28,8 @@ exports.updateActivite = (req, res) => {
     let image = req.body.image_activite
     let description = req.body.description_activite
     let type = req.body.type_activite
-    activiteService.updateActivite(id,nom,image,description,type,(error, data) => {
+    let sur_rendezvous = req.body.sur_rendezvous
+    activiteService.updateActivite(id,nom,image,description,type,sur_rendezvous,(error, data) => {
         if (error) {
             return res.status(500).send("Internal error");
         }

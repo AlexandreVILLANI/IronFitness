@@ -17,8 +17,17 @@
         <label for="type-filter" class="filter-label">Filtrer par type:</label>
         <select v-model="typeFilter" id="type-filter" class="filter-select">
           <option value="">Tous les types</option>
-          <option value="En groupe">En groupe</option>
           <option value="Personnel">Personnel</option>
+          <option value="En groupe">En groupe</option>
+        </select>
+      </div>
+
+      <div class="filter-container">
+        <label for="rdv-filter" class="filter-label">Filtrer par RDV:</label>
+        <select v-model="rdvFilter" id="rdv-filter" class="filter-select">
+          <option value="">Tous</option>
+          <option value="true">Sur rendez-vous</option>
+          <option value="false">Sans rendez-vous</option>
         </select>
       </div>
 
@@ -31,7 +40,7 @@
       Chargement des activités...
     </div>
 
-    <div v-else-if="filteredActivitesByType.length === 0" class="no-results">
+    <div v-else-if="filteredActivites.length === 0" class="no-results">
       Aucune activité trouvée
     </div>
 
@@ -45,12 +54,13 @@
             <th>Nom</th>
             <th>Description</th>
             <th>Type</th>
+            <th>Rendez-vous</th>
             <th>Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr
-              v-for="activite in filteredActivitesByType"
+              v-for="activite in filteredActivites"
               :key="activite.id_activite"
           >
             <td>{{ activite.id_activite }}</td>
@@ -66,6 +76,10 @@
             <td>{{ activite.nom_activite }}</td>
             <td>{{ truncateDescription(activite.description_activite) }}</td>
             <td>{{ activite.type_activite }}</td>
+            <td>
+              <span v-if="activite.sur_rendezvous" class="rdv-badge rdv-yes">Oui</span>
+              <span v-else class="rdv-badge rdv-no">Non</span>
+            </td>
             <td class="actions">
               <button @click="editActivite(activite)" class="btn-edit">
                 <i class="fas fa-edit"></i> Modifier
@@ -100,7 +114,6 @@ const images = import.meta.glob('@/assets/Activite/*.jpg', {
   import: 'default',
 });
 
-
 export default {
   name: 'AdminActivitesPage',
   data() {
@@ -109,8 +122,9 @@ export default {
       showDeleteModal: false,
       activiteToDelete: null,
       searchQuery: '',
-      typeFilter: '', // Ajout du filtre de type
-      activites: [] // Stockage local des activités
+      typeFilter: '',
+      rdvFilter: '',
+      activites: []
     };
   },
   computed: {
@@ -121,21 +135,26 @@ export default {
     filteredActivites() {
       if (!this.activites) return [];
       const search = this.searchQuery.toLowerCase();
+
       return this.activites.filter(activite => {
-        return !this.searchQuery ||
+        const matchesSearch = !this.searchQuery ||
             (activite.nom_activite && activite.nom_activite.toLowerCase().includes(search)) ||
             (activite.description_activite && activite.description_activite.toLowerCase().includes(search)) ||
             (activite.type_activite && activite.type_activite.toLowerCase().includes(search)) ||
             (activite.id_activite && activite.id_activite.toString().includes(this.searchQuery));
-      });
-    },
 
-    filteredActivitesByType() {
-      const filteredBySearch = this.filteredActivites;
-      if (!this.typeFilter) {
-        return filteredBySearch; // Retourne tous les résultats si aucun filtre de type n'est sélectionné
-      }
-      return filteredBySearch.filter(activite => activite.type_activite === this.typeFilter);
+        const matchesType = !this.typeFilter || activite.type_activite === this.typeFilter;
+
+        let matchesRdv = true;
+        if (this.rdvFilter !== '') {
+          matchesRdv = this.rdvFilter === 'true'
+              ? activite.sur_rendezvous === true
+              : activite.sur_rendezvous === false;
+        }
+
+        return matchesSearch && matchesType && matchesRdv;
+      })
+          .sort((a, b) => a.id_activite - b.id_activite); // Add this line to sort by ID
     }
   },
   async created() {
@@ -148,7 +167,6 @@ export default {
     async loadActivites() {
       try {
         await this.getAllActivite();
-        // Mise à jour des activités locales avec celles du store
         this.activites = this.storeActivites || [];
       } catch (error) {
         console.error("Erreur lors du chargement des activités:", error);
@@ -169,7 +187,8 @@ export default {
 
     resetSearch() {
       this.searchQuery = '';
-      this.typeFilter = ''; // Réinitialise également le filtre de type
+      this.typeFilter = '';
+      this.rdvFilter = '';
     },
 
     createActivite() {
@@ -204,12 +223,6 @@ export default {
     }
   }
 };
-
-function getActivityImage(nom_image) {
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
-  const imagePath = `/src/assets/Activite/${fileName}`;
-  return images[imagePath] || images["/src/assets/notfound.jpg"];
-}
 </script>
 
 <style scoped>

@@ -55,6 +55,29 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label>L'activité est-elle sur rendez-vous ? (Si oui, l'utilisateur pourras s'y inscrire depuis le planning)</label>
+        <div class="radio-group">
+          <label>
+            <input
+                type="radio"
+                value="true"
+                v-model="form.sur_rendezvous"
+            />
+            Oui
+          </label>
+          <label>
+            <input
+                type="radio"
+                value="false"
+                v-model="form.sur_rendezvous"
+            />
+            Non
+          </label>
+        </div>
+      </div>
+
+
       <div class="form-actions">
         <button
             type="submit"
@@ -119,7 +142,8 @@ export default {
         nom_activite: "",
         image_activite: "",
         description_activite: "",
-        type_activite: ""
+        type_activite: "",
+        sur_rendezvous : false
       },
       isSubmitting: false,
       showSuccess: false,
@@ -151,7 +175,8 @@ export default {
         nom_activite: "",
         image_activite: "",
         description_activite: "",
-        type_activite: ""
+        type_activite: "",
+        sur_rendezvous: false
       };
     },
     redirectNow() {
@@ -167,6 +192,16 @@ export default {
 </script>
 
 <style scoped>
+.radio-group {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .create-activite-page {
   max-width: 800px;
   margin: 2rem auto;
