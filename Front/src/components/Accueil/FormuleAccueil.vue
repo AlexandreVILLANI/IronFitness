@@ -15,6 +15,7 @@
         <h2>{{ formule.nom_formule }}</h2>
         <p class="prix">{{ formule.prix_formule }} € / {{ formule.unite }}</p>
         <p class="activites">Activités : {{ formule.activites_liees }}</p>
+        <p v-if="formule.sur_rendezvous === true"> Abonnement sur rendez-vous</p>
 
         <button @click="abonner(formule)" class="subscribe-button">
           S'abonner
@@ -99,12 +100,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
+
 
 /* Styles du modal */
 .login-modal {

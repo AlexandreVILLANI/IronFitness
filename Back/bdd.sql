@@ -147,9 +147,8 @@ INSERT INTO Formule_Activite(id_formule, id_activite) VALUES
 INSERT INTO Utilisateur (nom_utilisateur, prenom_utilisateur, adresse_mail, mot_de_passe, id_role) VALUES
     ('Durand', 'Alice', 'alice.durand@example.com', '2f81cba8c3e6f76972a8a3991fd5980eb77515f1fc9d05e5e094e1b82f457776', 1),--mdp123
     ('Martin', 'Lucas', 'lucas.martin@example.com', '7cb1398717b8459e431ccb042a1c3c9825392898b354828141f093709137f2dc', 1), --mdp456
-    ('VILLANI','Alexandre','villalex405@gmail.com','6ac56698cdf0324fe1f38afbad1a3190d229431f91bd15924b0d82a9cc7bf8c5',1), --voiture
-    ('Administrateur','William','fitboxing70@gmail.com','89e0bc8bfa515d4d8da38e46400a3e724638dead9dcd085a0dd56300798de6a3',2);
-
+    ('Administrateur','William','villalex405@gmail.com','89e0bc8bfa515d4d8da38e46400a3e724638dead9dcd085a0dd56300798de6a3',2);
+-- faudra pas oublié de remettre son email : fitboxing70@gmail.com
 --pour faire des test sur une adresse mail : https://www.mail-tester.com/?lang=fr
 
 INSERT INTO Creneau (id_activite, date_activite, heure_debut, heure_fin, places_disponibles) VALUES

@@ -35,7 +35,7 @@ export default {
             }
         },
 
-        async sendAbonnementMail({ commit }, { sessionId, id_formule }) {
+        async sendAbonnementMail({ commit }, { sessionId, id_formule, demandeDescription }) {
             try {
                 if (!id_formule) {
                     console.error("ID de formule manquant.");
@@ -43,13 +43,21 @@ export default {
                     commit("SET_MAIL_SEND_ERROR", "ID de formule manquant.");
                     return;
                 }
-                await sendAbonnementMail(sessionId, id_formule);
+
+                // Préparation des données à envoyer
+                const mailData = {
+                    sessionId,
+                    id_formule,
+                    demandeDescription: demandeDescription || null // On envoie null si pas de description
+                };
+
+                await sendAbonnementMail(mailData);
                 commit("SET_MAIL_SENT_SUCCESS", true);
                 commit("SET_MAIL_SEND_ERROR", null);
             } catch (err) {
                 commit("SET_MAIL_SENT_SUCCESS", false);
-                commit("SET_MAIL_SEND_ERROR", err);
-                console.error("Erreur lors de l’envoi de l’abonnement:", err);
+                commit("SET_MAIL_SEND_ERROR", err.message || "Erreur lors de l'envoi de la demande");
+                console.error("Erreur lors de l'envoi de l'abonnement:", err);
             }
         },
     },

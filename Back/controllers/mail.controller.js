@@ -27,7 +27,7 @@ exports.getFormuleComplete = async (req, res) => {
 exports.envoyerMailAbonnement = async (req, res) => {
     try {
         const sessionId = req.headers['session-id'];
-        const { id_formule } = req.body;
+        const { id_formule, demande_description } = req.body;
 
         if (!sessionId) {
             return res.status(401).json({
@@ -37,14 +37,13 @@ exports.envoyerMailAbonnement = async (req, res) => {
         }
 
         if (!id_formule) {
-            console.log(id_formule)
             return res.status(400).json({
                 success: false,
                 message: "ID de formule manquant dans la requête"
             });
         }
 
-        const result = await mailService.envoyerMailAbonnementAsync(sessionId, id_formule);
+        const result = await mailService.envoyerMailAbonnementAsync(sessionId, id_formule, demande_description);
         return res.status(200).json(result);
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);

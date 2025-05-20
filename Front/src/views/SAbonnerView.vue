@@ -5,14 +5,29 @@
       <p class="description">{{ formule.description }}</p>
       <p class="prix">Prix : <strong>{{ formule.prix_formule }} €</strong> / {{ formule.unite }}</p>
       <p class="activites"><strong>Activités :</strong> {{ formule.activites_liees }}</p>
-      <p>Pour obtenir cet abonnement, il suffit d'envoyer cette demande au gérant de la salle de sport. Vous serez notifié par mail une fois la demande acceptée, vous pourrez ensuite régler en salle la formule.</p>
+
+      <!-- Affichage conditionnel selon sur_rendezvous -->
+      <div v-if="formule.sur_rendezvous">
+        <h3>Demande de rendez-vous personnalisé</h3>
+        <p>Veuillez décrire vos objectifs et disponibilités :</p>
+        <textarea
+            v-model="demandeDescription"
+            class="demande-input"
+            placeholder="Décrivez vos objectifs sportifs, vos disponibilités, et toute information utile pour votre accompagnement personnalisé..."
+        ></textarea>
+        <p class="note">Note : Vous serez contacté pour confirmer le rendez-vous.</p>
+      </div>
+      <div v-else>
+        <p>Pour obtenir cet abonnement, il suffit d'envoyer cette demande au gérant de la salle de sport. Vous serez ensuite contacté pour régler en salle l'adhésion.</p>
+      </div>
+
       <br>
       <button
           v-if="userCourant && userCourant.id_role !== null"
           @click="finaliserAbonnement"
           class="btn-finaliser"
       >
-        Envoyer la demande
+        {{ formule.sur_rendezvous ? 'Envoyer la demande de rendez-vous' : 'Envoyer la demande' }}
       </button>
       <p v-else class="connect-message">Connectez-vous pour finaliser l'abonnement.</p>
     </div>
@@ -37,22 +52,21 @@ import SuccessModal from '@/components/SuccesModal.vue';
 
 const store = useStore();
 const route = useRoute();
-const formuleId = route.params.id;  // Récupère l'ID de la formule depuis l'URL
+const formuleId = route.params.id;
 const router = useRouter();
-const formule = computed(() => store.state.formule.selectedFormule);  // Sélectionne la formule depuis le store
-const userCourant = computed(() => store.state.user.userCourant);  // Utilisateur courant
+const formule = computed(() => store.state.formule.selectedFormule);
+const userCourant = computed(() => store.state.user.userCourant);
 const showSuccessModal = ref(false);
+const demandeDescription = ref(''); // Pour stocker la description de la demande de rendez-vous
 
-// Charge les données de la formule lors du montage du composant
 onMounted(async () => {
   await store.dispatch('formule/getFormuleById', formuleId);
 });
 
-// Fonction pour finaliser l'abonnement
 async function finaliserAbonnement() {
   try {
-    const sessionId = store.getters["user/getSessionId"];  // Récupère l'ID de session depuis le store
-    const idFormule = formule.value.id_formule;  // Récupère l'ID de la formule actuelle
+    const sessionId = store.getters["user/getSessionId"];
+    const idFormule = formule.value.id_formule;
 
     if (!sessionId) {
       alert("Session introuvable. Veuillez vous reconnecter.");
@@ -64,10 +78,22 @@ async function finaliserAbonnement() {
       return;
     }
 
-    // Envoie la demande d'abonnement avec l'ID de session et l'ID de la formule
-    await store.dispatch("mail/sendAbonnementMail", {sessionId, id_formule: idFormule});
+    // Préparation des données à envoyer
+    const data = {
+      sessionId,
+      id_formule: idFormule
+    };
 
-    // Affiche la modale de succès
+    // Si c'est une formule sur rendez-vous, on ajoute la description
+    if (formule.value.sur_rendezvous) {
+      if (!demandeDescription.value.trim()) {
+        alert("Veuillez décrire votre demande de rendez-vous.");
+        return;
+      }
+      data.demandeDescription = demandeDescription.value;
+    }
+
+    await store.dispatch("mail/sendAbonnementMail", data);
     showSuccessModal.value = true;
   } catch (error) {
     alert("Une erreur est survenue lors de l'envoi de la demande.");
@@ -75,10 +101,9 @@ async function finaliserAbonnement() {
   }
 }
 
-// Fonction pour fermer la modale de succès
 function handleModalClose() {
   showSuccessModal.value = false;
-  router.push('/');  // Redirige vers la page d'accueil
+  router.push('/');
 }
 </script>
 
@@ -92,7 +117,6 @@ function handleModalClose() {
   position: relative;
 }
 
-/* Crée un pseudo-élément pour l'image de fond avec flou */
 .container::before {
   content: '';
   position: absolute;
@@ -105,8 +129,8 @@ function handleModalClose() {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  filter: blur(8px); /* Ajustez la valeur pour plus/moins de flou */
-  z-index: -1; /* Place en arrière-plan */
+  filter: blur(8px);
+  z-index: -1;
 }
 
 .formule-box {
@@ -117,7 +141,6 @@ function handleModalClose() {
   max-width: 600px;
   width: 100%;
   text-align: center;
-  /* Assure que la boîte est au-dessus du fond flou */
   position: relative;
   z-index: 1;
 }
@@ -138,6 +161,22 @@ function handleModalClose() {
   font-size: 1rem;
   margin-bottom: 1rem;
   color: #34495e;
+}
+
+.demande-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.note {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  font-style: italic;
 }
 
 .btn-finaliser {

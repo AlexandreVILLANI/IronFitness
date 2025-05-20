@@ -50,7 +50,7 @@ async function getUserFromSessionAsync(sessionId) {
     }
 }
 
-async function envoyerMailAbonnementAsync(sessionId, id_formule) {
+async function envoyerMailAbonnementAsync(sessionId, id_formule, demandeDescription = null) {
     try {
         const user = await getUserFromSessionAsync(sessionId);
         if (!user) {
@@ -73,6 +73,15 @@ async function envoyerMailAbonnementAsync(sessionId, id_formule) {
             </li>
         `).join('');
 
+        // Section rendez-vous conditionnelle
+        const rendezVousSection = formule.sur_rendezvous ? `
+            <h4 style="color: #e67e22; margin-top: 20px;">🔔 Demande de rendez-vous personnalisé</h4>
+            <div style="background: #fff8e1; padding: 15px; border-radius: 5px; border-left: 4px solid #e67e22;">
+                <p><strong>Description de la demande :</strong></p>
+                <p style="font-style: italic; white-space: pre-wrap;">${demandeDescription || 'Aucune description fournie'}</p>
+            </div>
+        ` : '';
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -84,18 +93,21 @@ async function envoyerMailAbonnementAsync(sessionId, id_formule) {
         const mailOptions = {
             from: process.env.EMAIL_FROM,
             to: admin.adresse_mail,
-            subject: `[Iron Fitness] Demande abonnement - ${formule.nom_formule}`,
+            subject: `[Iron Fitness] ${formule.sur_rendezvous ? 'Demande RDV' : 'Demande abonnement'} - ${formule.nom_formule}`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #2c3e50;">Nouvelle demande d'abonnement</h2>
+                    <h2 style="color: #2c3e50;">Nouvelle ${formule.sur_rendezvous ? 'demande de rendez-vous' : 'demande d\'abonnement'}</h2>
                     
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
                         <h3 style="color: #2980b9; margin-top: 0;">${formule.nom_formule}</h3>
                         <p><strong>Prix :</strong> ${formule.prix_formule} € / ${formule.unite}</p>
+                        <p><strong>Type :</strong> ${formule.sur_rendezvous ? 'Sur rendez-vous' : 'Abonnement standard'}</p>
                     </div>
                     
                     <h4 style="color: #2c3e50;">Activités incluses :</h4>
                     <ul style="padding-left: 20px;">${activitesHtml}</ul>
+                    
+                    ${rendezVousSection}
                     
                     <h4 style="color: #2c3e50; margin-top: 20px;">Informations client :</h4>
                     <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
@@ -103,6 +115,13 @@ async function envoyerMailAbonnementAsync(sessionId, id_formule) {
                         <p>Prénom : ${user.prenom_utilisateur}</p> 
                         <p>Nom : ${user.nom_utilisateur}</p>
                         <p>Adresse email : ${user.adresse_mail}</p>
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding: 15px; background: #e8f5e9; border-radius: 5px; text-align: center;">
+                        <p><strong>${formule.sur_rendezvous ? 'Action requise :' : 'Prochaines étapes :'}</strong></p>
+                        <p>${formule.sur_rendezvous
+                ? 'Veuillez contacter le client pour planifier un rendez-vous'
+                : 'Veuillez confirmer l\'abonnement avec le client'}</p>
                     </div>
                     
                     <p style="margin-top: 20px; color: #7f8c8d;">
