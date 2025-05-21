@@ -132,7 +132,7 @@ async function envoyerMailAbonnementAsync(sessionId, id_formule, demandeDescript
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('Email envoyé avec succès !');
+        //console.log('Email envoyé avec succès !');
         return { success: true, message: 'Email envoyé avec succès' };
     } catch (error) {
         console.error('Erreur dans envoyerMailAbonnementAsync:', error);

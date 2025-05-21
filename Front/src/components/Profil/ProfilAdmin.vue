@@ -35,6 +35,12 @@
           >
             <i class="fas fa-file-alt"></i> Formules
           </li>
+          <li
+              :class="{ active: activeTab === 'goodies' }"
+              @click="setActiveTab('goodies')"
+          >
+            <i class="fas fa-tshirt"></i> Goodies
+          </li>
         </ul>
       </nav>
 
@@ -42,6 +48,7 @@
         <ActivityView v-if="activeTab === 'activity'" />
         <FormuleView v-if="activeTab === 'formule'" />
         <UserView v-if="activeTab === 'utilisateur'"/>
+        <GoodiesView v-if="activeTab === 'goodies'"/>
       </main>
     </div>
   </div>
@@ -55,6 +62,7 @@ import ConfirmDialogue from "@/components/Dialog/ConfirmDialog.vue";
 import ActivityView from '@/components/Admin/Activite/ActivityView.vue';
 import FormuleView from '@/components/Admin/Formule/FormuleView.vue';
 import UserView from "@/components/Admin/User/UserView.vue";
+import GoodiesView from "@/components/Admin/Goodies/GoodiesView.vue";
 
 const store = useStore();
 const router = useRouter();

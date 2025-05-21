@@ -1,14 +1,16 @@
 DROP TABLE IF EXISTS Session CASCADE;
-DROP TYPE IF EXISTS type_activite, unite CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Creneau CASCADE;
+DROP TABLE IF EXISTS Formule_Utilisateur CASCADE;
+DROP TABLE IF EXISTS Formule_Activite CASCADE;
 DROP TABLE IF EXISTS Utilisateur CASCADE;
 DROP TABLE IF EXISTS Role CASCADE;
-DROP TABLE IF EXISTS Activite CASCADE;
 DROP TABLE IF EXISTS Formule CASCADE;
-DROP TABLE IF EXISTS Formule_Activite CASCADE;
-DROP TABLE IF EXISTS Formule_Utilisateur CASCADE;
-
+DROP TABLE IF EXISTS Activite CASCADE;
+DROP TABLE IF EXISTS Taille_goodies CASCADE;
+DROP TABLE IF EXISTS Taille CASCADE;
+DROP TYPE IF EXISTS type_activite, unite CASCADE;
+DROP TABLE IF EXISTS Goodies CASCADE;
 
 CREATE TYPE type_activite AS ENUM ('En groupe', 'Personnel');
 CREATE TYPE unite AS ENUM ('mois','séance','heure');
@@ -98,6 +100,28 @@ CREATE TABLE Session(
     FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE
 );
 
+CREATE TABLE Goodies(
+    id_goodies SERIAL PRIMARY KEY,
+    nom_goodies varchar(255),
+    image_goodies VARCHAR(255),
+    prix_goodies DECIMAL(5,2) NOT NULL
+);
+
+CREATE TABLE Taille(
+    id_taille SERIAL PRIMARY KEY ,
+    valeur_taille VARCHAR(255)
+);
+
+CREATE TABLE Taille_goodies(
+    id_goodies INT NOT NULL,
+    id_taille INT NOT NULL,
+    quantite_stock BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (id_goodies,id_taille),
+    FOREIGN KEY (id_goodies) REFERENCES Goodies(id_goodies) ON DELETE CASCADE ,
+    FOREIGN KEY (id_taille) REFERENCES Taille(id_taille) ON DELETE CASCADE
+);
+
+
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite,sur_rendezvous) VALUES
     ('Coaching personnel', 'coachingperso', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Personnel',false),
@@ -172,8 +196,67 @@ INSERT INTO Formule_Utilisateur (id_formule, id_utilisateur) VALUES
      (2,2); --boxing
 
 
+INSERT INTO Goodies(nom_goodies, image_goodies,prix_goodies) VALUES
+    ('Short','short',35),
+    ('T-Shirt','t-shirt',25),
+    ('Débardeur','debardeur',25),
+    ('Gants','gants',35),
+    ('Ensemble','ensemble',80);
+
+INSERT INTO Taille(valeur_taille) VALUES
+    ('XXXS'),
+    ('XXS'),
+    ('XS'),
+    ('S'),
+    ('M'),
+    ('L'),
+    ('XL');
 
 
+INSERT INTO Taille_goodies(id_goodies, id_taille, quantite_stock) VALUES
+    -- Short (id_goodies = 1)
+    (1, 1, FALSE), -- Short, XXXS
+    (1, 2, FALSE), -- Short, XXS
+    (1, 3, FALSE), -- Short, XS
+    (1, 4, FALSE), -- Short, S
+    (1, 5, FALSE), -- Short, M
+    (1, 6, FALSE), -- Short, L
+    (1, 7, FALSE), -- Short, XL
 
+    -- T-Shirt (id_goodies = 2)
+    (2, 1, FALSE), -- T-Shirt, XXXS
+    (2, 2, FALSE), -- T-Shirt, XXS
+    (2, 3, FALSE), -- T-Shirt, XS
+    (2, 4, FALSE), -- T-Shirt, S
+    (2, 5, FALSE), -- T-Shirt, M
+    (2, 6, FALSE), -- T-Shirt, L
+    (2, 7, FALSE), -- T-Shirt, XL
+
+    -- Débardeur (id_goodies = 3)
+    (3, 1, FALSE), -- Débardeur, XXXS
+    (3, 2, FALSE), -- Débardeur, XXS
+    (3, 3, FALSE), -- Débardeur, XS
+    (3, 4, FALSE), -- Débardeur, S
+    (3, 5, FALSE), -- Débardeur, M
+    (3, 6, FALSE), -- Débardeur, L
+    (3, 7, FALSE), -- Débardeur, XL
+
+    -- Gants (id_goodies = 4)
+    (4, 1, FALSE), -- Gants, XXXS
+    (4, 2, FALSE), -- Gants, XXS
+    (4, 3, FALSE), -- Gants, XS
+    (4, 4, FALSE), -- Gants, S
+    (4, 5, FALSE), -- Gants, M
+    (4, 6, FALSE), -- Gants, L
+    (4, 7, FALSE), -- Gants, XL
+
+    -- Ensemble (id_goodies = 5)
+    (5, 1, TRUE), -- Ensemble, XXXS
+    (5, 2, TRUE), -- Ensemble, XXS
+    (5, 3, TRUE), -- Ensemble, XS
+    (5, 4, TRUE), -- Ensemble, S
+    (5, 5, TRUE), -- Ensemble, M
+    (5, 6, TRUE), -- Ensemble, L
+    (5, 7, TRUE); -- Ensemble, XL
 
 

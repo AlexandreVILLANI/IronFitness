@@ -171,7 +171,6 @@ export default {
 </script>
 
 <style scoped>
-/* ... vos styles existants ... */
 
 .search-container {
   display: flex;
