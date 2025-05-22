@@ -57,6 +57,7 @@ export const putRequest = async (url, data) => {
     }
 };
 
+
 export const deleteRequest = async (url, id) => {
     try {
         const response = await axiosInstance.delete(`${url}/${id}`);

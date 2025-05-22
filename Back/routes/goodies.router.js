@@ -53,6 +53,65 @@ router.get('/', goodiesController.getAllGoodies);
 
 /**
  * @swagger
+ * /goodies/{id}:
+ *   get:
+ *     summary: Récupérer un goodies par son ID avec ses tailles et disponibilités
+ *     tags:
+ *       - Goodies
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID du goodies à récupérer
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Goodies récupéré avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id_goodies:
+ *                   type: integer
+ *                   example: 1
+ *                 nom_goodies:
+ *                   type: string
+ *                   example: T-shirt
+ *                 image_goodies:
+ *                   type: string
+ *                   example: tshirt.jpg
+ *                 prix_goodies:
+ *                   type: number
+ *                   format: float
+ *                   example: 14.99
+ *                 tailles:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id_taille:
+ *                         type: integer
+ *                         example: 2
+ *                       valeur_taille:
+ *                         type: string
+ *                         example: M
+ *                       disponible:
+ *                         type: boolean
+ *                         example: true
+ *       400:
+ *         description: ID invalide
+ *       404:
+ *         description: Goodies non trouvé
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+router.get('/:id', goodiesController.getGoodieById);
+
+
+/**
+ * @swagger
  * /goodies:
  *   post:
  *     summary: Créer un nouveau goodies avec ses tailles

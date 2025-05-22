@@ -23,8 +23,23 @@ async function sendAbonnementMail({ sessionId, id_formule, demandeDescription = 
     const response = await sendAbonnementMailFromAPI({ sessionId, id_formule, demandeDescription });
     return response;
 }
+// Envoie un mail de commande de goodie
+async function sendGoodieMailFromAPI({ sessionId, id_goodie, quantite, id_taille }) {
+    return postRequest('/mail/goodie-mail', {
+        id_goodie,
+        quantite,
+        id_taille
+    }, 'SEND_GOODIE_MAIL', {
+        'session-id': sessionId
+    });
+}
 
+async function sendGoodieMail({ sessionId, id_goodie, quantite, id_taille }) {
+    const response = await sendGoodieMailFromAPI({ sessionId, id_goodie, quantite, id_taille });
+    return response;
+}
 export {
     getAdminEmail,
-    sendAbonnementMail
+    sendAbonnementMail,
+    sendGoodieMail
 }

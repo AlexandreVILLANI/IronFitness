@@ -1,4 +1,4 @@
-import { getAdminEmail, sendAbonnementMail } from "@/services/mail.service";
+import { getAdminEmail, sendAbonnementMail, sendGoodieMail } from "@/services/mail.service";
 
 export default {
     namespaced: true,
@@ -44,11 +44,10 @@ export default {
                     return;
                 }
 
-                // Préparation des données à envoyer
                 const mailData = {
                     sessionId,
                     id_formule,
-                    demandeDescription: demandeDescription || null // On envoie null si pas de description
+                    demandeDescription: demandeDescription || null
                 };
 
                 await sendAbonnementMail(mailData);
@@ -60,5 +59,35 @@ export default {
                 console.error("Erreur lors de l'envoi de l'abonnement:", err);
             }
         },
+
+        async sendGoodieMail({ commit }, { sessionId, id_goodie, quantite, id_taille }) {
+            try {
+                if (!id_goodie || !id_taille) {
+                    const msg = "ID du goodie ou de la taille manquant.";
+                    console.error(msg);
+                    commit("SET_MAIL_SENT_SUCCESS", false);
+                    commit("SET_MAIL_SEND_ERROR", msg);
+                    return;
+                }
+
+                if (!quantite || quantite <= 0) {
+                    const msg = "Quantité invalide ou manquante.";
+                    console.error(msg);
+                    commit("SET_MAIL_SENT_SUCCESS", false);
+                    commit("SET_MAIL_SEND_ERROR", msg);
+                    return;
+                }
+
+                const mailData = { sessionId, id_goodie, quantite, id_taille };
+
+                await sendGoodieMail(mailData);
+                commit("SET_MAIL_SENT_SUCCESS", true);
+                commit("SET_MAIL_SEND_ERROR", null);
+            } catch (err) {
+                commit("SET_MAIL_SENT_SUCCESS", false);
+                commit("SET_MAIL_SEND_ERROR", err.message || "Erreur lors de l'envoi de la commande goodie.");
+                console.error("Erreur lors de l'envoi du mail de goodie:", err);
+            }
+        }
     },
 };

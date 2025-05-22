@@ -251,12 +251,12 @@ INSERT INTO Taille_goodies(id_goodies, id_taille, quantite_stock) VALUES
     (4, 7, FALSE), -- Gants, XL
 
     -- Ensemble (id_goodies = 5)
-    (5, 1, TRUE), -- Ensemble, XXXS
-    (5, 2, TRUE), -- Ensemble, XXS
-    (5, 3, TRUE), -- Ensemble, XS
-    (5, 4, TRUE), -- Ensemble, S
-    (5, 5, TRUE), -- Ensemble, M
-    (5, 6, TRUE), -- Ensemble, L
-    (5, 7, TRUE); -- Ensemble, XL
+    (5, 1, FALSE), -- Ensemble, XXXS
+    (5, 2, FALSE), -- Ensemble, XXS
+    (5, 3, FALSE), -- Ensemble, XS
+    (5, 4, FALSE), -- Ensemble, S
+    (5, 5, FALSE), -- Ensemble, M
+    (5, 6, FALSE), -- Ensemble, L
+    (5, 7, FALSE); -- Ensemble, XL
 
 

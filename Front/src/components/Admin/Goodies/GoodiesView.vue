@@ -146,7 +146,7 @@ const resetSearch = () => {
 };
 
 const editGoodie = (goodie) => {
-  router.push({ name: 'editGoodie', params: { id: goodie.id_goodies } });
+  router.push({ name: 'editGoodies', params: { id: goodie.id_goodies } });
 };
 
 const confirmDelete = (goodie) => {

@@ -1,5 +1,6 @@
 import {
     getAllGoodies,
+    getGoodieById,
     createGoodies,
     updateGoodies,
     deleteGoodies
@@ -43,6 +44,20 @@ export default {
                 }
             } catch (err) {
                 console.error("Erreur lors de la récupération des goodies:", err);
+                throw err;
+            }
+        },
+        async getGoodieById({ commit }, id) {
+            try {
+                const result = await getGoodieById(id);
+                if (result.data) {
+                    commit("SET_CURRENT_GOODIE", result.data);
+                    return result.data;
+                } else {
+                    throw new Error("Goodie introuvable");
+                }
+            } catch (err) {
+                console.error(`Erreur lors de la récupération du goodie avec l'ID ${id}:`, err);
                 throw err;
             }
         },
