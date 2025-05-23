@@ -18,6 +18,7 @@ import EditActiviteView from "@/components/Admin/Activite/EditActiviteView.vue";
 import BoutiqueView from "@/views/BoutiqueView.vue";
 import EditGoodiesView from "@/components/Admin/Goodies/EditGoodiesView.vue";
 import AddGoodiesView from "@/components/Admin/Goodies/CreateGoodiesView.vue";
+import BoutiqueCommandeView from "@/views/BoutiqueCommandeView.vue";
 
 const routes = [
     {
@@ -116,6 +117,11 @@ const routes = [
         name: 'editGoodies',
         component: EditGoodiesView
     },
+    {
+        path: '/boutique/commande/:id',
+        name:'boutiqueCommande',
+        component: BoutiqueCommandeView
+    }
 ]
 
 const router = createRouter({

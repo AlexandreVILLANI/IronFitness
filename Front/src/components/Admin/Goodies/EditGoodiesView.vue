@@ -98,6 +98,7 @@ export default {
   computed: {
     ...mapGetters('boutique', ['currentGoodie'])
   },
+
   async created() {
     const goodieId = this.$route.params.id;
     if (goodieId) {

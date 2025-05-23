@@ -55,7 +55,6 @@
                 @error="handleImageError"
                 loading="lazy"
             />
-            <button class="quick-view-btn">Voir rapidement</button>
           </div>
           <div class="product-details">
             <div class="product-info">
@@ -79,12 +78,7 @@
               </div>
             </div>
             <div class="product-actions">
-              <button class="wishlist-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-              </button>
-              <button class="add-to-cart-btn">Ajouter au panier</button>
+              <button class="add-to-cart-btn" @click="shopping(goodie)">Commander</button>
             </div>
           </div>
         </div>
@@ -100,19 +94,45 @@
         <h3>Aucun produit disponible</h3>
         <p>Revenez plus tard pour découvrir nos nouvelles collections</p>
       </div>
-
-
     </div>
   </div>
+  <transition name="fade">
+    <div v-if="showLoginModal" class="login-modal">
+      <div class="modal-overlay" @click="closeModal"></div>
+      <div class="modal-content">
+        <button class="close-button" @click="closeModal" aria-label="Fermer la fenêtre">
+          &times;
+        </button>
+
+        <div class="modal-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#527091">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </div>
+
+        <h3 class="modal-title">Connexion requise</h3>
+        <p class="modal-message">Vous devez être connecté pour accéder à cette fonctionnalité.</p>
+
+        <div class="modal-actions">
+          <button @click="closeModal" class="modal-button cancel">Plus tard</button>
+          <button @click="goToLogin" class="modal-button confirm">Se connecter</button>
+        </div>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
+import {useRouter} from "vue-router";
 
 const store = useStore();
 const loading = ref(false);
 const error = ref(null);
+const userCourant = computed(() => store.state.user.userCourant);
+const showLoginModal = ref(false);
+const router = useRouter();
 
 const images = import.meta.glob('@/assets/Boutique/*.{jpg,png,webp}', { eager: true, import: 'default' });
 const notFoundImage = new URL('@/assets/notfound.jpg', import.meta.url).href;
@@ -140,6 +160,23 @@ function formatPrice(price) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
 }
 
+ function shopping(goodies) {
+  if (!userCourant.value || !userCourant.value.id_session) {
+    showLoginModal.value = true; // Affiche le modal au lieu de l'alert
+    return;
+  }
+  router.push({ name: "boutiqueCommande", params: { id: goodies.id_goodies } });
+}
+
+function closeModal() {
+  showLoginModal.value = false;
+}
+
+function goToLogin() {
+  closeModal();
+  router.push({ name: "login" });
+}
+
 const allGoodies = computed(() => store.getters['boutique/allGoodies']);
 async function fetchGoodies() {
   try {
@@ -160,6 +197,131 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 10;
+  animation: modal-appear 0.3s ease-out;
+}
+
+@keyframes modal-appear {
+  from {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(82, 112, 145, 0.1);
+  border-radius: 50%;
+}
+
+.modal-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  color: #527091;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.modal-message {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.modal-button {
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-button.cancel {
+  background: #f0f0f0;
+  color: #555;
+}
+
+.modal-button.cancel:hover {
+  background: #e0e0e0;
+}
+
+.modal-button.confirm {
+  background: #527091;
+  color: white;
+}
+
+.modal-button.confirm:hover {
+  background: #3b5a75;
+  transform: translateY(-1px);
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #555;
+}
+
 /* Base Styles */
 :root {
   --primary: #2563eb;
@@ -602,7 +764,7 @@ onMounted(() => {
   flex-grow: 1;
   padding: 0.75rem;
   background-color: var(--primary);
-  color: white;
+  color: #000000;
   border: none;
   border-radius: var(--rounded);
   font-weight: 500;

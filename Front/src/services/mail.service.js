@@ -25,7 +25,7 @@ async function sendAbonnementMail({ sessionId, id_formule, demandeDescription = 
 }
 // Envoie un mail de commande de goodie
 async function sendGoodieMailFromAPI({ sessionId, id_goodie, quantite, id_taille }) {
-    return postRequest('/mail/goodie-mail', {
+    return postRequest('/mail/commander-goodie', {
         id_goodie,
         quantite,
         id_taille
