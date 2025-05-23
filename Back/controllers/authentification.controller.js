@@ -1,6 +1,5 @@
 const loginService = require("../services/authentification.service");
 const {sha256} = require("pg/lib/crypto/utils-webcrypto");
-const {deleteSessionAsync} = require("../services/authentification.service");
 
 exports.getLoginToken = (req, res) => {
     const email = req.query.email;
@@ -35,7 +34,6 @@ exports.logoutByUserId = async (req, res) => {
     if (!userId || isNaN(userId)) {
         return res.status(400).json({ error: "ID utilisateur invalide" });
     }
-
     try {
         await deleteSessionAsync(userId);
         res.clearCookie('session', { httpOnly: true });

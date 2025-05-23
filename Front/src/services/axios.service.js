@@ -57,6 +57,7 @@ export const putRequest = async (url, data) => {
     }
 };
 
+
 export const deleteRequest = async (url, id) => {
     try {
         const response = await axiosInstance.delete(`${url}/${id}`);
@@ -81,6 +82,7 @@ export const deleteRequestWithBody = async (url, data) => {
         throw error;
     }
 };
+
 export const patchRequest = async (url, data) => {
     try {
         const response = await axiosInstance.patch(url, data);

@@ -17,8 +17,13 @@
         <h2>{{ selectedEvent.title }}</h2>
         <p><strong>Date :</strong> {{ selectedEvent.date }}</p>
         <p><strong>Horaire :</strong> {{ selectedEvent.heureDebut }} → {{ selectedEvent.heureFin }}</p>
-        <p><strong>Nombres de personnes inscrites :</strong> {{ selectedEvent.reservations }}/{{ selectedEvent.places }}</p>
-        <div class="modal-actions">
+        <div v-if="selectedEvent.sur_rendezvous === true">
+          <p><strong>Nombre de personnes inscrites :</strong> {{ selectedEvent.reservations }}/{{ selectedEvent.places }}</p>
+          <p style="color: #e67e22; font-weight: bold;">Inscription obligatoire pour assister au cours.</p>
+        </div>
+        <div v-else>
+          <p style="color: #27ae60; font-size: 1.2rem; font-weight: bold;">Cours disponible sans inscription</p>
+        </div>        <div class="modal-actions">
           <button @click="closeModal">Fermer</button>
           <button
               v-if="isAdmin"
@@ -253,8 +258,9 @@ const calendarEvents = computed(() => {
         heureFin: c.heure_fin,
         places: c.places_disponibles,
         reservations: c.nombre_reservations,
-        pourcentage
-      }
+        pourcentage,
+        sur_rendezvous: c.sur_rendezvous
+      },
     }
   }).filter(event => event !== null)
 })
@@ -273,7 +279,8 @@ const calendarOptions = computed(() => ({
       heureDebut: info.event.extendedProps.heureDebut,
       heureFin: info.event.extendedProps.heureFin,
       places: info.event.extendedProps.places,
-      reservations: info.event.extendedProps.reservations
+      reservations: info.event.extendedProps.reservations,
+      sur_rendezvous: info.event.extendedProps.sur_rendezvous
     }
     showModal.value = true
   }

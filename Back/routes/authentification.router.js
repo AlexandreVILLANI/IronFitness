@@ -42,6 +42,8 @@ router.get("/cookies",loginController.getLoginCookiesToken);
 
 router.delete('/logout/:id_utilisateur', loginController.logoutByUserId);
 
+
+
 /**
  * @swagger
  * /login:

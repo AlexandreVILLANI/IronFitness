@@ -36,8 +36,12 @@ router.get('/', activiteController.getAllActivite);
  *                     example: Rencontre amicale au stade municipal.
  *                   type_activite:
  *                     type: string
- *                     enum: [Culture, Loisir, Concert, Sport, Restauration]
+ *                     enum: [Personnel, En groupe]
  *                     example: Sport
+ *                   sur_rendezvous:
+ *                     type: boolean
+ *                     description: Indique si l'activité nécessite un rendez-vous
+ *                     example: true
  *       500:
  *         description: Erreur interne du serveur
  */
@@ -81,8 +85,12 @@ router.get('/:id', activiteController.getActiviteByID);
  *                   example: Rencontre amicale au stade municipal.
  *                 type_activite:
  *                   type: string
- *                   enum: [Culture, Loisir, Concert, Sport, Restauration]
- *                   example: Sport
+ *                   enum: [Personnel, En groupe]
+ *                   example: Personnel
+ *                 sur_rendezvous:
+ *                   type: boolean
+ *                   description: Indique si l'activité nécessite un rendez-vous
+ *                   example: true
  *       404:
  *         description: Activité non trouvée
  *       500:
@@ -123,9 +131,13 @@ router.patch('/updateActivite',activiteController.updateActivite);
  *                 example: "Tournoi amical ouvert à tous"
  *               type_activite:
  *                 type: string
- *                 enum: [En groupe, Personnel]
+ *                 enum: [Personnel, En groupe]
  *                 description: Type de l'activité
- *                 example: "En groupe"
+ *                 example: "Personnel"
+ *               sur_rendezvous:
+ *                 type: boolean
+ *                 description: Indique si l'activité nécessite un rendez-vous
+ *                 example: true
  *             required:
  *               - id_activite
  *     responses:
@@ -177,12 +189,17 @@ router.post('/', activiteController.createActivite);
  *                 example: "Venez découvrir l'art de la poterie."
  *               type_activite:
  *                 type: string
- *                 enum: [En groupe, Personnel]
+ *                 enum: [Personnel, En groupe]
  *                 description: Type de la nouvelle activité
- *                 example: "En groupe"
+ *                 example: "Personnel"
+ *               sur_rendezvous:
+ *                 type: boolean
+ *                 description: Indique si l'activité nécessite un rendez-vous
+ *                 example: false
  *             required:
  *               - nom_activite
  *               - type_activite
+ *               - sur_rendezvous
  *     responses:
  *       201:
  *         description: Activité créée avec succès

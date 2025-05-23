@@ -14,7 +14,7 @@ const getAllActivite = (callback) => {
 async function getAllActiviteAsync() {
     try {
         const conn = await pool.connect();
-        const query = `SELECT id_activite,nom_activite, image_activite, description_activite, type_activite FROM Activite`;
+        const query = `SELECT id_activite,nom_activite, image_activite, description_activite, type_activite,sur_rendezvous FROM Activite`;
         const result = await conn.query(query);
         conn.release();
         return result.rows;
@@ -38,7 +38,7 @@ const getActiviteByID = (id, callback) => {
 async function getActiviteByIDAsync(id) {
     try {
         const conn = await pool.connect();
-        const result = await conn.query("SELECT id_activite, nom_activite, image_activite, description_activite, type_activite FROM Activite WHERE id_activite=$1", [id]);
+        const result = await conn.query("SELECT id_activite, nom_activite, image_activite, description_activite, type_activite,sur_rendezvous FROM Activite WHERE id_activite=$1", [id]);
         conn.release();
         return result.rows;
     } catch (error) {
@@ -47,8 +47,8 @@ async function getActiviteByIDAsync(id) {
     }
 }
 
-const updateActivite = (id,nom,image,description,type,callback) => {
-    updateActiviteAsync(id,nom,image,description,type)
+const updateActivite = (id,nom,image,description,type,sur_rendezvous,callback) => {
+    updateActiviteAsync(id,nom,image,description,type,sur_rendezvous)
         .then(res => {
             callback(null, res);
         })
@@ -58,10 +58,10 @@ const updateActivite = (id,nom,image,description,type,callback) => {
         });
 }
 
-async function updateActiviteAsync(id,nom,image,description,type) {
+async function updateActiviteAsync(id,nom,image,description,type,sur_rendezvous) {
     try {
         const conn = await pool.connect();
-        const result = await conn.query("UPDATE Activite SET nom_activite = $1, image_activite=$2 , description_activite = $3 , type_activite = $4 where id_activite = $5",[nom,image,description,type,id]);
+        const result = await conn.query("UPDATE Activite SET nom_activite = $1, image_activite=$2 , description_activite = $3 , type_activite = $4 , sur_rendezvous = $5 where id_activite = $6",[nom,image,description,type,sur_rendezvous,id]);
         conn.release();
         return result.rows;
     } catch (error) {
@@ -83,14 +83,14 @@ const createActivite = (activiteData, callback) => {
 
 async function createActiviteAsync(activiteData) {
     try {
-        const { nom_activite, image_activite, description_activite, type_activite } = activiteData;
+        const { nom_activite, image_activite, description_activite, type_activite , sur_rendezvous } = activiteData;
         const conn = await pool.connect();
         const query = `
-            INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite, sur_rendezvous)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING id_activite;
         `;
-        const values = [nom_activite, image_activite, description_activite, type_activite];
+        const values = [nom_activite, image_activite, description_activite, type_activite, sur_rendezvous];
         const result = await conn.query(query, values);
         conn.release();
         return result.rows[0];

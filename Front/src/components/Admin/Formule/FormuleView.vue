@@ -32,6 +32,7 @@
             <th>Prix</th>
             <th>Unité</th>
             <th>Activités incluses</th>
+            <th>Sur rendez-vous</th>
             <th>Actions</th>
           </tr>
           </thead>
@@ -45,6 +46,7 @@
             <td>{{ formule.prix_formule }} €</td>
             <td>{{ formule.unite }}</td>
             <td>{{ formule.activites_liees }}</td>
+            <td>{{ formule.sur_rendezvous ? 'Oui' : 'Non' }}</td>
             <td class="actions">
               <button @click="editFormule(formule)" class="btn-edit">Modifier</button>
               <button @click="confirmDelete(formule)" class="btn-delete">Supprimer</button>
@@ -90,7 +92,9 @@ export default {
             formule.nom_formule.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
             formule.activites_liees.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
             formule.id_formule.toString().includes(this.searchQuery);
-      });
+      })
+    .sort((a, b) => a.id_formule - b.id_formule); // Add this line to sort by ID
+
     }
   },
   async created() {

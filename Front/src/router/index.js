@@ -14,6 +14,10 @@ import CreateFormuleView from "@/components/Admin/Formule/CreateFormuleView.vue"
 import EditFormuleView from "@/components/Admin/Formule/EditFormuleView.vue";
 import AddActiviteView from "@/components/Admin/Activite/AddActiviteView.vue";
 import EditActiviteView from "@/components/Admin/Activite/EditActiviteView.vue";
+import BoutiqueView from "@/views/BoutiqueView.vue";
+import EditGoodiesView from "@/components/Admin/Goodies/EditGoodiesView.vue";
+import AddGoodiesView from "@/components/Admin/Goodies/CreateGoodiesView.vue";
+import BoutiqueCommandeView from "@/views/BoutiqueCommandeView.vue";
 
 const routes = [
     {
@@ -29,7 +33,7 @@ const routes = [
     },
     {
         path: '/contact',
-        name: '/contact',
+        name: 'contact',
         component: ContactView,
     },
     {
@@ -91,6 +95,26 @@ const routes = [
         path: '/profil/editActivite/:id',
         name: 'editActivite',
         component: EditActiviteView
+    },
+    {
+        path:'/boutique',
+        name: 'boutique',
+        component: BoutiqueView
+    },
+    {
+        path: '/profil/addGoodies',
+        name: 'addGoodies',
+        component: AddGoodiesView
+    },
+    {
+        path: '/profil/editGoodies/:id',
+        name: 'editGoodies',
+        component: EditGoodiesView
+    },
+    {
+        path: '/boutique/commande/:id',
+        name:'boutiqueCommande',
+        component: BoutiqueCommandeView
     }
 ]
 

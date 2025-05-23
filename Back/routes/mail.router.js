@@ -9,7 +9,10 @@ router.get("/getAdminEmail", mailController.getAdminEmail);
  * tags:
  *   name: Mail
  *   description: Gestion des opérations liées aux emails
- *
+ */
+
+/**
+ * @swagger
  * /mail/getAdminEmail:
  *   get:
  *     tags: [Mail]
@@ -42,40 +45,8 @@ router.get("/getAdminEmail", mailController.getAdminEmail);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *
- * components:
- *   schemas:
- *     AdminEmail:
- *       type: object
- *       properties:
- *         adresse_mail:
- *           type: string
- *           format: email
- *           description: Email de l'administrateur
- *           example: admin@fitness-club.com
- *       required:
- *         - adresse_mail
- *     Error:
- *       type: object
- *       properties:
- *         error:
- *           type: string
- *           description: Message d'erreur
- *           example: "Une erreur est survenue lors de la récupération de l'email"
- *         details:
- *           type: string
- *           description: Détails techniques de l'erreur (optionnel)
- *           example: "Database connection failed"
- *       required:
- *         - error
- *
- * securityDefinitions:
- *   bearerAuth:
- *     type: apiKey
- *     name: Authorization
- *     in: header
- *     description: JWT token pour l'authentification
  */
+
 router.post("/abonnement-mail", mailController.envoyerMailAbonnement);
 
 /**
@@ -145,18 +116,88 @@ router.post("/abonnement-mail", mailController.envoyerMailAbonnement);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *
- * components:
- *   schemas:
- *     Error:
- *       type: object
- *       properties:
- *         message:
- *           type: string
- *           description: Message d'erreur détaillé
- *           example: "Email de l'administrateur introuvable."
  */
 
+router.post("/commander-goodie", mailController.envoyerMailGoodie);
 
+/**
+ * @swagger
+ * /mail/commander-goodie:
+ *   post:
+ *     tags: [Mail]
+ *     summary: Envoie une notification de commande de goodie à l'administrateur
+ *     description: >
+ *       Cette route envoie un email détaillé à l'administrateur avec les informations
+ *       du goodie commandé, la quantité, la taille sélectionnée et les informations de l'utilisateur.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id_goodie
+ *               - quantite
+ *               - id_taille
+ *             properties:
+ *               id_goodie:
+ *                 type: integer
+ *                 description: ID du goodie commandé
+ *                 example: 12
+ *               quantite:
+ *                 type: integer
+ *                 minimum: 1
+ *                 description: Quantité commandée
+ *                 example: 2
+ *               id_taille:
+ *                 type: integer
+ *                 description: ID de la taille sélectionnée
+ *                 example: 3
+ *     parameters:
+ *       - in: header
+ *         name: session-id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de session valide obtenu à la connexion de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Notification de commande envoyée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Notification de commande envoyée au gérant avec succès."
+ *       400:
+ *         description: Données manquantes ou invalides
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Session manquante ou invalide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Ressource non trouvée (utilisateur, goodie, taille ou admin)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Erreur serveur lors de l'envoi de l'email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 
 module.exports = router;

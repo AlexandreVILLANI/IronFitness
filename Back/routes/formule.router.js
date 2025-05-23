@@ -33,6 +33,10 @@ const { get } = require("axios");
  *                   unite:
  *                     type: string
  *                     example: mois
+ *                   sur_rendezvous:
+ *                     type: boolean
+ *                     description: Indique si la formule est disponible sur rendez-vous
+ *                     example: true
  *                   activites_liees:
  *                     type: string
  *                     description: Noms des activités liées à la formule, séparés par des virgules
@@ -79,6 +83,10 @@ router.get('/', formuleController.getAllFormule);
  *                   unite:
  *                     type: string
  *                     example: mois
+ *                   sur_rendezvous:
+ *                     type: boolean
+ *                     description: Indique si la formule est disponible sur rendez-vous
+ *                     example: true
  *                   activites_liees:
  *                     type: string
  *                     example: Yoga, Pilates
@@ -107,6 +115,7 @@ router.get('/:id', formuleController.getFormuleById);
  *               - prix_formule
  *               - unite
  *               - activites
+ *               - sur_rendezvous
  *             properties:
  *               nom_formule:
  *                 type: string
@@ -118,6 +127,10 @@ router.get('/:id', formuleController.getFormuleById);
  *               unite:
  *                 type: string
  *                 example: mois
+ *               sur_rendezvous:
+ *                 type: boolean
+ *                 description: Indique si la formule est disponible sur rendez-vous
+ *                 example: false
  *               activites:
  *                 type: array
  *                 items:
@@ -143,6 +156,7 @@ router.get('/:id', formuleController.getFormuleById);
  *         description: Erreur interne du serveur
  */
 router.post('/', formuleController.createFormule);
+
 /**
  * @swagger
  * /formule/{id}:
@@ -168,6 +182,7 @@ router.post('/', formuleController.createFormule);
  *               - prix_formule
  *               - unite
  *               - activites
+ *               - sur_rendezvous
  *             properties:
  *               nom_formule:
  *                 type: string
@@ -179,6 +194,10 @@ router.post('/', formuleController.createFormule);
  *               unite:
  *                 type: string
  *                 example: mois
+ *               sur_rendezvous:
+ *                 type: boolean
+ *                 description: Indique si la formule est disponible sur rendez-vous
+ *                 example: true
  *               activites:
  *                 type: array
  *                 items:
@@ -204,6 +223,7 @@ router.post('/', formuleController.createFormule);
  *         description: Erreur interne du serveur
  */
 router.put('/:id', formuleController.updateFormule);
+
 /**
  * @swagger
  * /formule/{id}:
@@ -235,7 +255,5 @@ router.put('/:id', formuleController.updateFormule);
  *         description: Erreur interne du serveur
  */
 router.delete('/:id', formuleController.deleteFormule);
-
-
 
 module.exports = router;

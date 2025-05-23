@@ -25,8 +25,6 @@ exports.getFormuleById = (req, res) => {
 
 exports.createFormule = (req, res) => {
     const formuleData = req.body;
-
-    // Vérification basique des champs requis
     if (!formuleData.nom_formule || !formuleData.prix_formule || !formuleData.unite || !Array.isArray(formuleData.activites)) {
         return res.status(400).send("Requête invalide : données manquantes ou mal formées.");
     }

@@ -86,6 +86,31 @@
           </div>
         </div>
       </div>
+      <div class="form-group">
+        <label>Ajouter un rendez-vous ?*</label>
+        <div class="radio-group">
+          <label>
+            <input
+                type="radio"
+                name="sur_rendezvous"
+                :value="true"
+                v-model="formuleData.sur_rendezvous"
+                required
+            />
+            Oui
+          </label>
+          <label>
+            <input
+                type="radio"
+                name="sur_rendezvous"
+                :value="false"
+                v-model="formuleData.sur_rendezvous"
+                required
+            />
+            Non
+          </label>
+        </div>
+      </div>
 
       <div class="form-actions">
         <button type="button" @click="cancel" class="btn btn-cancel">
@@ -132,7 +157,8 @@ export default {
         nom_formule: '',
         prix_formule: 0,
         unite: 'mois',
-        activites: []
+        activites: [],
+        sur_rendezvous: false
       },
       loading: false,
       showSuccessModal: false
@@ -189,6 +215,21 @@ export default {
 </script>
 
 <style scoped>
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
 .create-formule-page {
   max-width: 800px;
   margin: 2rem auto;

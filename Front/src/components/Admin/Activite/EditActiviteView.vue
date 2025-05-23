@@ -58,6 +58,27 @@
           <option value="Personnel">Personnel</option>
         </select>
       </div>
+      <div class="form-group">
+        <label>Sur rendez-vous :</label>
+        <div class="radio-group">
+          <label>
+            <input
+                type="radio"
+                value="true"
+                v-model="form.sur_rendezvous"
+            />
+            Oui
+          </label>
+          <label>
+            <input
+                type="radio"
+                value="false"
+                v-model="form.sur_rendezvous"
+            />
+            Non
+          </label>
+        </div>
+      </div>
 
       <div class="form-actions">
         <button type="submit" :disabled="isSubmitting" class="submit-btn">
@@ -97,7 +118,8 @@ export default {
         nom_activite: '',
         image_activite: '',
         description_activite: '',
-        type_activite: ''
+        type_activite: '',
+        sur_rendezvous: false // Ajouté ici
       }
     };
   },
@@ -141,6 +163,8 @@ export default {
       this.isSubmitting = true;
 
       try {
+        this.form.sur_rendezvous = this.form.sur_rendezvous === 'true';
+
         await this.updateActivite(this.form);
         this.$router.push({ name: 'profil' });
       } catch (err) {
@@ -159,6 +183,17 @@ export default {
 </script>
 
 <style scoped>
+
+.radio-group {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 .edit-activite-page {
   max-width: 800px;
   margin: 0 auto;
