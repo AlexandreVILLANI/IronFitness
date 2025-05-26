@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const pool = require('./database/db'); // ou le chemin réel
+const pool = require('./database/db'); 
 
 // Config .env
 dotenv.config();
@@ -34,8 +34,8 @@ app.use(cors({
     servers: [{ url: "http://localhost:3000" }],
     //    origin: 'http://localhost:5173',
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],  // Ajoutez 'PATCH' ici
-    allowedHeaders: ['Content-Type', 'session-id'] // <-- ajoute ton header ici
+    methods: ['GET', 'POST', 'PATCH', 'DELETE','PUT'],  
+    allowedHeaders: ['Content-Type', 'session-id'] 
 }));
 
 
@@ -48,7 +48,7 @@ app.use(session({
     cookie: {
         maxAge: 2 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,//process.env.NODE_ENV === 'production', // Assurez-vous d'utiliser HTTPS en prod
+        secure: true,//process.env.NODE_ENV === 'production', 
         sameSite: 'none',
     },
 }));
