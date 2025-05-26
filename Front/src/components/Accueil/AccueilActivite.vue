@@ -60,6 +60,9 @@ import {onMounted, computed, ref} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 const loading = ref(true);
 const store = useStore();
 const router = useRouter();
@@ -70,12 +73,6 @@ const currentIndex = ref(0);
 const visibleDots = computed(() => {
   return Math.ceil(activities.value.length / slidesToShow());
 });
-
-const images = import.meta.glob('@/assets/Activite/*.jpg', {
-  eager: true,
-  import: 'default',
-});
-
 
 // Calculer le nombre de slides à afficher selon la largeur d'écran
 const slidesToShow = () => {
@@ -97,14 +94,12 @@ onMounted(async () => {
 });
 
 function handleResize() {
-  // Réinitialiser l'index si nécessaire lors du redimensionnement
   currentIndex.value = 0;
 }
 
-function getActivityImage(nom_image) {
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
-  const imagePath = `/src/assets/Activite/${fileName}`;
-  return images[imagePath] || images["/src/assets/notfound.jpg"];
+function getActivityImage(imagePath) {
+  if (!imagePath) return `${baseUrl}/uploads/notfound.jpg`;
+  return `${baseUrl}/uploads/${imagePath}`;
 }
 
 function goToActivity() {
@@ -123,6 +118,7 @@ function goToSlide(index) {
   currentIndex.value = index;
 }
 </script>
+
 
 <style scoped>
 .sticker-page {

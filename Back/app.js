@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const session = require('express-session');
@@ -63,7 +64,8 @@ const loginRoutes = require('./routes/authentification.router');
 const usersRoutes = require('./routes/user.router');
 const mailRoutes = require('./routes/mail.router');
 const creneauRoutes = require('./routes/creneau.router');
-const goodiesRoutes = require('./routes/goodies.router')
+const goodiesRoutes = require('./routes/goodies.router');
+
 
 app.use('/activite', activiteRouter);
 app.use('/formule', formuleRouter);
@@ -72,6 +74,8 @@ app.use('/users', usersRoutes);
 app.use('/mail',mailRoutes);
 app.use('/creneau',creneauRoutes);
 app.use('/goodies',goodiesRoutes);
+app.use('/uploads', express.static('uploads'))
+
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3000;

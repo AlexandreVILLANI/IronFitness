@@ -71,8 +71,7 @@ import { ref } from "vue";
 const store = useStore();
 const activites = computed(() => store.state.activite.activites);
 const selectedActivite = ref(null);
-const images = import.meta.glob("@/assets/Activite/*.jpg", { eager: true });
-images["/src/assets/notfound.jpg"] = new URL("@/assets/notfound.jpg", import.meta.url).href;
+
 
 function openModal(activite) {
   selectedActivite.value = activite;
@@ -81,11 +80,13 @@ function openModal(activite) {
 function closeModal() {
   selectedActivite.value = null;
 }
-function getActivityImage(nom_image) {
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, "_") + ".jpg";
-  const imagePath = `/src/assets/Activite/${fileName}`;
-  return images[imagePath]?.default || images["/src/assets/notfound.jpg"];
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
+function getActivityImage(imagePath) {
+  if (!imagePath) return `${baseUrl}/uploads/notfound.jpg`;
+  return `${baseUrl}/uploads/${imagePath}`;
 }
+
 
 onMounted(() => {
   store.dispatch("activite/getAllActivite");
