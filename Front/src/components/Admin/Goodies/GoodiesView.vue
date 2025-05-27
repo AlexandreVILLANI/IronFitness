@@ -99,8 +99,7 @@ const goodieToDelete = ref(null);
 const searchQuery = ref('');
 
 // Gestion des images
-const images = import.meta.glob('@/assets/Boutique/*.{jpg,png,webp}', { eager: true, import: 'default' });
-const notFoundImage = new URL('@/assets/notfound.jpg', import.meta.url).href;
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // Computed properties
 const goodies = computed(() => store.state.boutique.goodies);
@@ -116,19 +115,9 @@ const filteredGoodies = computed(() => {
 });
 
 // Méthodes
-const getGoodieImage = (nom_image) => {
-  if (!nom_image) return notFoundImage;
-  const fileName = nom_image.toLowerCase().replace(/\s+/g, "_");
-  const extensions = ['.jpg', '.png', '.webp'];
-
-  for (const ext of extensions) {
-    const imagePath = `/src/assets/Boutique/${fileName}${ext}`;
-    if (images[imagePath]) {
-      return images[imagePath];
-    }
-  }
-
-  return notFoundImage;
+function getGoodieImage(imagePath) {
+  if (!imagePath) return `${baseUrl}/uploads/notfound.jpg`;
+  return `${baseUrl}/uploads/${imagePath}`;
 };
 
 const loadGoodies = async () => {

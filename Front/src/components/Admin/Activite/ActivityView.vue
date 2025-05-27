@@ -109,10 +109,9 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-const images = import.meta.glob('@/assets/Activite/*.jpg', {
-  eager: true,
-  import: 'default',
-});
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 
 export default {
   name: 'AdminActivitesPage',
@@ -174,10 +173,9 @@ export default {
       }
     },
 
-    getActivityImage(nom_image) {
-      const fileName = nom_image.toLowerCase().replace(/\s+/g, '_') + '.jpg';
-      const imagePath = `/src/assets/Activite/${fileName}`;
-      return images[imagePath] || images["/src/assets/notfound.jpg"];
+    getActivityImage(imagePath) {
+      if (!imagePath) return `${baseUrl}/uploads/notfound.jpg`;
+      return `${baseUrl}/uploads/${imagePath}`;
     },
 
     truncateDescription(desc) {

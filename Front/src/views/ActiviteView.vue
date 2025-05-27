@@ -87,7 +87,6 @@ function getActivityImage(imagePath) {
   return `${baseUrl}/uploads/${imagePath}`;
 }
 
-
 onMounted(() => {
   store.dispatch("activite/getAllActivite");
 });
