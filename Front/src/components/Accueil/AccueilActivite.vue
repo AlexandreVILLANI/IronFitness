@@ -5,7 +5,7 @@
     <!-- Indicateur de chargement -->
     <div v-if="loading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>Chargement des activités...</p>
+      <p>Chargement des activités... Cela peut prendre quelques secondes</p>
     </div>
 
     <!-- Contenu principal -->

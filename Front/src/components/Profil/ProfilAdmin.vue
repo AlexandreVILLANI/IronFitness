@@ -41,6 +41,12 @@
           >
             <i class="fas fa-tshirt"></i> Goodies
           </li>
+          <li
+              :class="{ active: activeTab === 'image' }"
+              @click="setActiveTab('image')"
+          >
+            <i class="fas fa-image"></i> Image
+          </li>
         </ul>
       </nav>
 
@@ -49,6 +55,7 @@
         <FormuleView v-if="activeTab === 'formule'" />
         <UserView v-if="activeTab === 'utilisateur'"/>
         <GoodiesView v-if="activeTab === 'goodies'"/>
+        <ImageView v-if="activeTab === 'image'"/>
       </main>
     </div>
   </div>
@@ -63,6 +70,7 @@ import ActivityView from '@/components/Admin/Activite/ActivityView.vue';
 import FormuleView from '@/components/Admin/Formule/FormuleView.vue';
 import UserView from "@/components/Admin/User/UserView.vue";
 import GoodiesView from "@/components/Admin/Goodies/GoodiesView.vue";
+import ImageView from "@/components/Admin/Image/ImageView.vue";
 
 const store = useStore();
 const router = useRouter();

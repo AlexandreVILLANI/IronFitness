@@ -123,17 +123,17 @@ CREATE TABLE Taille_goodies(
 
 
 INSERT INTO Activite (nom_activite, image_activite, description_activite, type_activite,sur_rendezvous) VALUES
-    ('Coaching personnel', 'Activite/coachingperso.jpg', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Personnel',false),
-    ('Remise en forme', 'Activite/remiseforme.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.','En groupe',false),
-    ('Sport santé', 'Activite/sportsante.jpg', 'Bougez mieux, vivez mieux ! Nos séances de coaching sport santé visent à améliorer votre forme physique en douceur, tout en prévenant les douleurs et les déséquilibres. Un accompagnement personnalisé, adapté à vos capacités, pour retrouver bien-être, énergie et mobilité au quotidien.', 'En groupe',true),
-    ('Cross-training','Activite/crosstraining.jpg','Un entraînement complet et intense pour repousser vos limites ! Le cross training combine renforcement musculaire, cardio et mobilité pour améliorer votre condition physique globale. Accessible à tous niveaux, chaque séance est variée, dynamique et ultra motivante.','En groupe',false),
-    ('Cardio-boxing','Activite/cardioboxing.jpg','Défoulez-vous tout en brûlant un max de calories ! Le cardio boxing mêle mouvements de boxe et exercices de cardio pour renforcer le corps, améliorer l’endurance et libérer le stress. Une séance rythmée, sans contact, accessible à tous.','En groupe',false),
-    ('Réathlétisation','Activite/reathletisation.jpg','Retrouvez vos capacités physiques en toute sécurité après une blessure ou un arrêt prolongé. La réathlétisation vous aide à reconstruire force, mobilité et confiance grâce à un programme progressif, adapté à vos besoins et encadré par un professionnel.','Personnel',false),
-    ('Biking','Activite/biking.jpg','Un entraînement cardio ultra dynamique sur vélo indoor ! Enchaînez les phases d’intensité sur fond de musique motivante pour brûler des calories, renforcer les jambes et booster votre endurance. Accessible à tous, ambiance garantie !','En groupe',true),
-    ('Musculation','Activite/musculation.jpg','Développez votre force, votre masse musculaire et votre endurance avec des séances de musculation adaptées à votre niveau. Encadré par nos coachs, progressez en toute sécurité et atteignez vos objectifs grâce à des programmes variés et efficaces.','En groupe',false),
-    ('Boxe Anglaise','Activite/boxeanglaise.jpg','Apprenez les techniques de la boxe anglaise dans un cadre encadré et sécurisé. Travail du cardio, de la coordination, de la précision et de la puissance, le tout dans une ambiance dynamique et respectueuse. Ouvert à tous niveaux.','En groupe',false),
-    ('Kick Boxing','Activite/kickboxing.jpg','Alliez puissance et agilité avec le kick boxing ! Ce sport de combat complet mêle coups de poing et coups de pied dans un entraînement intense qui développe force, souplesse et endurance. Idéal pour se défouler tout en apprenant à se défendre.','En groupe',false),
-    ('MMA','Activite/mma.jpg','Découvrez le Mixed Martial Arts (MMA), un sport de combat complet combinant plusieurs disciplines : boxe, lutte, jiu-jitsu, et plus encore. Travail technique, physique et mental garanti dans un cadre sécurisé et encadré par des professionnels.','En groupe',false);
+    ('Coaching personnel', 'coachingperso.jpg', 'Atteignez vos objectifs avec un accompagnement sur mesure ! Que vous souhaitiez perdre du poids, gagner en masse musculaire ou simplement retrouver la forme, nos séances de coaching individuel sont adaptées à votre niveau, votre rythme et vos besoins. Profitez d’un suivi motivant, de conseils professionnels et de programmes personnalisés pour progresser efficacement.', 'Personnel',false),
+    ('Remise en forme', 'remiseforme.jpg', 'Reprenez le contrôle de votre forme physique ! Grâce à un accompagnement personnalisé, retrouvez tonus, endurance et motivation à votre rythme. Idéal après une pause, une blessure ou simplement pour reprendre de bonnes habitudes.','En groupe',false),
+    ('Sport santé', 'sportsante.jpg', 'Bougez mieux, vivez mieux ! Nos séances de coaching sport santé visent à améliorer votre forme physique en douceur, tout en prévenant les douleurs et les déséquilibres. Un accompagnement personnalisé, adapté à vos capacités, pour retrouver bien-être, énergie et mobilité au quotidien.', 'En groupe',true),
+    ('Cross-training','crosstraining.jpg','Un entraînement complet et intense pour repousser vos limites ! Le cross training combine renforcement musculaire, cardio et mobilité pour améliorer votre condition physique globale. Accessible à tous niveaux, chaque séance est variée, dynamique et ultra motivante.','En groupe',false),
+    ('Cardio-boxing','cardioboxing.jpg','Défoulez-vous tout en brûlant un max de calories ! Le cardio boxing mêle mouvements de boxe et exercices de cardio pour renforcer le corps, améliorer l’endurance et libérer le stress. Une séance rythmée, sans contact, accessible à tous.','En groupe',false),
+    ('Réathlétisation','reathletisation.jpg','Retrouvez vos capacités physiques en toute sécurité après une blessure ou un arrêt prolongé. La réathlétisation vous aide à reconstruire force, mobilité et confiance grâce à un programme progressif, adapté à vos besoins et encadré par un professionnel.','Personnel',false),
+    ('Biking','biking.jpg','Un entraînement cardio ultra dynamique sur vélo indoor ! Enchaînez les phases d’intensité sur fond de musique motivante pour brûler des calories, renforcer les jambes et booster votre endurance. Accessible à tous, ambiance garantie !','En groupe',true),
+    ('Musculation','musculation.jpg','Développez votre force, votre masse musculaire et votre endurance avec des séances de musculation adaptées à votre niveau. Encadré par nos coachs, progressez en toute sécurité et atteignez vos objectifs grâce à des programmes variés et efficaces.','En groupe',false),
+    ('Boxe Anglaise','boxeanglaise.jpg','Apprenez les techniques de la boxe anglaise dans un cadre encadré et sécurisé. Travail du cardio, de la coordination, de la précision et de la puissance, le tout dans une ambiance dynamique et respectueuse. Ouvert à tous niveaux.','En groupe',false),
+    ('Kick Boxing','kickboxing.jpg','Alliez puissance et agilité avec le kick boxing ! Ce sport de combat complet mêle coups de poing et coups de pied dans un entraînement intense qui développe force, souplesse et endurance. Idéal pour se défouler tout en apprenant à se défendre.','En groupe',false),
+    ('MMA','mma.jpg','Découvrez le Mixed Martial Arts (MMA), un sport de combat complet combinant plusieurs disciplines : boxe, lutte, jiu-jitsu, et plus encore. Travail technique, physique et mental garanti dans un cadre sécurisé et encadré par des professionnels.','En groupe',false);
 
 
 
@@ -196,11 +196,11 @@ INSERT INTO Formule_Utilisateur (id_formule, id_utilisateur) VALUES
 
 
 INSERT INTO Goodies(nom_goodies, image_goodies,prix_goodies) VALUES
-    ('Short','/Boutique/short.jpg',35),
-    ('T-Shirt','/Boutique/t-shirt.jpg',25),
-    ('Débardeur','/Boutique/debardeur.jpg',25),
-    ('Gants','/Boutique/gants.jpg',35),
-    ('Ensemble','/Boutique/ensemble.jpg',80);
+    ('Short','short.jpg',35),
+    ('T-Shirt','t-shirt.jpg',25),
+    ('Débardeur','debardeur.jpg',25),
+    ('Gants','gants.jpg',35),
+    ('Ensemble','ensemble.jpg',80);
 
 INSERT INTO Taille(valeur_taille) VALUES
     ('XXXS'),

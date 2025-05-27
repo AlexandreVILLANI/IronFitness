@@ -4,7 +4,8 @@ import formule from "@/store/modules/formule.js";
 import user from "@/store/modules/user.js";
 import mail from "@/store/modules/mail.js"
 import creneau from "@/store/modules/creneau.js";
-import boutique from "@/store/modules/boutique.js"
+import boutique from "@/store/modules/boutique.js";
+import image from "@/store/modules/image.js";
 
 export default createStore({
     modules: {
@@ -13,6 +14,7 @@ export default createStore({
         user,
         mail,
         creneau,
-        boutique
+        boutique,
+        image
     },
 });
