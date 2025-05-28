@@ -352,7 +352,7 @@ onMounted(() => {
 .hero-section {
   position: relative;
   height: 400px;
-  background-image: url('@/assets/boutique/boutique-hero.jpg');
+  background-image: url('@/assets/boutique-hero.jpg');
   background-size: cover;
   background-position: center;
   display: flex;

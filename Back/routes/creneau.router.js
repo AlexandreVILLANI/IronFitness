@@ -232,6 +232,101 @@ router.delete('/:id', creneauController.deleteCreneau);
  *         description: Erreur interne du serveur
  */
 
+/**
+ * @swagger
+ * /creneau/reserver:
+ *   post:
+ *     summary: Réserve un créneau pour un utilisateur
+ *     tags: [Créneaux]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id_creneau
+ *               - id_utilisateur
+ *             properties:
+ *               id_creneau:
+ *                 type: integer
+ *               id_utilisateur:
+ *                 type: integer
+ *             example:
+ *               id_creneau: 1
+ *               id_utilisateur: 42
+ *     responses:
+ *       200:
+ *         description: Réservation effectuée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Réservation effectuée avec succès"
+ *       500:
+ *         description: Erreur lors de la réservation
+ */
+router.post('/reserver', creneauController.reserverCreneau);
+
+/**
+ * @swagger
+ * /creneau/reservations/user/{id}:
+ *   get:
+ *     summary: Récupère toutes les réservations d'un utilisateur par son ID
+ *     tags: [Créneaux]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Liste des réservations récupérées avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id_reservation:
+ *                     type: integer
+ *                   id_creneau:
+ *                     type: integer
+ *                   id_utilisateur:
+ *                     type: integer
+ *                 example:
+ *                   id_reservation: 10
+ *                   id_creneau: 3
+ *                   id_utilisateur: 42
+ *       400:
+ *         description: ID utilisateur invalide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "ID utilisateur invalide"
+ *       500:
+ *         description: Erreur interne du serveur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Erreur interne du serveur"
+ */
+router.get('/reservations/user/:id', creneauController.getReservationByUserId);
+
 module.exports = router;
 
 

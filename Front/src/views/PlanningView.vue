@@ -20,10 +20,28 @@
         <div v-if="selectedEvent.sur_rendezvous === true">
           <p><strong>Nombre de personnes inscrites :</strong> {{ selectedEvent.reservations }}/{{ selectedEvent.places }}</p>
           <p style="color: #e67e22; font-weight: bold;">Inscription obligatoire pour assister au cours.</p>
+
+          <div v-if="isAlreadyRegistered" class="already-registered">
+            <p>✅ Vous êtes déjà inscrit à ce cours</p>
+          </div>
+          <div v-else>
+            <button
+                class="register-button"
+                @click="registerToEvent"
+                :disabled="!hasValidFormuleForActivity"
+                :class="{ 'disabled-button': !hasValidFormuleForActivity }"
+            >
+              {{ hasValidFormuleForActivity ? "S'inscrire" : "Formule requise" }}
+            </button>
+            <p v-if="!hasValidFormuleForActivity" style="color: #e74c3c; font-size: 0.9rem;">
+              Votre formule actuelle ne comprend pas cette activité
+            </p>
+          </div>
         </div>
         <div v-else>
           <p style="color: #27ae60; font-size: 1.2rem; font-weight: bold;">Cours disponible sans inscription</p>
-        </div>        <div class="modal-actions">
+        </div>
+        <div class="modal-actions">
           <button @click="closeModal">Fermer</button>
           <button
               v-if="isAdmin"
@@ -121,7 +139,7 @@
 <script setup>
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import { computed, onMounted, ref } from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import { useStore } from 'vuex'
 import frLocale from '@fullcalendar/core/locales/fr'
 import { useRouter } from 'vue-router'
@@ -149,22 +167,105 @@ const newCreneau = ref({
   heure_fin: '',
   places_disponibles: 10
 })
+const userCourant = computed(() => store.getters['user/getUserCourant'])
 
-// Charger les créneaux et les activités au montage
-onMounted(() => {
-  store.dispatch('creneau/getAllCreneau')
-  store.dispatch('activite/getAllActivite')
-})
+const userFormules = computed(() => store.getters['user/getFormulesUtilisateur']);
+// Charger les réservations de l'utilisateur
+const loadUserReservations = async () => {
+  if (userCourant.value?.id_utilisateur) {
+    await store.dispatch('creneau/getReservationsByUserId', userCourant.value.id_utilisateur);
+  }
+};
+
+const isAlreadyRegistered = computed(() => {
+  if (!selectedEvent.value?.id || !userCourant.value?.id_utilisateur) return false;
+
+  const userReservations = store.getters['creneau/userReservations'];
+  return userReservations.some(reservation =>
+      reservation.id_creneau == selectedEvent.value.id
+  );
+});
+
+const hasValidFormuleForActivity = computed(() => {
+  if (!selectedEvent.value.id || !userFormules.value) {
+    console.log("[hasValidFormule] Pas de créneau sélectionné ou pas de formules utilisateur", {
+      selectedEventId: selectedEvent.value.id,
+      userFormules: userFormules.value,
+    });
+    return false;
+  }
+
+  const selectedId = Number(selectedEvent.value.id);
+  const creneau = store.getters['creneau/allCreneaux'].find(c => c.id_creneau === selectedId);
+
+  if (!creneau) {
+    console.log("[hasValidFormule] Créneau non trouvé dans le store", { selectedEventId: selectedEvent.value.id, selectedId, allCreneaux: store.getters['creneau/allCreneaux'] });
+    return false;
+  }
+
+  const idActiviteCreneau = creneau.id_activite;
+
+  const valid = userFormules.value.some(formule =>
+      formule.activites.some(activite => activite.id_activite === idActiviteCreneau)
+  );
+  return valid;
+});
+
+
+onMounted(async () => {
+  await store.dispatch('creneau/getAllCreneau');
+  await store.dispatch('activite/getAllActivite');
+
+  const user = store.getters['user/getUserCourant'];
+  if (user && user.id_utilisateur) {
+    await store.dispatch('user/getUserFormules', user.id_utilisateur);
+    await loadUserReservations();
+  }
+});
+
 
 function goToEditCreneau() {
   if (!selectedEvent.value.id) return
   router.push(`/planning/editCreneau?id_creneau=${selectedEvent.value.id}`)
 }
-// Ouvrir la modale de création
+
 function openCreateModal() {
   showCreateModal.value = true
 }
 
+async function registerToEvent() {
+  if (!selectedEvent.value.id) return;
+
+  if (isAlreadyRegistered.value) {
+    alert("Vous êtes déjà inscrit à ce cours");
+    return;
+  }
+
+  if (selectedEvent.value.reservations >= selectedEvent.value.places) {
+    alert("Ce créneau est déjà complet");
+    return;
+  }
+
+  if (!hasValidFormuleForActivity.value) {
+    alert("Vous devez avoir une formule incluant cette activité pour vous inscrire");
+    return;
+  }
+
+  try {
+    await store.dispatch('creneau/reserverCreneau', {
+      id_creneau: selectedEvent.value.id,
+      id_utilisateur: userCourant.value.id_utilisateur
+    });
+
+    // Rafraîchir les données
+    await store.dispatch('creneau/getAllCreneau');
+    await loadUserReservations();
+    alert(`Inscription réussie au cours "${selectedEvent.value.title}"`);
+  } catch (error) {
+    console.error("Erreur lors de l'inscription:", error);
+    alert(error.response?.data?.message || "Une erreur est survenue lors de l'inscription");
+  }
+}
 // Fermer la modale de création
 function closeCreateModal() {
   showCreateModal.value = false
@@ -289,9 +390,49 @@ const calendarOptions = computed(() => ({
 function closeModal() {
   showModal.value = false
 }
+
+// Recharger les réservations quand la modal s'ouvre
+watch(showModal, async (newVal) => {
+  if (newVal && userCourant.value?.id_utilisateur) {
+    await loadUserReservations();
+  }
+});
 </script>
 
 <style scoped>
+.already-registered {
+  background-color: #e8f5e9;
+  color: #27ae60;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
+  font-weight: bold;
+}
+.disabled-button {
+  background-color: #95a5a6 !important;
+  cursor: not-allowed !important;
+}
+
+.register-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+.register-button {
+  padding: 0.5rem 1rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 1rem 0;
+}
+
+.register-button:hover {
+  background-color: #2980b9;
+}
 .create-button {
   display: block;
   margin: 0 auto 2rem;

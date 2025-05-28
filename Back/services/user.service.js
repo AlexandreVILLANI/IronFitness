@@ -195,10 +195,27 @@ async function getUserFormulesAsync(id_utilisateur) {
     try {
         const result = await client.query(
             `
-                SELECT f.id_formule, f.nom_formule, f.prix_formule, f.unite
+                SELECT
+                    f.id_formule,
+                    f.nom_formule,
+                    f.prix_formule,
+                    f.unite,
+                    json_agg(
+                            json_build_object(
+                                    'id_activite', a.id_activite,
+                                    'nom_activite', a.nom_activite,
+                                    'image_activite', a.image_activite,
+                                    'description_activite', a.description_activite,
+                                    'type_activite', a.type_activite,
+                                    'sur_rendezvous', a.sur_rendezvous
+                            )
+                    ) AS activites
                 FROM Formule_Utilisateur fu
                          JOIN Formule f ON fu.id_formule = f.id_formule
-                WHERE fu.id_utilisateur = $1;
+                         LEFT JOIN Formule_Activite fa ON f.id_formule = fa.id_formule
+                         LEFT JOIN Activite a ON fa.id_activite = a.id_activite
+                WHERE fu.id_utilisateur = $1
+                GROUP BY f.id_formule, f.nom_formule, f.prix_formule, f.unite;
             `,
             [id_utilisateur]
         );
@@ -210,6 +227,7 @@ async function getUserFormulesAsync(id_utilisateur) {
         throw error;
     }
 }
+
 
 async function getUtilisateurById(id_utilisateur) {
     const client = await pool.connect();

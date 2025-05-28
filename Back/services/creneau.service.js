@@ -112,12 +112,59 @@ async function deleteCreneauAsync(id_creneau) {
     }
 }
 
+const reserverCreneau = (id_creneau, id_utilisateur, callback) => {
+    reserverCreneauAsync(id_creneau, id_utilisateur)
+        .then(res => callback(null, res))
+        .catch(err => {
+            console.error(err);
+            callback(err, null);
+        });
+};
 
+async function reserverCreneauAsync(id_creneau, id_utilisateur) {
+    const conn = await pool.connect();
+    try {
+        await conn.query(
+            'INSERT INTO Reservation (id_creneau, id_utilisateur) VALUES ($1, $2);',
+            [id_creneau, id_utilisateur]
+        );
+        return { success: true, message: "Réservation enregistrée." };
+    } catch (error) {
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+
+const getReservationByUserId = (id, callback) => {
+    getReservationByUserIdAsync(id)
+        .then(res => {
+            callback(null, res);
+        })
+        .catch(error => {
+            console.log(error);
+            callback(error, null);
+        });
+}
+
+async function getReservationByUserIdAsync(id) {
+    try {
+        const conn = await pool.connect();
+        const result = await conn.query("SELECT id_reservation, id_creneau, id_utilisateur FROM reservation WHERE id_utilisateur = $1;\n", [id]);
+        conn.release();
+        return result.rows;
+    } catch (error) {
+        console.error('Error in getReservationByUserIdAsync:', error);
+        throw error;
+    }
+}
 
 module.exports = {
     getAllCreneau: getAllCreneau,
     getCreneauById: getCreneauById,
     updateCreneau: updateCreneau,
     createCreneau: createCreneau,
-    deleteCreneau: deleteCreneau
+    deleteCreneau: deleteCreneau,
+    reserverCreneau: reserverCreneau,
+    getReservationByUserId: getReservationByUserId
 }

@@ -69,4 +69,29 @@ exports.deleteCreneau = (req, res) => {
     });
 };
 
+exports.reserverCreneau = (req, res) => {
+    const { id_creneau, id_utilisateur } = req.body;
+
+    creneauService.reserverCreneau(id_creneau, id_utilisateur, (error, result) => {
+        if (error) {
+            return res.status(500).send("Erreur lors de la réservation.");
+        } else {
+            return res.status(200).send(result);
+        }
+    });
+};
+
+exports.getReservationByUserId = (req, res) => {
+    let id = req.params.id
+    creneauService.getReservationByUserId(id, (error, data) => {
+        if (error) {
+            return res.status(500).send("Internal error");
+        } else {
+            return res.status(200).send(data);
+        }
+    });
+}
+
+
+
 

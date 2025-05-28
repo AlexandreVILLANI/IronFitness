@@ -42,11 +42,29 @@ async function createCreneau(creneauData) {
 }
 
 async function deleteCreneauAPI(id) {
-    return deleteRequest('/creneau', id); // id = 11
+    return deleteRequest('/creneau', id);
 }
 
 async function deleteCreneau(id) {
     const response = await deleteCreneauAPI(id);
+    return response;
+}
+
+async function reserverCreneauAPI(data) {
+    return postRequest('/Creneau/reserver', data, 'RESERVERCRENEAU');
+}
+
+async function reserverCreneau(data) {
+    const response = await reserverCreneauAPI(data);
+    return response;
+}
+
+async function getReservationsByUserIdFromAPI(userId) {
+    return getRequest(`/creneau/reservations/user/${userId}`, `GETRESERVATIONS_USER_${userId}`);
+}
+
+async function getReservationsByUserId(userId) {
+    const response = await getReservationsByUserIdFromAPI(userId);
     return response;
 }
 
@@ -55,5 +73,7 @@ export {
     getCreneauById,
     updateCreneau,
     createCreneau,
-    deleteCreneau
+    deleteCreneau,
+    reserverCreneau,
+    getReservationsByUserId
 }

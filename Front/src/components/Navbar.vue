@@ -96,6 +96,21 @@ const closeMenu = () => {
   position: relative;
   transition: color 0.3s ease;
 }
+.nav-links .router-link-active {
+  position: relative;
+  color: white;
+}
+
+.nav-links .router-link-active::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+  left: 0;
+  bottom: -4px;
+}
+
 
 .nav-links a::after {
   content: '';

@@ -3,14 +3,17 @@ import {
     getCreneauById,
     updateCreneau,
     createCreneau,
-    deleteCreneau // ✅ ajout
+    deleteCreneau,
+    reserverCreneau,
+    getReservationsByUserId
 } from "@/services/creneau.service";
 
 export default {
     namespaced: true,
     state: () => ({
         creneaux: [],
-        currentCreneau: null
+        currentCreneau: null,
+        userReservations: []
     }),
     mutations: {
         SET_CRENEAUX(state, creneaux) {
@@ -30,6 +33,9 @@ export default {
         },
         DELETE_CRENEAU(state, id) {
             state.creneaux = state.creneaux.filter(c => c.id_creneau !== id);
+        },
+        SET_USER_RESERVATIONS(state, reservations) {
+            state.userReservations = reservations;
         }
     },
     actions: {
@@ -96,11 +102,37 @@ export default {
                 console.error(`Erreur lors de la suppression du créneau avec l'ID ${id}:`, err);
                 throw err;
             }
+        },
+        async reserverCreneau(_, data) {
+            try {
+                const result = await reserverCreneau(data);
+                return result;
+            } catch (err) {
+                console.error("Erreur lors de la réservation du créneau:", err);
+                throw err;
+            }
+        },
+
+        async getReservationsByUserId({ commit }, userId) {
+            try {
+                const result = await getReservationsByUserId(userId);
+                if (Array.isArray(result.data)) {
+                    commit('SET_USER_RESERVATIONS', result.data);
+                    return result.data;
+                } else {
+                    console.error("Format de réponse inattendu pour les réservations utilisateur:", result);
+                    throw new Error("Format de réponse inattendu pour les réservations utilisateur");
+                }
+            } catch (err) {
+                console.error(`Erreur lors de la récupération des réservations de l'utilisateur ${userId}:`, err);
+                throw err;
+            }
         }
     },
     getters: {
         allCreneaux: state => state.creneaux,
         currentCreneau: state => state.currentCreneau,
-        creneauById: state => id => state.creneaux.find(c => c.id_creneau === id)
+        creneauById: state => id => state.creneaux.find(c => c.id_creneau === id),
+        userReservations: state => state.userReservations
     }
 };

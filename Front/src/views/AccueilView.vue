@@ -57,7 +57,7 @@ onBeforeUnmount(() => {
 <<style scoped>
 
 .accueil-container {
-  background-image: url('@/assets/Accueil/accueilFond.jpg');
+  background-image: url('@/assets/accueilFond.jpg');
   background-size: cover;
   background-position: center;
   height: 100vh;
